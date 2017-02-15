@@ -4,11 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
-import au.edu.cdu.dds.io.DBOperation;
-import au.edu.cdu.dds.io.DBParameter;
 import au.edu.cdu.dds.util.ConstantValue;
 
 public class DBOperationTest {
@@ -27,7 +24,6 @@ public class DBOperationTest {
 		dbp.setColPairOperators(colPairOperators);
 		dbp.setColPairValues(colPairValues);
 
-		// DBOperation dbo = new DBOperation();
 		List<Map<String, String>> lst = DBOperation.executeQuery(dbp);
 		Assert.assertNotNull(lst);
 	}
@@ -47,7 +43,6 @@ public class DBOperationTest {
 		dbp.setColPairOperators(colPairOperators);
 		dbp.setColPairValues(colPairValues);
 
-		// DBOperation dbo = new DBOperation();
 		List<Map<String, String>> lst = DBOperation.executeQuery(dbp);
 		Assert.assertNotNull(lst);
 	}
@@ -71,7 +66,7 @@ public class DBOperationTest {
 		Assert.assertNotNull(lst);
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void testExecuteInsert() throws Exception {
 		DBParameter dbp = new DBParameter();
@@ -92,7 +87,7 @@ public class DBOperationTest {
 		DBOperation.generateReportSql(datasetName);
 
 	}
-	
+
 	@Test
 	public void testGenerateReportSql_BHOSLIB() {
 		String datasetName = "BHOSLIB";

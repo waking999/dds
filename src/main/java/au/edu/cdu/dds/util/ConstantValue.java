@@ -49,7 +49,7 @@ public class ConstantValue {
 	public static final String DB_COL_RUNNING_TIME = "running_nano_sec";
 	
 	public static final String DB_COL_BEST_RESULT_SIZE = "best_result_size";
-	//public static final String DB_COL_BEST_RUNNING_TIME = "best_running_nano_sec";
+	public static final String DB_COL_BEST_RUNNING_TIME = "best_running_nano_sec";
 	public static final String DB_COL_ALLOWED_RUNNING_TIME = "allowed_running_time";
 			
 	public static final String DB_COL_ACCEPT_RESULT_SIZE = "accepted_result_size";
@@ -63,7 +63,7 @@ public class ConstantValue {
 	public static final String DB_COL_THRESHOLD1 = "threshold1";
 	public static final String DB_COL_RESULT_SIZE1 = "result_size1";
 	public static final String DB_COL_RUNNING_TIME1 = "running_nano_sec1";
-	
+ 
 	public static final String DB_COL_THRESHOLD2 = "threshold2";
 	public static final String DB_COL_RESULT_SIZE2 = "result_size2";
 	public static final String DB_COL_RUNNING_TIME2 = "running_nano_sec2";

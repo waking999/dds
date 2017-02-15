@@ -305,7 +305,7 @@ public class DBOperation {
 
 		try {
 			StringBuffer sqlSb = new StringBuffer();
-			sqlSb.append("select i_code from \"v_instance_opt\" where \"d_name\"=").append(datasetName).append(";");
+			sqlSb.append("select i_code from \"v_instance_opt\" where \"d_name\"=\"").append(datasetName).append("\";");
 			c = getConnection();
 			c.setAutoCommit(false);
 			stmt = c.createStatement();

@@ -1,11 +1,14 @@
 package au.edu.cdu.dds.io;
 
 public class DBParameter {
+	// table name
 	private String tableName;
+	// used for select clause
 	private String[] colNames;
+	// used for where clause, pairName, pairOperator and pairValues should be
+	// matched one by one.
 	private String[] colPairNames;
 	private String[] colPairOperators;
-
 	private String[] colPairValues;
 
 	public String getTableName() {

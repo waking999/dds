@@ -10,7 +10,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class LogUtil {
 
-	/**
+	/**X
 	 * get log according to class
 	 * 
 	 * @param clazz
