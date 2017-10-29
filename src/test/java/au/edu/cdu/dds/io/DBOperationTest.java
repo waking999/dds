@@ -26,6 +26,7 @@ public class DBOperationTest {
 
 		List<Map<String, String>> lst = DBOperation.executeQuery(dbp);
 		Assert.assertNotNull(lst);
+		Assert.assertTrue(lst.size() > 0);
 	}
 
 	@Test
@@ -37,14 +38,17 @@ public class DBOperationTest {
 		String[] colPairNames = { ConstantValue.DB_COL_INS_NAME };
 
 		String[] colPairOperators = { "like" };
-		String[] colPairValues = { "%bro%" };
+		String[] colPairValues = { "%ro%" };
 		dbp.setColNames(colNames);
 		dbp.setColPairNames(colPairNames);
 		dbp.setColPairOperators(colPairOperators);
 		dbp.setColPairValues(colPairValues);
 
 		List<Map<String, String>> lst = DBOperation.executeQuery(dbp);
+
 		Assert.assertNotNull(lst);
+		Assert.assertTrue(lst.size() > 0);
+
 	}
 
 	@Test
@@ -64,9 +68,10 @@ public class DBOperationTest {
 
 		List<Map<String, String>> lst = DBOperation.executeQuery(dbp);
 		Assert.assertNotNull(lst);
+		Assert.assertTrue(lst.size() > 0);
 	}
 
-	//@Ignore
+	// @Ignore
 	@Test
 	public void testExecuteInsert() throws Exception {
 		DBParameter dbp = new DBParameter();
@@ -80,18 +85,15 @@ public class DBOperationTest {
 		DBOperation.executeInsert(dbp);
 
 	}
-
-	@Test
-	public void testGenerateReportSql_KONECT() {
-		String datasetName = "KONECT";
-		DBOperation.generateReportSql(datasetName);
-
-	}
-
-	@Test
-	public void testGenerateReportSql_BHOSLIB() {
-		String datasetName = "BHOSLIB";
-		DBOperation.generateReportSql(datasetName);
-
-	}
+	/*
+	 * @Test public void testGenerateReportSql_KONECT() { String datasetName =
+	 * "KONECT"; DBOperation.generateReportSql(datasetName);
+	 * 
+	 * }
+	 * 
+	 * @Test public void testGenerateReportSql_BHOSLIB() { String datasetName =
+	 * "BHOSLIB"; DBOperation.generateReportSql(datasetName);
+	 * 
+	 * }
+	 */
 }

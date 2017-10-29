@@ -3,189 +3,144 @@ package au.edu.cdu.dds.util;
 /**
  * a java bean to store graph representations of Faisal's data structure
  * 
- * @param <ET>
- *            element type
- * @param <ST>
- *            set type
+ * @param <VT>
+ *            vertex type
  */
-public class GlobalVariable<ET, ST> {
-	private int eCount; // element count
+public class GlobalVariable<VT> {
+	int verCnt; // the count of vertices, never change
+	int actVerCnt; // the count active vertices, change
 
-	private int[] eL; // element list
-	private int[] eIL;// element index list
-
-	private int[] freq; // frequency
-	private int[][] eAL;// element adjacency
-	private int[][] eIM; // element incidence matrix
-
-	private int sCount; // set count
-	private int[] sL; // set list
-	private int[] sIL;// set index list
-	private int[] card; // cardinality
-	private int[][] sAL;// set adjacency
-	private int[][] sIM; // set incidence matrix
-
-	private int[] mate; // store mate of each vertex; 0: exposed
-
-	private int solCount;
-	private int[] sol;
-	private int solPtr;
-
-	private int bestSolCount;
-	private int[] bestSol;
-
-	private String model;
-
-	public String getModel() {
-		return model;
+	public int getActVerCnt() {
+		return actVerCnt;
 	}
 
-	public void setModel(String model) {
-		this.model = model;
+	public void setActVerCnt(int actVerCnt) {
+		this.actVerCnt = actVerCnt;
 	}
 
-	public int[] geteIL() {
-		return eIL;
+	// this allow vertex to be in any range
+	private VT[] verLst; // the list of vertex
+	private int[] idxLst; // the list of vertex index
+
+	private int[] idxDegree; //the degree of each vertex (in index format), never change
+	public int[] getIdxDegree() {
+		return idxDegree;
 	}
 
-	public void seteIL(int[] eIL) {
-		this.eIL = eIL;
+	public void setIdxDegree(int[] idxDegree) {
+		this.idxDegree = idxDegree;
 	}
 
-	public int[] getFreq() {
-		return freq;
+	private int[] idxUtil; // the utility of each vertex (in index format), change
+	private float[] idxVote; //the vote of each vertex (in index format), change
+	private float[] idxWeight; //the weight of each vertex (in index format), change
+
+	public float[] getIdxVote() {
+		return idxVote;
 	}
 
-	public void setFreq(int[] freq) {
-		this.freq = freq;
+	public void setIdxVote(float[] idxVote) {
+		this.idxVote = idxVote;
 	}
 
-	public int[][] geteAL() {
-		return eAL;
+	public float[] getIdxWeight() {
+		return idxWeight;
 	}
 
-	public void seteAL(int[][] eAL) {
-		this.eAL = eAL;
+	public void setIdxWeight(float[] idxWeight) {
+		this.idxWeight = idxWeight;
 	}
 
-	public int[][] geteIM() {
-		return eIM;
+	private boolean[] idxDomed; // if a vertex (in index format) is dominated
+	private int undomCnt; // the count of vertices which are not dominated
+
+	private int[][] idxIM; // the incident matrix of vertex (in index format)
+	private int[][] idxAL;// the adjacent list of vertex (in index format)
+
+	private int[] idxSol; //  solution in process
+	private int idxSolSize; // size of solution in process
+
+ 
+
+
+	public int[] getIdxSol() {
+		return idxSol;
 	}
 
-	public void seteIM(int[][] eIM) {
-		this.eIM = eIM;
+	public void setIdxSol(int[] idxSol) {
+		this.idxSol = idxSol;
 	}
 
-	public int[] getsIL() {
-		return sIL;
+	public int getIdxSolSize() {
+		return idxSolSize;
 	}
 
-	public void setsIL(int[] sIL) {
-		this.sIL = sIL;
+	public void setIdxSolSize(int idxSolSize) {
+		this.idxSolSize = idxSolSize;
 	}
 
-	public int[] getCard() {
-		return card;
+	public int getVerCnt() {
+		return verCnt;
 	}
 
-	public void setCard(int[] card) {
-		this.card = card;
+	public void setVerCnt(int verCnt) {
+		this.verCnt = verCnt;
 	}
 
-	public int[][] getsAL() {
-		return sAL;
+	public VT[] getVerLst() {
+		return verLst;
 	}
 
-	public void setsAL(int[][] sAL) {
-		this.sAL = sAL;
+	public void setVerLst(VT[] verLst) {
+		this.verLst = verLst;
 	}
 
-	public int[][] getsIM() {
-		return sIM;
+	public int[] getIdxLst() {
+		return idxLst;
 	}
 
-	public void setsIM(int[][] sIM) {
-		this.sIM = sIM;
+	public void setIdxLst(int[] idxLst) {
+		this.idxLst = idxLst;
 	}
 
-	public int geteCount() {
-		return eCount;
+	public int[] getIdxUtil() {
+		return idxUtil;
 	}
 
-	public void seteCount(int eCount) {
-		this.eCount = eCount;
+	public void setIdxUtil(int[] idxUtils) {
+		this.idxUtil = idxUtils;
 	}
 
-	public int getsCount() {
-		return sCount;
+	public boolean[] getIdxDomed() {
+		return idxDomed;
 	}
 
-	public void setsCount(int sCount) {
-		this.sCount = sCount;
+	public void setIdxDomed(boolean[] idxDomed) {
+		this.idxDomed = idxDomed;
 	}
 
-	public int[] geteL() {
-		return eL;
+	public int getUndomCnt() {
+		return undomCnt;
 	}
 
-	public void seteL(int[] eL) {
-		this.eL = eL;
+	public void setUndomCnt(int undomCnt) {
+		this.undomCnt = undomCnt;
 	}
 
-	public int[] getsL() {
-		return sL;
+	public int[][] getIdxIM() {
+		return idxIM;
 	}
 
-	public void setsL(int[] sL) {
-		this.sL = sL;
+	public void setIdxIM(int[][] idxIM) {
+		this.idxIM = idxIM;
 	}
 
-	public int getBestSolCount() {
-		return bestSolCount;
+	public int[][] getIdxAL() {
+		return idxAL;
 	}
 
-	public void setBestSolCount(int bestSolCount) {
-		this.bestSolCount = bestSolCount;
-	}
-
-	public int[] getMate() {
-		return mate;
-	}
-
-	public void setMate(int[] mate) {
-		this.mate = mate;
-	}
-
-	public int getSolCount() {
-		return solCount;
-	}
-
-	public void setSolCount(int solCount) {
-		this.solCount = solCount;
-	}
-
-	public int[] getSol() {
-		return sol;
-	}
-
-	public void setSol(int[] sol) {
-		this.sol = sol;
-	}
-
-	public int getSolPtr() {
-		return solPtr;
-	}
-
-	public void setSolPtr(int solPtr) {
-		this.solPtr = solPtr;
-	}
-
-	public int[] getBestSol() {
-		return bestSol;
-	}
-
-	public void setBestSol(int[] bestSol) {
-		this.bestSol = bestSol;
+	public void setIdxAL(int[][] idxAL) {
+		this.idxAL = idxAL;
 	}
 
 }

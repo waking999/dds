@@ -219,7 +219,7 @@ public class DBOperation {
 
 		}
 	}
-
+/*
 	private static String singleInstanceQueryStr(String code) {
 		StringBuffer sb = new StringBuffer();
 		// String tblPrefix = ConstantValue.TBL_ALG_PREFIX;
@@ -235,7 +235,7 @@ public class DBOperation {
 		sb.append("select ").append(tblAbbA).append(".* from (\n");
 		sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",");
 		sb.append(ConstantValue.DB_COL_RESULT_SIZE).append(",");
-		sb.append("max(").append(ConstantValue.DB_COL_THRESHOLD).append(" max_").append(ConstantValue.DB_COL_THRESHOLD)
+		sb.append("max(").append(ConstantValue.DB_COL_THRESHOLD).append(") max_").append(ConstantValue.DB_COL_THRESHOLD)
 				.append("\n");
 		sb.append(" from ").append(ConstantValue.TBL_ALG_PREFIX).append(code).append("\n");
 		sb.append(" group by ").append(ConstantValue.DB_COL_INS_ID).append(",")
@@ -349,5 +349,6 @@ public class DBOperation {
 
 		}
 	}
+	*/
 
 }

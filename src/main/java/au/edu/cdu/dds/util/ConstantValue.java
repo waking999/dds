@@ -6,28 +6,32 @@ package au.edu.cdu.dds.util;
  */
 public class ConstantValue {
 	public static final int IMPOSSIBLE_VALUE = -1;
+	public static final int NOT_NULL=Integer.MAX_VALUE;
 	public static final String BLANK = " ";
+	
+	public static final float FLOAT_NO_DIFF=1E-12f;
 
-	public static final int LABEL_TYPE_START = 0;
-	public static final int LABEL_TYPE_VERTEX = 1;
-	public static final int LABEL_TYPE_EDGE = 2;
+	//public static final int LABEL_TYPE_START = 0;
+	//public static final int LABEL_TYPE_VERTEX = 1;
+	//public static final int LABEL_TYPE_EDGE = 2;
 
-	public static final int MATE_EXPOSE = -1;
+	//public static final int MATE_EXPOSE = -1;
 
 	public static final String COMMA=",";
 	
 	// time limit of algorithm running
-	public static final long RUNNING_TIME_LIMIT = 15 * 60 * 1000000000L;
+	//public static final long RUNNING_TIME_LIMIT = 15 * 60 * 1000000000L;
 
 	// data set
 	public static final String DATASET_DIMACS = "DIMACS";
+	public static final String KONECT_DIMACS = "KONECT";
 
 	// database table/view names
 	public static final String DB_TBNAME_DATASET = "dataset";
 	public static final String DB_TBNAME_INS = "instance";
 	public static final String DB_TBNAME_ALG1 = "alg1running";
-	public static final String DB_TBNAME_ALG6 = "alg2running";
-	public static final String DB_TBNAME_ALG7 = "alg3running";
+	public static final String DB_TBNAME_ALG2 = "alg2running";
+	public static final String DB_TBNAME_ALG3 = "alg3running";
 	
 	public static final String DB_VNAME_INS = "v_instance";
 	public static final String DB_VNAME_INS_OPT = "v_instance_opt";
