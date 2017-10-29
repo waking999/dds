@@ -333,6 +333,25 @@ public class TestUtil {
 		return sb.substring(0, sb.length() - 1);
 	}
 
+	public static final String KONECT_PATH = "src/test/resources/KONECT/";
+
+	public static final TestParameter[] KONECT_TP = { new TestParameter("000027_zebra.konet", 15, 15, true),
+			new TestParameter("000034_zachary.konet", 15, 15, true),
+			new TestParameter("000062_dolphins.konet", 15, 15, true),
+			new TestParameter("000112_David_Copperfield.konet", 15, 15, true),
+			new TestParameter("000198_Jazz_musicians.konet", 15, 15, true),
+			new TestParameter("000212_pdzbase.konet", 15, 15, true),
+			new TestParameter("001133_rovira.konet", 50, 50, true),
+			new TestParameter("001174_euroroad.konet", 50, 50, true),
+			new TestParameter("001858_hamster.konet", 50, 50, true),
+			new TestParameter("002426_hamster_ful.konet", 15, 15, true),
+			new TestParameter("002888_facebook.konet", 15, 15, true),
+			new TestParameter("010680_Pretty_Good_Privacy.konet", 15, 15, true),
+			new TestParameter("018771_arXiv.konet", 15, 15, true),
+			new TestParameter("026475-caida.konet", 15, 15, true),
+			new TestParameter("028093_arXiv_hep.konet", 15, 15, true),
+			new TestParameter("058228-brightkite.konet", 15, 15, false),
+			new TestParameter("063731-facebookfriendships.konet", 15, 15, false),};
 	// /**
 	// *
 	// * @param instanceCodes
