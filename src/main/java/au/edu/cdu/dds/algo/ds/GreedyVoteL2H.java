@@ -17,7 +17,7 @@ public class GreedyVoteL2H implements IAlgorithm {
 
 		do {
 
-			int vIdx = Util.getLowestWeightVertexIdx(gv);
+			int vIdx = Util.getUndomedLowestWeightVertexIdx(gv);
 			int uIdx = Util.getHighestWeightNeighIdx(gv, vIdx); 
 			if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
 				// add uIdx into solution

@@ -1,32 +1,97 @@
 package au.edu.cdu.dds.algo.ds;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HAdd implements IAlgorithm {
 	GlobalVariable<String> gv;
-
+	GlobalVariable<String> gvi;
+	int k;
+	
 	public GreedyVoteL2HAdd(GlobalVariable<String> gv) {
 		this.gv = gv;
+		this.gvi = new GlobalVariable<String>();
+		int verCnt = gv.getVerCnt();
+
+		Util.initGlobalVariable(gvi, verCnt);
+		k=5;
 	}
 
 	public void compute() {
 		int[] idxSol = gv.getIdxSol();
 		int idxSolSize = gv.getIdxSolSize();
-
+		boolean[] idxDomed = gv.getIdxDomed();
+		 
+		@SuppressWarnings("unchecked")
+		Set<Integer>[] step = new HashSet[k];
+		String[] gvVerLst=gv.getVerLst();
+		
+		int currentVCount = 0;
+		String[] gviVerLst=gvi.getVerLst();
+		int[] gviIdxLst=gvi.getIdxLst();
+		int p=0;
 		do {
 
-			int vIdx = Util.getLowestWeightVertexIdx(gv);
-			int uIdx = Util.getHighestWeightNeighIdx(gv, vIdx); 
-			if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
-				// add uIdx into solution
-				idxSol[idxSolSize++] = uIdx;
+			int vIdx = Util.getUndomedLowestWeightVertexIdx(gv);
+			
+			if (vIdx != ConstantValue.IMPOSSIBLE_VALUE) {
+				if (!idxDomed[vIdx]) {
 
-				// adjust weight;
-				Util.adjustWeight(gv, uIdx);
+					int uIdx = Util.getHighestWeightNeighIdx(gv, vIdx);
+					if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
+						// add uIdx to gvi;
+						// add vIdx to gvi;
+						// if this vertex is not in the list, add it to vertex list
+						if (Util.findPos(gviIdxLst,currentVCount, uIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
+							
+							gviVerLst[currentVCount] = gvVerLst[uIdx]; 
+							gviIdxLst[currentVCount]=uIdx;
+							currentVCount++;
+						}
+						if (Util.findPos(gviIdxLst,currentVCount, vIdx)  == ConstantValue.IMPOSSIBLE_VALUE) {
+							gviVerLst[currentVCount] = gvVerLst[vIdx];
+							gviIdxLst[currentVCount]=vIdx;
+							currentVCount++;
+						}
+						
+						// add uIdx into solution
+						idxSol[idxSolSize++] = uIdx;
 
-			 
+						// adjust weight;
+						Util.adjustWeight(gv, uIdx);
+						//store uIdx, vIdx to step[p+1];
+						Set<Integer> tmpStepList=new HashSet<>();
+						tmpStepList.add(uIdx);
+						tmpStepList.add(vIdx);
+						if(p>=k) {
+							p=p%k;
+						}
+						step[p++]=tmpStepList;
+					}
+
+				} else {
+					// add vIdx to gvi;
+					if (Util.findPos(gviIdxLst,currentVCount, vIdx)  == ConstantValue.IMPOSSIBLE_VALUE) {
+						gviVerLst[currentVCount] = gvVerLst[vIdx];
+						gviIdxLst[currentVCount]=vIdx;
+						currentVCount++;
+					}
+					
+					idxDomed[vIdx]=true;
+					
+					//add vIdx to step[p]
+					Set<Integer> tmpStepList=step[p-1];
+					tmpStepList.add(vIdx);
+
+				}
+
+				
 			}
 
 		} while (!Util.isAllDominated(gv));

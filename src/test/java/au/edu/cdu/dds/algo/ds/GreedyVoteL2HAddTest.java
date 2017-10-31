@@ -15,9 +15,9 @@ import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
-public class GreedyVoteL2HTest {
-	private Logger log = LogUtil.getLogger(GreedyVoteL2HTest.class);
-	private static final String CLASS_NAME = GreedyVoteL2HTest.class.getSimpleName();
+public class GreedyVoteL2HAddTest {
+	private Logger log = LogUtil.getLogger(GreedyVoteL2HAddTest.class);
+	private static final String CLASS_NAME = GreedyVoteL2HAddTest.class.getSimpleName();
 
 	@Ignore
 	@Test
@@ -27,7 +27,7 @@ public class GreedyVoteL2HTest {
 
 		GlobalVariable<String> gv = new FileOperation().readGraphByEdgePair(filePath);
 
-		IAlgorithm algo = new GreedyVoteL2H(gv);
+		IAlgorithm algo = new GreedyVoteL2HAdd(gv);
 		algo.compute();
 		Assert.assertTrue(Util.isValidSolution(gv));
 
@@ -67,7 +67,7 @@ public class GreedyVoteL2HTest {
 				String inputFile = path + tp.getFile();
 				GlobalVariable<String> gv = new FileOperation().readGraphByEdgePair(inputFile);
 
-				IAlgorithm algo = new GreedyVoteL2H(gv);
+				IAlgorithm algo = new GreedyVoteL2HAdd(gv);
 
 				long start = System.nanoTime();
 				algo.compute();

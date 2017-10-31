@@ -35,58 +35,12 @@ public class FileOperation {
 		// initialize the global variables
 		GlobalVariable<String> gv = new GlobalVariable<String>();
 
-		String[] verLst = new String[vCount];
-		Arrays.fill(verLst, null);
-		// the index of each vertex is the sequence no. initially
-		int[] idxLst = new int[vCount];
-		for (int i = 0; i < vCount; i++) {
-			idxLst[i] = i;
-		}
+		Util.initGlobalVariable(gv, vCount);
 
-		// the degree of each vertex is 0 initially
-		int[] idxDegree = new int[vCount];
-		Arrays.fill(idxDegree, 0);
-
-		// the vote of each vertex is 0 initially
-		float[] idxVote = new float[vCount];
-		Arrays.fill(idxVote, 0);
-
-		// the weight of each vertex is 0 initially
-		float[] idxWeight = new float[vCount];
-		Arrays.fill(idxWeight, 0);
-
-		// the dominated status of each vertex is false initially
-		boolean[] idxDomed = new boolean[vCount];
-		Arrays.fill(idxDomed, false);
-		int undomCnt = vCount;
-
-		// the incident matrix of each vertex is set to be impossible value initially
-		int[][] idxIM = new int[vCount][vCount];
-		for (int i = 0; i < vCount; i++) {
-			Arrays.fill(idxIM[i], ConstantValue.IMPOSSIBLE_VALUE);
-		}
-
-		// the adjacent list
-		int[][] idxAL = new int[vCount][];
-
-		// the solution
-		int[] idxSol = new int[vCount];
-		Arrays.fill(idxSol, ConstantValue.IMPOSSIBLE_VALUE);
-		int idxSolSize = 0;
-
-		gv.setIdxSol(idxSol);
-		gv.setIdxSolSize(idxSolSize);
-		gv.setVerCnt(vCount);
-		gv.setActVerCnt(vCount);
-		gv.setIdxAL(idxAL);
-		gv.setIdxDomed(idxDomed);
-		gv.setIdxIM(idxIM);
-		gv.setIdxDegree(idxDegree);
-		gv.setIdxLst(idxLst);
-		gv.setVerLst(verLst);
-		gv.setUndomCnt(undomCnt);
-		gv.setIdxVote(idxVote);
-		gv.setIdxWeight(idxWeight);
+		String[] verLst = gv.getVerLst();
+		int[][] idxIM = gv.getIdxIM();
+		int[] idxDegree = gv.getIdxDegree();
+		int[][] idxAL = gv.getIdxAL();
 
 		// read each line of the input file
 		String tmpLine = null;
@@ -133,7 +87,7 @@ public class FileOperation {
 		int[] idxUtil = Arrays.copyOf(idxDegree, vCount);
 		gv.setIdxUtil(idxUtil);
 
-		//calculate im and al
+		// calculate im and al
 		for (int i = 0; i < vCount; i++) {
 
 			idxAL[i] = new int[idxDegree[i]];
@@ -150,13 +104,13 @@ public class FileOperation {
 			}
 		}
 
-		//init weight
+		// init weight
 		Util.initWeight(gv);
 
 		return gv;
 	}
 
-	
+
 
 	// /**
 	// * read edge pair information from a file to generate graph representations

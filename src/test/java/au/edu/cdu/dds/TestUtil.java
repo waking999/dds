@@ -348,8 +348,8 @@ public class TestUtil {
 			new TestParameter("002888_facebook.konet", 15, 15, true),
 			new TestParameter("010680_Pretty_Good_Privacy.konet", 15, 15, true),
 			new TestParameter("018771_arXiv.konet", 15, 15, true),
-			new TestParameter("026475-caida.konet", 15, 15, true),
-			new TestParameter("028093_arXiv_hep.konet", 15, 15, true),
+			new TestParameter("026475-caida.konet", 15, 15, false),
+			new TestParameter("028093_arXiv_hep.konet", 15, 15, false),
 			new TestParameter("058228-brightkite.konet", 15, 15, false),
 			new TestParameter("063731-facebookfriendships.konet", 15, 15, false),};
 	// /**

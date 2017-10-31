@@ -67,7 +67,60 @@ public class Util {
 
 		return sol;
 	}
+	public static void initGlobalVariable(GlobalVariable<String> gv, int vCount) {
+		String[] verLst = new String[vCount];
+		Arrays.fill(verLst, null);
+		// the index of each vertex is the sequence no. initially
+		int[] idxLst = new int[vCount];
+		for (int i = 0; i < vCount; i++) {
+			idxLst[i] = i;
+		}
 
+		// the degree of each vertex is 0 initially
+		int[] idxDegree = new int[vCount];
+		Arrays.fill(idxDegree, 0);
+
+		// the vote of each vertex is 0 initially
+		float[] idxVote = new float[vCount];
+		Arrays.fill(idxVote, 0);
+
+		// the weight of each vertex is 0 initially
+		float[] idxWeight = new float[vCount];
+		Arrays.fill(idxWeight, 0);
+
+		// the dominated status of each vertex is false initially
+		boolean[] idxDomed = new boolean[vCount];
+		Arrays.fill(idxDomed, false);
+		int undomCnt = vCount;
+
+		// the incident matrix of each vertex is set to be impossible value initially
+		int[][] idxIM = new int[vCount][vCount];
+		for (int i = 0; i < vCount; i++) {
+			Arrays.fill(idxIM[i], ConstantValue.IMPOSSIBLE_VALUE);
+		}
+
+		// the adjacent list
+		int[][] idxAL = new int[vCount][];
+
+		// the solution
+		int[] idxSol = new int[vCount];
+		Arrays.fill(idxSol, ConstantValue.IMPOSSIBLE_VALUE);
+		int idxSolSize = 0;
+
+		gv.setIdxSol(idxSol);
+		gv.setIdxSolSize(idxSolSize);
+		gv.setVerCnt(vCount);
+		gv.setActVerCnt(vCount);
+		gv.setIdxAL(idxAL);
+		gv.setIdxDomed(idxDomed);
+		gv.setIdxIM(idxIM);
+		gv.setIdxDegree(idxDegree);
+		gv.setIdxLst(idxLst);
+		gv.setVerLst(verLst);
+		gv.setUndomCnt(undomCnt);
+		gv.setIdxVote(idxVote);
+		gv.setIdxWeight(idxWeight);
+	}
 	public static void initWeight(GlobalVariable<String> gv) {
 		int actVerCnt = gv.getActVerCnt();
 		int[] idxDegree = gv.getIdxDegree();
@@ -195,7 +248,7 @@ public class Util {
 //
 //	}
 
-	private static int findPos(int[] array, int arrayLen, int val) {
+	public static int findPos(int[] array, int arrayLen, int val) {
 		for (int i = 0; i < arrayLen; i++) {
 			if (array[i] == val) {
 				return i;
@@ -241,9 +294,10 @@ public class Util {
 		return retIdx;
 	}
 
-	public static int getLowestWeightVertexIdx(GlobalVariable<String> gv) {
+	public static int getUndomedLowestWeightVertexIdx(GlobalVariable<String> gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
+		boolean[] idxDomed=gv.getIdxDomed();
 
 		float[] idxWeight = gv.getIdxWeight();
 
@@ -253,7 +307,8 @@ public class Util {
 
 		for (int i = 0; i < actVerCount; i++) {
 			int vIdx = idxLst[i];
-			if ((idxWeight[vIdx] - 0 > ConstantValue.FLOAT_NO_DIFF)
+			
+			if ((!idxDomed[vIdx])&&(idxWeight[vIdx] - 0 > ConstantValue.FLOAT_NO_DIFF)
 					&& (idxWeight[vIdx] - minWeight < ConstantValue.FLOAT_NO_DIFF)) {
 				minWeight = idxWeight[vIdx];
 				retIdx = vIdx;
