@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -12,6 +13,8 @@ import org.apache.log4j.Logger;
 import org.junit.Assert;
 
 import au.edu.cdu.dds.algo.ds.IAlgorithm;
+import au.edu.cdu.dds.io.DBOperation;
+import au.edu.cdu.dds.io.DBParameter;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
@@ -29,44 +32,133 @@ public class TestUtil {
 		return Paths.get(".").toAbsolutePath().normalize().toString();
 	}
 
+	
+
 	/**
-	 * the basic structure to run algorithms
+	 * the basic structure to run algorithms and write to db
 	 * 
 	 * @param className
-	 * @param path
+	 * @param dataSetName
 	 * @param algo
-	 * @param tps
 	 * @param log
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static void basicFunc(String className, String path, IAlgorithm<String> algo, TestParameter[] tps,
-			Logger log) throws FileNotFoundException, IOException, InterruptedException {
+	public static void basicFunc(String className, String dataSetName, IAlgorithm<String> algo, Logger log)
+			throws FileNotFoundException, IOException, InterruptedException {
+		// get the info of the instances of a certain dataset such as id, code, path
+		List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
 
-		for (TestParameter tp : tps) {
-			if (tp.isBeTest()) {
-				StringBuffer sb = new StringBuffer(className);
+		// loop to run the algorithm with the instance info and write to db
+		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
 
-				sb.append("-").append(tp.getFile()).append(",");
+		DBParameter dbpOut = null;
+		String batchNum = Util.getBatchNum();
 
-				String inputFile = path + tp.getFile();
-				GlobalVariable<String> gv = new FileOperation().readGraphByEdgePair(inputFile);
-				algo.setGV(gv);
-				long start = System.nanoTime();
-				algo.compute();
-				long end = System.nanoTime();
+		for (Map<String, String> map : lst) {
+			String dataSetPath = map.get(ConstantValue.DB_COL_DATASET_PATH_NAME);
+			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
+			String id = map.get(ConstantValue.DB_COL_ID);
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String algTableName = ConstantValue.TBL_ALG_PREFIX + instanceCode;
 
-				Assert.assertTrue(Util.isValidSolution(gv));
+			String inputFile = resourcePath + dataSetPath + pathName;
+			// read file
+			GlobalVariable<String> gv = new FileOperation().readGraphByEdgePair(inputFile);
+			algo.setGV(gv);
+			long start = System.nanoTime();
+			// run algorithm
+			algo.compute();
+			long end = System.nanoTime();
 
-				sb.append((end - start) + " ns,");
-				sb.append(gv.getIdxSolSize());
+			// ensure the solution is valid
+			Assert.assertTrue(Util.isValidSolution(gv));
 
-				System.out.println(sb.toString());
-			}
+			// write to db
+			DBOperation.createTable(instanceCode);
+			dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, className);
+			DBOperation.executeInsert(dbpOut);
+
+			dbpOut = null;
+
+			// write to console
+			StringBuffer sb = new StringBuffer();
+			sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
+					.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
+			log.debug(sb.toString());
 
 		}
+	}
 
+
+
+	// /**
+	// * the basic structure to run algorithms
+	// *
+	// * @param className
+	// * @param path
+	// * @param algo
+	// * @param tps
+	// * @param log
+	// * @throws FileNotFoundException
+	// * @throws IOException
+	// * @throws InterruptedException
+	// */
+	// public static void basicFunc(String className, String path,
+	// IAlgorithm<String> algo, TestParameter[] tps,
+	// Logger log) throws FileNotFoundException, IOException, InterruptedException {
+	//
+	// for (TestParameter tp : tps) {
+	// if (tp.isBeTest()) {
+	// StringBuffer sb = new StringBuffer(className);
+	//
+	// sb.append("-").append(tp.getFile()).append(",");
+	//
+	// String inputFile = path + tp.getFile();
+	//
+	// GlobalVariable<String> gv = new
+	// FileOperation().readGraphByEdgePair(inputFile);
+	// algo.setGV(gv);
+	// long start = System.nanoTime();
+	// algo.compute();
+	// long end = System.nanoTime();
+	//
+	// Assert.assertTrue(Util.isValidSolution(gv));
+	//
+	// sb.append((end - start) + " ns,");
+	// sb.append(gv.getIdxSolSize());
+	//
+	// System.out.println(sb.toString());
+	// }
+	//
+	// }
+	//
+	// }
+
+	/**
+	 * generate the database parameters for being written to db
+	 * 
+	 * @param algTableName
+	 * @param batchNum
+	 * @param id
+	 * @param gv
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	private static DBParameter getDBParamOutPut(String algTableName, String batchNum, String id,
+			GlobalVariable<String> gv, long start, long end, String algoName) {
+		DBParameter dbpOut;
+		dbpOut = new DBParameter();
+		dbpOut.setTableName(algTableName);
+		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
+				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_ALGORITHM };
+		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()), Long.toString((end - start)),
+				algoName };
+		dbpOut.setColPairNames(colPairNamesOut);
+		dbpOut.setColPairValues(colPairValuesOut);
+		return dbpOut;
 	}
 
 	/**
@@ -92,6 +184,24 @@ public class TestUtil {
 		System.out.println("--------------------------------------------------------");
 	}
 
+	/**
+	 * print status of global variables in a format
+	 * 
+	 * @param styleStr
+	 * @param len
+	 * @param actCountName
+	 * @param actCount
+	 * @param lName
+	 * @param l
+	 * @param ilName
+	 * @param il
+	 * @param degName
+	 * @param deg
+	 * @param alName
+	 * @param al
+	 * @param imName
+	 * @param im
+	 */
 	private static void printStatus(String styleStr, int len, String actCountName, int actCount, String lName,
 			String[] l, String ilName, int[] il, String degName, int[] deg, String alName, int[][] al, String imName,
 			int[][] im) {
@@ -109,6 +219,12 @@ public class TestUtil {
 		}
 	}
 
+	/**
+	 * used for print status
+	 * 
+	 * @param array
+	 * @return
+	 */
 	private static String arrayToString(int[] array) {
 		StringBuffer sb = new StringBuffer();
 		int arrayLen = array.length;
@@ -122,88 +238,12 @@ public class TestUtil {
 		return sb.substring(0, sb.length() - 1);
 	}
 
-	public static final String KONECT_PATH = "src/test/resources/KONECT/";
-
-	public static final TestParameter[] KONECT_TP = { new TestParameter("000027_zebra.konet", 15, 15, true),
-			new TestParameter("000034_zachary.konet", 15, 15, true),
-			new TestParameter("000062_dolphins.konet", 15, 15, true),
-			new TestParameter("000112_David_Copperfield.konet", 15, 15, true),
-			new TestParameter("000198_Jazz_musicians.konet", 15, 15, true),
-			new TestParameter("000212_pdzbase.konet", 15, 15, true),
-			new TestParameter("001133_rovira.konet", 50, 50, true),
-			new TestParameter("001174_euroroad.konet", 50, 50, true),
-			new TestParameter("001858_hamster.konet", 50, 50, true),
-			new TestParameter("002426_hamster_ful.konet", 15, 15, true),
-			new TestParameter("002888_facebook.konet", 15, 15, true),
-			new TestParameter("010680_Pretty_Good_Privacy.konet", 15, 15, true),
-			new TestParameter("018771_arXiv.konet", 15, 15, true),
-			new TestParameter("026475-caida.konet", 15, 15, false),
-			new TestParameter("028093_arXiv_hep.konet", 15, 15, false),
-			new TestParameter("058228-brightkite.konet", 15, 15, false),
-			new TestParameter("063731-facebookfriendships.konet", 15, 15, false), };
-
-	public static final String DIMACS_PATH = "src/test/resources/DIMACS/";
-
-	public static final TestParameter[] DIMACS_TP = { new TestParameter("C1000.9.clq", 10, 10, true),
-			new TestParameter("C125.9.clq", 10, 10, true), new TestParameter("C2000.5.clq", 10, 10, true),
-			new TestParameter("C2000.9.clq", 10, 10, true), new TestParameter("C250.9.clq", 10, 10, true),
-			new TestParameter("C4000.5.clq", 10, 10, true), new TestParameter("C500.9.clq", 10, 10, true),
-			new TestParameter("DSJC1000.5.clq", 10, 10, true), new TestParameter("DSJC500.5.clq", 10, 10, true),
-			new TestParameter("MANN_a27.clq", 10, 10, true), new TestParameter("MANN_a81.clq", 10, 10, true),
-			new TestParameter("brock200_2.clq", 10, 10, true), new TestParameter("brock200_4.clq", 10, 10, true),
-			new TestParameter("brock400_2.clq", 10, 10, true), new TestParameter("brock400_4.clq", 10, 10, true),
-			new TestParameter("brock800_2.clq", 10, 10, true), new TestParameter("brock800_4.clq", 10, 10, true),
-			new TestParameter("gen200_p0.9_44.clq", 10, 10, true),
-			new TestParameter("gen200_p0.9_55.clq", 10, 10, true),
-			new TestParameter("gen400_p0.9_55.clq", 10, 10, true),
-			new TestParameter("gen400_p0.9_65.clq", 10, 10, true),
-			new TestParameter("gen400_p0.9_75.clq", 10, 10, true), new TestParameter("hamming10-4.clq", 10, 10, true),
-			new TestParameter("hamming8-4.clq", 10, 10, true), new TestParameter("keller4.clq", 10, 10, true),
-			new TestParameter("keller5.clq", 10, 10, true), new TestParameter("keller6.clq", 10, 10, true),
-			new TestParameter("p_hat1500-1.clq", 10, 10, true), new TestParameter("p_hat1500-2.clq", 10, 10, true),
-			new TestParameter("p_hat1500-3.clq", 10, 10, true), new TestParameter("p_hat300-1.clq", 10, 10, true),
-			new TestParameter("p_hat300-2.clq", 10, 10, true), new TestParameter("p_hat300-3.clq", 10, 10, true),
-			new TestParameter("p_hat700-1.clq", 10, 10, true), new TestParameter("p_hat700-2.clq", 10, 10, true),
-			new TestParameter("p_hat700-3.clq", 10, 10, true), };
-
-	public static final String BHOSLIB_PATH = "src/test/resources/BHOSLIB/";
-
-	public static final TestParameter[] BHOSLIB_TP = { new TestParameter("frb30-15-mis/frb30-15-1.mis", 10, 10, true),
-			new TestParameter("frb30-15-mis/frb30-15-2.mis", 10, 10, true),
-			new TestParameter("frb30-15-mis/frb30-15-3.mis", 10, 10, true),
-			new TestParameter("frb30-15-mis/frb30-15-4.mis", 10, 10, true),
-			new TestParameter("frb30-15-mis/frb30-15-5.mis", 10, 10, true),
-			new TestParameter("frb35-17-mis/frb35-17-1.mis", 10, 10, true),
-			new TestParameter("frb35-17-mis/frb35-17-2.mis", 10, 10, true),
-			new TestParameter("frb35-17-mis/frb35-17-3.mis", 10, 10, true),
-			new TestParameter("frb35-17-mis/frb35-17-4.mis", 10, 10, true),
-			new TestParameter("frb35-17-mis/frb35-17-5.mis", 10, 10, true),
-			new TestParameter("frb40-19-mis/frb40-19-1.mis", 10, 10, true),
-			new TestParameter("frb40-19-mis/frb40-19-2.mis", 10, 10, true),
-			new TestParameter("frb40-19-mis/frb40-19-3.mis", 10, 10, true),
-			new TestParameter("frb40-19-mis/frb40-19-4.mis", 10, 10, true),
-			new TestParameter("frb40-19-mis/frb40-19-5.mis", 10, 10, true),
-			new TestParameter("frb45-21-mis/frb45-21-1.mis", 10, 10, true),
-			new TestParameter("frb45-21-mis/frb45-21-2.mis", 10, 10, true),
-			new TestParameter("frb45-21-mis/frb45-21-3.mis", 10, 10, true),
-			new TestParameter("frb45-21-mis/frb45-21-4.mis", 10, 10, true),
-			new TestParameter("frb45-21-mis/frb45-21-5.mis", 10, 10, true),
-			new TestParameter("frb53-24-mis/frb53-24-1.mis", 10, 10, true),
-			new TestParameter("frb53-24-mis/frb53-24-2.mis", 10, 10, true),
-			new TestParameter("frb53-24-mis/frb53-24-3.mis", 10, 10, true),
-			new TestParameter("frb53-24-mis/frb53-24-4.mis", 10, 10, true),
-			new TestParameter("frb53-24-mis/frb53-24-5.mis", 10, 10, true),
-			new TestParameter("frb56-25-mis/frb56-25-1.mis", 10, 10, true),
-			new TestParameter("frb56-25-mis/frb56-25-2.mis", 10, 10, true),
-			new TestParameter("frb56-25-mis/frb56-25-3.mis", 10, 10, true),
-			new TestParameter("frb56-25-mis/frb56-25-4.mis", 10, 10, true),
-			new TestParameter("frb56-25-mis/frb56-25-5.mis", 10, 10, true),
-			new TestParameter("frb59-26-mis/frb59-26-1.mis", 10, 10, true),
-			new TestParameter("frb59-26-mis/frb59-26-2.mis", 10, 10, true),
-			new TestParameter("frb59-26-mis/frb59-26-3.mis", 10, 10, true),
-			new TestParameter("frb59-26-mis/frb59-26-4.mis", 10, 10, true),
-			new TestParameter("frb59-26-mis/frb59-26-5.mis", 10, 10, true), };
-
+	/**
+	 * verify if the output is the same as the expect
+	 * 
+	 * @param expect
+	 * @param output
+	 */
 	public static void verify(int[][] expect, List<List<Integer>> output) {
 		int expectLen = expect.length;
 		int outputSize = output.size();

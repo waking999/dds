@@ -5,7 +5,11 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+
+import au.edu.cdu.dds.io.DBOperation;
+import au.edu.cdu.dds.io.DBParameter;
 
 /**
  * an util class for common functions
@@ -369,6 +373,80 @@ public class Util {
 		sb.append(year).append(monthStr).append(dayStr).append("-").append(hour).append(min);
 		return sb.toString();
 
+	}
+
+	/**
+	 * clean algorithm tables
+	 * 
+	 * @param mode
+	 * @param dataSetName
+	 * @param dbp
+	 */
+	public static void cleanAlgoTables(String mode, String dataSetName, DBParameter dbp) {
+		switch (mode) {
+		case ConstantValue.CLN_MODE_DROP:
+			cleanAlgoTableDrop(dataSetName);
+			break;
+		case ConstantValue.CLN_MODE_DEL:
+			cleanAlgoTableDel(dataSetName, dbp);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * get the infomation of instances by data set such as id, code, path and so on
+	 * 
+	 * @param dataSetName
+	 * @return
+	 */
+	public static List<Map<String, String>> getInstanceInfo(String dataSetName) {
+		DBParameter dbpIn = new DBParameter();
+		dbpIn.setTableName(ConstantValue.DB_VNAME_INS);
+		String[] colNames = { ConstantValue.DB_COL_ID, ConstantValue.DB_COL_INS_CODE, ConstantValue.DB_COL_INS_NAME,
+				ConstantValue.DB_COL_DATASET_NAME, ConstantValue.DB_COL_DATASET_PATH_NAME,
+				ConstantValue.DB_COL_INS_PATH_NAME };
+		String[] colPairNames = { ConstantValue.DB_COL_DATASET_NAME, ConstantValue.DB_COL_TO_BE_TESTED };
+		String[] colPairOperators = { "=", "=" };
+		String[] colPairValues = { dataSetName, "1" };
+		dbpIn.setColNames(colNames);
+		dbpIn.setColPairNames(colPairNames);
+		dbpIn.setColPairOperators(colPairOperators);
+		dbpIn.setColPairValues(colPairValues);
+
+		List<Map<String, String>> lst = DBOperation.executeQuery(dbpIn);
+		dbpIn = null;
+		return lst;
+	}
+
+	/**
+	 * drop algorithm tables
+	 * 
+	 * @param dataSetName
+	 */
+	private static void cleanAlgoTableDrop(String dataSetName) {
+		List<Map<String, String>> lst = getInstanceInfo(dataSetName);
+		for (Map<String, String> map : lst) {
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String algTableName = ConstantValue.TBL_ALG_PREFIX + instanceCode;
+			DBOperation.executeDrop(algTableName);
+		}
+	}
+
+	/**
+	 * delete data from algorithm tables
+	 * 
+	 * @param dataSetName
+	 * @param dbp
+	 */
+	private static void cleanAlgoTableDel(String dataSetName, DBParameter dbp) {
+		List<Map<String, String>> lst = getInstanceInfo(dataSetName);
+		for (Map<String, String> map : lst) {
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String algTableName = ConstantValue.TBL_ALG_PREFIX + instanceCode;
+			DBOperation.executeDel(algTableName, dbp);
+		}
 	}
 
 }

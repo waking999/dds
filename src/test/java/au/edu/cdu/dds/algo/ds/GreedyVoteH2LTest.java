@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.io.FileOperation;
+import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
@@ -39,18 +40,17 @@ public class GreedyVoteH2LTest {
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 
-		String path = TestUtil.KONECT_PATH;
+		 
 		IAlgorithm<String> algo = new GreedyVoteH2L();
-		TestUtil.basicFunc(CLASS_NAME, path, algo, TestUtil.KONECT_TP, log);
+		TestUtil.basicFunc(CLASS_NAME, ConstantValue.KONECT, algo, log);
 	}
 
 	// @Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 
-		String path = TestUtil.BHOSLIB_PATH;
-		IAlgorithm<String> algo = new GreedyVoteH2L();
-		TestUtil.basicFunc(CLASS_NAME, path, algo, TestUtil.BHOSLIB_TP, log);
+		IAlgorithm<String> algo = new GreedyVoteH2L(); 
+		TestUtil.basicFunc(CLASS_NAME, ConstantValue.BHOSLIB, algo,  log);
 	}
 
 }
