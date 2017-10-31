@@ -4,11 +4,21 @@ import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
-public class GreedyVoteH2L implements IAlgorithm {
+/**
+ * this class implements the greedy vote algorithm for dominating set, where the
+ * order of weight is listed from highest to lowest
+ * 
+ * @author kwang
+ */
+public class GreedyVoteH2L implements IAlgorithm<String> {
 	GlobalVariable<String> gv;
 
-	public GreedyVoteH2L(GlobalVariable<String> gv) {
+	@Override
+	public void setGV(GlobalVariable<String> gv) {
 		this.gv = gv;
+	}
+
+	public GreedyVoteH2L() {
 	}
 
 	public void compute() {
@@ -16,31 +26,24 @@ public class GreedyVoteH2L implements IAlgorithm {
 		int idxSolSize = gv.getIdxSolSize();
 
 		do {
+			// get a vertex with highest weight
+			int uIdx = Util.getHighestWeightVertexIdx(gv);
 
-			//int vIdx = Util.getLowestWeightVertexIdx(gv);
-			//int uIdx = Util.getHighestWeightNeighIdx(gv, vIdx);
-			int uIdx=Util.getHighestWeightVertexIdx(gv);
-    			if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
-				//add uIdx into solution
+			if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
+				// if such a vertex's index is valid
+
+				// add uIdx into solution
 				idxSol[idxSolSize++] = uIdx;
-				
-				//adjust weight;
+
+				// adjust weight;
 				Util.adjustWeight(gv, uIdx);
-				
-//				//adjust vertex list
-//				Util.adjustVertexList(gv,uIdx);
-//				//adjust util
-//				Util.adjustUtil(gv,uIdx);
+
 			}
 
 		} while (!Util.isAllDominated(gv));
-		
+
 		gv.setIdxSol(idxSol);
 		gv.setIdxSolSize(idxSolSize);
 	}
-
-	
-
-
 
 }

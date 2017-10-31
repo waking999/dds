@@ -1,7 +1,7 @@
 package au.edu.cdu.dds.util;
 
 /**
- * a java bean to store graph representations of Faisal's data structure
+ * a java bean to store graph representations  
  * 
  * @param <VT>
  *            vertex type

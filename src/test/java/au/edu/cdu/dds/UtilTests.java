@@ -9,7 +9,7 @@ import au.edu.cdu.dds.io.FileOperationTest;
 import au.edu.cdu.dds.util.UtilTest;
 
 /**
- * a test suit for assistant classes
+ * a test suit for utilities classes
  */
 @RunWith(Suite.class)
 @SuiteClasses({ UtilTest.class, FileOperationTest.class, DBOperationTest.class })

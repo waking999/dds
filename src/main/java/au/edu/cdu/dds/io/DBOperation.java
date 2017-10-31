@@ -11,7 +11,11 @@ import java.util.List;
 import java.util.Map;
 
 import au.edu.cdu.dds.util.ConstantValue;
-
+/**
+ * this class is used for database operation including query, update and insert
+ * @author kwang
+ *
+ */
 public class DBOperation {
 
 	private static Connection getConnection() throws Exception {
@@ -19,7 +23,13 @@ public class DBOperation {
 		String dbName = "jdbc:sqlite:result/db/result.db";
 		return getConnection(clzName, dbName);
 	}
-
+	/**
+	 * get database connection
+	 * @param clzName
+	 * @param dbName
+	 * @return
+	 * @throws Exception
+	 */
 	private static Connection getConnection(String clzName, String dbName) throws Exception {
 
 		Connection c = null;

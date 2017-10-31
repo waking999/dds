@@ -18,6 +18,14 @@ import au.edu.cdu.dds.util.Util;
 public class FileOperation {
 	private static final String BLANK = " ";
 
+	/**
+	 * read data file to initalize the global variables for the data structure and
+	 * algorithms
+	 * 
+	 * @param filePath
+	 * @return
+	 * @throws IOException
+	 */
 	public GlobalVariable<String> readGraphByEdgePair(String filePath) throws IOException {
 		// access the input file
 		Path path = Paths.get(filePath);
@@ -104,51 +112,10 @@ public class FileOperation {
 			}
 		}
 
-		// init weight
+		// initialize weight
 		Util.initWeight(gv);
 
 		return gv;
 	}
 
-
-
-	// /**
-	// * read edge pair information from a file to generate graph representations
-	// *
-	// * @param filePath,
-	// * file path and name
-	// * @return graph representation
-	// * @throws IOException
-	// */
-	// public GlobalVariable<String, String> readGraphByEdgePair(String filePath)
-	// throws IOException {
-	//
-
-	// gv.setSol(sol);
-	// gv.setBestSol(bestSol);
-	// gv.setSolPtr(1); // valid index starts from 1;
-	//
-	// gv.setsCount(numOfVer);
-	// gv.setsAL(sAL);
-	// gv.setsIL(sIL);
-	// gv.setsIM(sIM);
-	// gv.setsL(sL);
-	// gv.setsIL(sIL);
-	// gv.setCard(card);
-	//
-	// gv.seteCount(numOfVer);
-	// gv.seteAL(eAL);
-	// gv.seteIL(eIL);
-	// gv.seteIM(eIM);
-	// gv.seteL(eL);
-	// gv.seteIL(eIL);
-	// gv.setFreq(freq);
-	//
-	// gv.setBestSolCount(numOfVer);
-	// gv.setSolCount(0);
-	// gv.setMate(mate);
-	//
-	// return gv;
-	//
-	// }
 }
