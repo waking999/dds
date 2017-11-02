@@ -23,13 +23,13 @@ public class Util {
 	 * @param vertex
 	 * @return
 	 */
-	public static int getIndexByVertex(GlobalVariable<String> gv, String vertex) {
+	public static int getIndexByVertex(GlobalVariable gv, int vertex) {
 		int actVerCnt = gv.getActVerCnt();
-		String[] verLst = gv.getVerLst();
+		int[] verLst = gv.getVerLst();
 		int[] idxLst = gv.getIdxLst();
 
 		for (int i = 0; i < actVerCnt; i++) {
-			if (vertex.equals(verLst[i])) {
+			if (vertex == verLst[i]) {
 				return idxLst[i];
 			}
 		}
@@ -42,11 +42,11 @@ public class Util {
 	 * @param gv
 	 * @return
 	 */
-	public static String[] getVertexSolution(GlobalVariable<String> gv) {
+	public static int[] getVertexSolution(GlobalVariable gv) {
 		int idxSolSize = gv.getIdxSolSize();
-		String[] sol = new String[idxSolSize];
+		int[] sol = new int[idxSolSize];
 		for (int i = 0; i < idxSolSize; i++) {
-			String v = gv.getVerLst()[gv.getIdxSol()[i]];
+			int v = gv.getVerLst()[gv.getIdxSol()[i]];
 			sol[i] = v;
 		}
 
@@ -59,9 +59,9 @@ public class Util {
 	 * @param gv
 	 * @param vCount
 	 */
-	public static void initGlobalVariable(GlobalVariable<String> gv, int vCount) {
-		String[] verLst = new String[vCount];
-		Arrays.fill(verLst, null);
+	public static void initGlobalVariable(GlobalVariable gv, int vCount) {
+		int[] verLst = new int[vCount];
+		Arrays.fill(verLst, ConstantValue.IMPOSSIBLE_VALUE);
 		// the index of each vertex is the sequence no. initially
 		int[] idxLst = new int[vCount];
 		for (int i = 0; i < vCount; i++) {
@@ -85,6 +85,11 @@ public class Util {
 		Arrays.fill(idxDomed, false);
 		int undomCnt = vCount;
 
+		
+		// the added status of each vertex is false initially
+				boolean[] idxAdded = new boolean[vCount];
+				Arrays.fill(idxAdded, false);
+				
 		// the incident matrix of each vertex is set to be impossible value initially
 		int[][] idxIM = new int[vCount][vCount];
 		for (int i = 0; i < vCount; i++) {
@@ -105,6 +110,7 @@ public class Util {
 		gv.setActVerCnt(vCount);
 		gv.setIdxAL(idxAL);
 		gv.setIdxDomed(idxDomed);
+		gv.setIdxAdded(idxAdded);
 		gv.setIdxIM(idxIM);
 		gv.setIdxDegree(idxDegree);
 		gv.setIdxLst(idxLst);
@@ -119,7 +125,7 @@ public class Util {
 	 * 
 	 * @param gv
 	 */
-	public static void initWeight(GlobalVariable<String> gv) {
+	public static void initWeight(GlobalVariable gv) {
 		int actVerCnt = gv.getActVerCnt();
 		int[] idxDegree = gv.getIdxDegree();
 		float[] idxVote = gv.getIdxVote();
@@ -155,7 +161,7 @@ public class Util {
 	 * @param gv
 	 * @param uIdx
 	 */
-	public static void adjustWeight(GlobalVariable<String> gv, int uIdx) {
+	public static void adjustWeight(GlobalVariable gv, int uIdx) {
 		int[][] idxAL = gv.getIdxAL();
 		int[] idxUtil = gv.getIdxUtil();
 		int uUtil = idxUtil[uIdx];
@@ -215,7 +221,7 @@ public class Util {
 	 * @param gv
 	 * @return
 	 */
-	public static boolean isAllDominated(GlobalVariable<String> gv) {
+	public static boolean isAllDominated(GlobalVariable gv) {
 
 		int verCnt = gv.getVerCnt();
 		for (int i = 0; i < verCnt; i++) {
@@ -232,7 +238,7 @@ public class Util {
 	 * @param gv
 	 * @return
 	 */
-	public static int getHighestWeightVertexIdx(GlobalVariable<String> gv) {
+	public static int getHighestWeightVertexIdx(GlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 
@@ -259,12 +265,43 @@ public class Util {
 	}
 
 	/**
+	 * get a vertex with the lowest weight among unadded vertices
+	 * 
+	 * @param gv
+	 * @return
+	 */
+	public static int getUnaddedLowestWeightVertexIdx(GlobalVariable gv) {
+		int actVerCount = gv.getActVerCnt();
+		int[] idxLst = gv.getIdxLst();
+		boolean[] idxAdded = gv.getIdxAdded();
+
+		float[] idxWeight = gv.getIdxWeight();
+
+		float minWeight = Float.MAX_VALUE;
+
+		int retIdx = ConstantValue.IMPOSSIBLE_VALUE;
+
+		for (int i = 0; i < actVerCount; i++) {
+			int vIdx = idxLst[i];
+
+			if ((!idxAdded[vIdx]) && (idxWeight[vIdx] >=0)
+					&& (idxWeight[vIdx] < minWeight )) {
+				minWeight = idxWeight[vIdx];
+				retIdx = vIdx;
+			}
+		}
+	
+
+		return retIdx;
+	}
+	
+	/**
 	 * get a vertex with the lowest weight among undominated vertices
 	 * 
 	 * @param gv
 	 * @return
 	 */
-	public static int getUndomedLowestWeightVertexIdx(GlobalVariable<String> gv) {
+	public static int getUndomedLowestWeightVertexIdx(GlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 		boolean[] idxDomed = gv.getIdxDomed();
@@ -273,7 +310,7 @@ public class Util {
 
 		float minWeight = Float.MAX_VALUE;
 
-		int retIdx = 0;
+		int retIdx = ConstantValue.IMPOSSIBLE_VALUE;
 
 		for (int i = 0; i < actVerCount; i++) {
 			int vIdx = idxLst[i];
@@ -299,7 +336,7 @@ public class Util {
 	 * @param vIdx
 	 * @return
 	 */
-	public static int getHighestWeightNeighIdx(GlobalVariable<String> gv, int vIdx) {
+	public static int getHighestWeightNeighIdx(GlobalVariable gv, int vIdx) {
 		int[][] idxAL = gv.getIdxAL();
 		int[] idxUtil = gv.getIdxUtil();
 		int vUtil = idxUtil[vIdx];
@@ -327,7 +364,7 @@ public class Util {
 	 *            global variables
 	 * @return true if it is valid, otherwise false
 	 */
-	public static <VT> boolean isValidSolution(GlobalVariable<VT> gv) {
+	public static boolean isValidSolution(GlobalVariable gv) {
 
 		int[] idxLst = gv.getIdxLst();
 		List<Integer> idxLstList = Arrays.stream(idxLst).boxed().collect(Collectors.toList());
@@ -339,10 +376,10 @@ public class Util {
 		for (int i = 0; i < idxSolSize; i++) {
 			int vIdx = idxSol[i];
 			int[] vNeigs = idxAL[vIdx];
-			for (int u : vNeigs) {
-				idxLstList.remove(new Integer(u));
+			for (int uIdx : vNeigs) {
+				idxLstList.remove(Integer.valueOf(uIdx));
 			}
-			idxLstList.remove(new Integer(vIdx));
+			idxLstList.remove(Integer.valueOf(vIdx));
 		}
 
 		return (idxLstList.size() == 0);
@@ -362,15 +399,25 @@ public class Util {
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
-		int hour = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h
-														 // format
+		int hour = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
 		int min = calendar.get(Calendar.MINUTE);
+		
+		
 
 		StringBuffer sb = new StringBuffer();
 		String monthStr = String.format("%02d", month + 1);
 		String dayStr = String.format("%02d", day);
 
-		sb.append(year).append(monthStr).append(dayStr).append("-").append(hour).append(min);
+		sb.append(year).append(monthStr).append(dayStr).append("-");
+		if(hour<10) {
+			sb.append("0");
+		}
+		sb.append(hour);
+		if(min<10) {
+			sb.append("0");
+		} 
+		sb.append(min);
+		
 		return sb.toString();
 
 	}
@@ -404,7 +451,7 @@ public class Util {
 	public static List<Map<String, String>> getInstanceInfo(String dataSetName) {
 		DBParameter dbpIn = new DBParameter();
 		dbpIn.setTableName(ConstantValue.DB_VNAME_INS);
-		String[] colNames = { ConstantValue.DB_COL_ID, ConstantValue.DB_COL_INS_CODE, ConstantValue.DB_COL_INS_NAME,
+		String[] colNames = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_INS_CODE, ConstantValue.DB_COL_INS_NAME,
 				ConstantValue.DB_COL_DATASET_NAME, ConstantValue.DB_COL_DATASET_PATH_NAME,
 				ConstantValue.DB_COL_INS_PATH_NAME };
 		String[] colPairNames = { ConstantValue.DB_COL_DATASET_NAME, ConstantValue.DB_COL_TO_BE_TESTED };

@@ -33,7 +33,7 @@ public class FileOperationTest {
 
 		String filePath = TestUtil.getCurrentPath() + "/src/test/resources/sample1.txt";
 
-		GlobalVariable<String> gv = new FileOperation().readGraphByEdgePair(filePath);
+		GlobalVariable  gv = new FileOperation().readGraphByEdgePair(filePath);
 		TestUtil.printGlobalVariableStatus(gv);
 		/*
 		 *  
@@ -47,7 +47,7 @@ public class FileOperationTest {
 			5 6    5 5    5 1    5 4                  N,N,N,N,1,N         
 			--------------------------------------------------------
 		 */
-		String[] vL = new String[] { "1", "2", "3", "4", "5", "6" };
+		int[] vL = new int[] { 1,2,3,4,5,6};
 		TestUtil.verifyUnsort(vL, gv.getVerLst());
 		int[] vIL = new int[] { 0, 1, 2, 3, 4, 5 };
 		TestUtil.verifyUnsort(vIL, gv.getIdxLst());

@@ -10,11 +10,11 @@ import au.edu.cdu.dds.util.Util;
  * 
  * @author kwang
  */
-public class GreedyVoteH2L implements IAlgorithm<String> {
-	GlobalVariable<String> gv;
+public class GreedyVoteH2L implements IAlgorithm {
+	GlobalVariable gv;
 
 	@Override
-	public void setGV(GlobalVariable<String> gv) {
+	public void setGV(GlobalVariable gv) {
 		this.gv = gv;
 	}
 

@@ -53,8 +53,8 @@ INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (25,2,'frb53_24_5','frb53-24-5','/frb53-24-mis/frb53-24-5.mis',1272,94226,1);
 
 
-INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (1,3,'Zebra','Zebra','/000027_zebra.konect',27,111,1);
-INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (2,3,'Zachary','Zachary','/000034_zachary.konect',34,78,1);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (1,3,'Zebra','Zebra','/000027_zebra.konect',27,111,0);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (2,3,'Zachary','Zachary','/000034_zachary.konect',34,78,0);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (3,3,'Dolphins','Dolphins','/000062_dolphins.konect',62,159,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (4,3,'DavidCopperfield','David Copperfield','/000112_David_Copperfield.konect',112,425,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (5,3,'Jazz','Jazz musicians','/000198_Jazz_musicians.konect',198,2742,1);
@@ -63,16 +63,17 @@ INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (8,3,'Euroroad','Euroroad','/001174_euroroad.konect',1174,1417,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (9,3,'Hamster','Hamsterster','/001858_hamster.konect',1858,12534,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (10,3,'HamsterFul','Hamsterster Full','/002426_hamster_ful.konect',2426,16631,1);
-INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (11,3,'Facebook','Facebook(NIPS)','/002888_facebook.konect',2888,2981,1);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (11,3,'Facebook','Facebook(NIPS)','/002888_facebook.konect',2888,2981,0);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (12,3,'HumanProtein','Human Protein','/003133_human_protein_Vidal.konect',3133,6726,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (13,3,'Powergrid','Powergrid','/004941_powergrid.konect',4941,6594,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (14,3,'Reactome','Reactome','/006327_reactome.konect',6327,147547,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (15,3,'RouteViews','Route Views','/006474_Route_views.konect',6474,13895,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (16,3,'PrettyGoodPrivacy','Pretty Good Privacy','/010680_Pretty_Good_Privacy.konect',10680,24316,1);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (17,3,'arXiv','arXiv','/0187771_arXiv.konect',18771,198050,1);
 
 drop view if exists "v_instance";
 create view "v_instance" as
-select i.d_id||'_'||i.i_id as i_id, i.i_code,i.i_name, i.d_id, d.d_name, d.d_path, i.path_name, i.v_count, i.e_count, i.to_be_tested
+select i.d_id||'_'||case when i.i_id>=10 then i.i_id else '0'||i.i_id end as i_id, i.i_code,i.i_name, i.d_id, d.d_name, d.d_path, i.path_name, i.v_count, i.e_count, i.to_be_tested
 from "instance" i left outer join "dataset" d on i.d_id=d.id;
 
 

@@ -21,16 +21,16 @@ public class GreedyVoteL2HTest {
 	@Test
 	public void test0() throws IOException {
 		String filePath = TestUtil.getCurrentPath() + "/src/test/resources/sample1.txt";
-		String[] expect = new String[] { "1", "5" };
+		int[] expect = new int[] { 1, 5 };
 
-		GlobalVariable<String> gv = new FileOperation().readGraphByEdgePair(filePath);
+		GlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
 
-		IAlgorithm<String> algo = new GreedyVoteL2H();
+		IAlgorithm algo = new GreedyVoteL2H();
 		algo.setGV(gv);
 		algo.compute();
 		Assert.assertTrue(Util.isValidSolution(gv));
 
-		String[] sol = Util.getVertexSolution(gv);
+		int[] sol = Util.getVertexSolution(gv);
 
 		TestUtil.verifySort(expect, sol);
 
@@ -40,15 +40,15 @@ public class GreedyVoteL2HTest {
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 
-		IAlgorithm<String> algo = new GreedyVoteL2H();
-		TestUtil.basicFunc(CLASS_NAME, ConstantValue.KONECT, algo, log);
+		IAlgorithm algo = new GreedyVoteL2H();
+		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
 	}
 
 	// @Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 
-		IAlgorithm<String> algo = new GreedyVoteL2H();
-		TestUtil.basicFunc(CLASS_NAME, ConstantValue.BHOSLIB, algo, log);
+		IAlgorithm algo = new GreedyVoteL2H();
+		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log);
 	}
 }

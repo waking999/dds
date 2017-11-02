@@ -24,8 +24,9 @@ public class ConstantValue {
 
 	// data set
 	public static final String DATASET_DIMACS = "DIMACS";
-	public static final String KONECT_DIMACS = "KONECT";
-
+	public static final String DATASET_KONECT = "KONECT";
+	public static final String DATASET_BHOSLIB = "BHOSLIB";
+	
 	// database table/view names
 	public static final String DB_TBNAME_DATASET = "dataset";
 	public static final String DB_TBNAME_INS = "instance";
@@ -34,7 +35,7 @@ public class ConstantValue {
 //	public static final String DB_TBNAME_ALG3 = "alg3running";
 	
 	public static final String DB_VNAME_INS = "v_instance";
-	public static final String DB_VNAME_INS_OPT = "v_instance_opt";
+	//public static final String DB_VNAME_INS_OPT = "v_instance_opt";
 	// database column names
 	public static final String DB_COL_ID = "id";
 
@@ -76,7 +77,7 @@ public class ConstantValue {
 	
 	public static final String CLN_MODE_DROP="drop";
 	public static final String CLN_MODE_DEL="delete";
-	public static final String KONECT = "KONECT";
+	 
 	//
 	// public static final TestParameter[] KONECT_TP = { new
 	// TestParameter("000027_zebra.konet", 15, 15, true),
@@ -97,7 +98,7 @@ public class ConstantValue {
 	// new TestParameter("058228-brightkite.konet", 15, 15, false),
 	// new TestParameter("063731-facebookfriendships.konet", 15, 15, false), };
 	//
-	public static final String DIMACS = "DIMACS";
+	 
 	//
 	// public static final TestParameter[] DIMACS_TP = { new
 	// TestParameter("C1000.9.clq", 10, 10, true),
@@ -137,7 +138,7 @@ public class ConstantValue {
 	// TestParameter("p_hat700-2.clq", 10, 10, true),
 	// new TestParameter("p_hat700-3.clq", 10, 10, true), };
 	//
-	public static final String BHOSLIB = "BHOSLIB";
+	
 	//
 	// public static final TestParameter[] BHOSLIB_TP = { new
 	// TestParameter("frb30-15-mis/frb30-15-1.mis", 10, 10, true),

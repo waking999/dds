@@ -6,7 +6,7 @@ package au.edu.cdu.dds.util;
  * @param <VT>
  *            vertex type
  */
-public class GlobalVariable<VT> {
+public class GlobalVariable  {
 	int verCnt; // the count of vertices, never change
 	int actVerCnt; // the count active vertices, change
 
@@ -19,7 +19,7 @@ public class GlobalVariable<VT> {
 	}
 
 	// this allow vertex to be in any range
-	private VT[] verLst; // the list of vertex
+	private int[] verLst; // the list of vertex
 	private int[] idxLst; // the list of vertex index
 
 	private int[] idxDegree; //the degree of each vertex (in index format), never change
@@ -51,8 +51,18 @@ public class GlobalVariable<VT> {
 		this.idxWeight = idxWeight;
 	}
 
-	private boolean[] idxDomed; // if a vertex (in index format) is dominated
+	private boolean[] idxDomed; // if a vertex (in index format) is dominated	
 	private int undomCnt; // the count of vertices which are not dominated
+	
+	private boolean[] idxAdded; // if a vertex (in index format) is add to another graph
+
+	public boolean[] getIdxAdded() {
+		return idxAdded;
+	}
+
+	public void setIdxAdded(boolean[] idxAdded) {
+		this.idxAdded = idxAdded;
+	}
 
 	private int[][] idxIM; // the incident matrix of vertex (in index format)
 	private int[][] idxAL;// the adjacent list of vertex (in index format)
@@ -87,11 +97,11 @@ public class GlobalVariable<VT> {
 		this.verCnt = verCnt;
 	}
 
-	public VT[] getVerLst() {
+	public int[] getVerLst() {
 		return verLst;
 	}
 
-	public void setVerLst(VT[] verLst) {
+	public void setVerLst(int[] verLst) {
 		this.verLst = verLst;
 	}
 

@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 
 import au.edu.cdu.dds.util.ConstantValue;
+import au.edu.cdu.dds.util.Util;
 
 /**
  * this class is used for database operation including query, update and insert
@@ -268,6 +269,77 @@ public class DBOperation {
 
 	}
 
+	@SuppressWarnings({ "finally" })
+	public static void createReportView(String dataSetName, String algorithm, String batchNum) {
+		/*
+		 * 	select a.algorithm, i.i_name, a.result_size, a.running_nano_sec/100000000.0 as running_sec
+		from algRunning_Zebra a, v_instance i
+		where a.i_id=i.i_id
+		and batch_num="20171103-0011";
+		 */
+		Connection c = null;
+		Statement stmt = null;
+
+		try {
+			StringBuffer sbViewName = new StringBuffer();
+			String viewName = sbViewName.append("v_").append(algorithm).append("_").append(dataSetName).toString();
+
+			StringBuffer sqlSb = new StringBuffer();
+			sqlSb.append("drop view if exists ").append(viewName).append(";");
+			//System.out.println(sqlSb.toString());
+			c = getConnection();
+			c.setAutoCommit(false);
+			stmt = c.createStatement();
+			stmt.execute(sqlSb.toString());
+
+			// get the info of the instances of a certain dataset such as id, code, path
+			List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
+
+			sqlSb.setLength(0);
+			sqlSb.append("CREATE view IF NOT EXISTS ").append(viewName).append(" as \n");
+			for (Map<String, String> map : lst) {
+				String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+				String id = map.get(ConstantValue.DB_COL_INS_ID);
+				String algTableName = ConstantValue.TBL_ALG_PREFIX +id+"_"+ instanceCode;
+
+
+				sqlSb.append("select ");
+				sqlSb.append("i.").append(ConstantValue.DB_COL_INS_ID).append(ConstantValue.COMMA).append("a.").append(ConstantValue.DB_COL_ALGORITHM).append(ConstantValue.COMMA).append("i.")
+						.append(ConstantValue.DB_COL_INS_NAME).append(ConstantValue.COMMA).append("a.")
+						.append(ConstantValue.DB_COL_RESULT_SIZE).append(ConstantValue.COMMA).append("a.")
+						.append(ConstantValue.DB_COL_RUNNING_TIME).append("\n");
+				sqlSb.append("from ").append(algTableName).append(" a ").append(ConstantValue.COMMA)
+						.append(ConstantValue.DB_VNAME_INS).append(" i \n");
+				sqlSb.append("where a.").append(ConstantValue.DB_COL_INS_ID).append("=").append("i.")
+						.append(ConstantValue.DB_COL_INS_ID).append(" and ").append("a.")
+						.append(ConstantValue.DB_COL_BATCH_NUM).append("=\"").append(batchNum).append("\"\n");
+				sqlSb.append("union \n");
+
+			}
+			int sqlSbLen = sqlSb.length();
+			String sql = sqlSb.substring(0, sqlSbLen - 7);
+			sql += ";";
+			//System.out.println(sql);
+			stmt.execute(sql);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				stmt.close();
+				c.commit();
+				c.close();
+			} catch (final Exception e) {
+
+				e.printStackTrace();
+			} finally {
+				return;
+			}
+
+		}
+
+	}
+
 	/**
 	 * create table for each instance. If a table already exist, ignore.
 	 * 
@@ -276,11 +348,11 @@ public class DBOperation {
 	 */
 
 	@SuppressWarnings("finally")
-	public static void createTable(String instanceCode) {
+	public static void createTable(String tableName) {
 		Connection c = null;
 		Statement stmt = null;
 
-		String tblPrefix = ConstantValue.TBL_ALG_PREFIX;
+		 
 
 		try {
 			StringBuffer sb = new StringBuffer();
@@ -293,7 +365,7 @@ public class DBOperation {
 
 			sb.setLength(0);
 
-			sb.append("CREATE TABLE IF NOT EXISTS ").append(tblPrefix).append(instanceCode).append("(\n");
+			sb.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append("(\n");
 			sb.append(" id INTEGER PRIMARY KEY AUTOINCREMENT, \n");
 			sb.append(" i_id varchar2(10),\n");
 			sb.append(" result_size INTEGER,\n");

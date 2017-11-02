@@ -26,7 +26,7 @@ public class FileOperation {
 	 * @return
 	 * @throws IOException
 	 */
-	public GlobalVariable<String> readGraphByEdgePair(String filePath) throws IOException {
+	public GlobalVariable readGraphByEdgePair(String filePath) throws IOException {
 		// access the input file
 		Path path = Paths.get(filePath);
 		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
@@ -41,11 +41,11 @@ public class FileOperation {
 		int eCount = Integer.parseInt(eCountStr);
 
 		// initialize the global variables
-		GlobalVariable<String> gv = new GlobalVariable<String>();
+		GlobalVariable gv = new GlobalVariable();
 
 		Util.initGlobalVariable(gv, vCount);
 
-		String[] verLst = gv.getVerLst();
+		int[] verLst = gv.getVerLst();
 		int[][] idxIM = gv.getIdxIM();
 		int[] idxDegree = gv.getIdxDegree();
 		int[][] idxAL = gv.getIdxAL();
@@ -64,17 +64,17 @@ public class FileOperation {
 				// we don't allow self circle of each vertex
 
 				// we get the index of the vertices
-				int uIdx = Util.getIndexByVertex(gv, uStr);
-				int vIdx = Util.getIndexByVertex(gv, vStr);
+				int uIdx = Util.getIndexByVertex(gv, Integer.parseInt(uStr));
+				int vIdx = Util.getIndexByVertex(gv, Integer.parseInt(vStr));
 
 				// if this vertex is not in the list, add it to vertex list
 				if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {
-					verLst[currentVCount] = uStr;
+					verLst[currentVCount] = Integer.parseInt(uStr);
 					uIdx = currentVCount;
 					currentVCount++;
 				}
 				if (vIdx == ConstantValue.IMPOSSIBLE_VALUE) {
-					verLst[currentVCount] = vStr;
+					verLst[currentVCount] = Integer.parseInt(vStr);
 					vIdx = currentVCount;
 					currentVCount++;
 				}
