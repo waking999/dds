@@ -313,13 +313,14 @@ public class DBOperation {
 				sqlSb.append("where a.").append(ConstantValue.DB_COL_INS_ID).append("=").append("i.")
 						.append(ConstantValue.DB_COL_INS_ID).append(" and ").append("a.")
 						.append(ConstantValue.DB_COL_BATCH_NUM).append("=\"").append(batchNum).append("\"\n");
+				sqlSb.append("and exists (select * from ").append(algTableName).append(")\n");
 				sqlSb.append("union \n");
 
 			}
 			int sqlSbLen = sqlSb.length();
 			String sql = sqlSb.substring(0, sqlSbLen - 7);
 			sql += ";";
-			//System.out.println(sql);
+			System.out.println(sql);
 			stmt.execute(sql);
 
 		} catch (Exception e) {

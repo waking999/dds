@@ -43,7 +43,7 @@ public class GreedyVoteH2LTest {
 
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -51,15 +51,15 @@ public class GreedyVoteH2LTest {
 		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testCreateReportView() {
-		String algorithm = GreedyVoteH2LTest.class.getSimpleName();
+
 		String batchNum = "20171103-0059";
-		DBOperation.createReportView(ConstantValue.DATASET_KONECT, algorithm, batchNum);
+		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 

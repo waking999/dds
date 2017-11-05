@@ -25,7 +25,7 @@ public class GreedyVoteL2HAddTest {
 
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void test0() throws IOException {
 		String filePath = TestUtil.getCurrentPath() + "/src/test/resources/sample1.txt";
@@ -44,7 +44,7 @@ public class GreedyVoteL2HAddTest {
 
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -52,19 +52,19 @@ public class GreedyVoteL2HAddTest {
 		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void testCreateReportView() {
-		String algorithm = GreedyVoteL2HAddTest.class.getSimpleName();
+
 		String batchNum = "20171103-0056";
-		DBOperation.createReportView(ConstantValue.DATASET_KONECT, algorithm, batchNum);
+		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 
-		IAlgorithm algo = new GreedyVoteH2L();
+		IAlgorithm algo = new GreedyVoteL2HAdd();
 		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log);
 	}
 }

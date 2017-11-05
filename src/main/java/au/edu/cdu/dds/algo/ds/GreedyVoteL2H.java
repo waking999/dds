@@ -14,6 +14,11 @@ public class GreedyVoteL2H implements IAlgorithm {
 	GlobalVariable gv;
 
 	@Override
+	public void setKR(int k, int r) {
+
+	}
+
+	@Override
 	public void setGV(GlobalVariable gv) {
 		this.gv = gv;
 	}

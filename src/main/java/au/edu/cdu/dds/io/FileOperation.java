@@ -8,6 +8,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 
+import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
@@ -64,8 +65,8 @@ public class FileOperation {
 				// we don't allow self circle of each vertex
 
 				// we get the index of the vertices
-				int uIdx = Util.getIndexByVertex(gv, Integer.parseInt(uStr));
-				int vIdx = Util.getIndexByVertex(gv, Integer.parseInt(vStr));
+				int uIdx = AlgoUtil.getIndexByVertex(gv, Integer.parseInt(uStr));
+				int vIdx = AlgoUtil.getIndexByVertex(gv, Integer.parseInt(vStr));
 
 				// if this vertex is not in the list, add it to vertex list
 				if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {

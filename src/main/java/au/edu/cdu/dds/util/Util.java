@@ -4,8 +4,10 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import au.edu.cdu.dds.io.DBOperation;
@@ -15,26 +17,6 @@ import au.edu.cdu.dds.io.DBParameter;
  * an util class for common functions
  */
 public class Util {
-
-	/**
-	 * get the index of a vertex
-	 * 
-	 * @param gv
-	 * @param vertex
-	 * @return
-	 */
-	public static int getIndexByVertex(GlobalVariable gv, int vertex) {
-		int actVerCnt = gv.getActVerCnt();
-		int[] verLst = gv.getVerLst();
-		int[] idxLst = gv.getIdxLst();
-
-		for (int i = 0; i < actVerCnt; i++) {
-			if (vertex == verLst[i]) {
-				return idxLst[i];
-			}
-		}
-		return ConstantValue.IMPOSSIBLE_VALUE;
-	}
 
 	/**
 	 * convert the idx solution into lable solution
@@ -85,11 +67,10 @@ public class Util {
 		Arrays.fill(idxDomed, false);
 		int undomCnt = vCount;
 
-		
 		// the added status of each vertex is false initially
-				boolean[] idxAdded = new boolean[vCount];
-				Arrays.fill(idxAdded, false);
-				
+		boolean[] idxAdded = new boolean[vCount];
+		Arrays.fill(idxAdded, false);
+
 		// the incident matrix of each vertex is set to be impossible value initially
 		int[][] idxIM = new int[vCount][vCount];
 		for (int i = 0; i < vCount; i++) {
@@ -284,17 +265,15 @@ public class Util {
 		for (int i = 0; i < actVerCount; i++) {
 			int vIdx = idxLst[i];
 
-			if ((!idxAdded[vIdx]) && (idxWeight[vIdx] >=0)
-					&& (idxWeight[vIdx] < minWeight )) {
+			if ((!idxAdded[vIdx]) && (idxWeight[vIdx] >= 0) && (idxWeight[vIdx] < minWeight)) {
 				minWeight = idxWeight[vIdx];
 				retIdx = vIdx;
 			}
 		}
-	
 
 		return retIdx;
 	}
-	
+
 	/**
 	 * get a vertex with the lowest weight among undominated vertices
 	 * 
@@ -367,7 +346,7 @@ public class Util {
 	public static boolean isValidSolution(GlobalVariable gv) {
 
 		int[] idxLst = gv.getIdxLst();
-		List<Integer> idxLstList = Arrays.stream(idxLst).boxed().collect(Collectors.toList());
+		List<Integer> idxLstList =   Arrays.stream(idxLst).boxed().collect(Collectors.toList());
 
 		int[] idxSol = gv.getIdxSol();
 		int idxSolSize = gv.getIdxSolSize();
@@ -401,23 +380,21 @@ public class Util {
 		int day = calendar.get(Calendar.DAY_OF_MONTH);
 		int hour = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
 		int min = calendar.get(Calendar.MINUTE);
-		
-		
 
 		StringBuffer sb = new StringBuffer();
 		String monthStr = String.format("%02d", month + 1);
 		String dayStr = String.format("%02d", day);
 
 		sb.append(year).append(monthStr).append(dayStr).append("-");
-		if(hour<10) {
+		if (hour < 10) {
 			sb.append("0");
 		}
 		sb.append(hour);
-		if(min<10) {
+		if (min < 10) {
 			sb.append("0");
-		} 
+		}
 		sb.append(min);
-		
+
 		return sb.toString();
 
 	}
@@ -468,6 +445,16 @@ public class Util {
 	}
 
 	/**
+	 * @param instanceCode
+	 * @param id
+	 * @return
+	 */
+	public static String getAlgorithmTableName(String instanceCode, String id) {
+		String algTableName = ConstantValue.TBL_ALG_PREFIX + id + "_" + instanceCode;
+		return algTableName;
+	}
+
+	/**
 	 * drop algorithm tables
 	 * 
 	 * @param dataSetName
@@ -476,7 +463,8 @@ public class Util {
 		List<Map<String, String>> lst = getInstanceInfo(dataSetName);
 		for (Map<String, String> map : lst) {
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = ConstantValue.TBL_ALG_PREFIX + instanceCode;
+			String id = map.get(ConstantValue.DB_COL_INS_ID);
+			String algTableName = getAlgorithmTableName(instanceCode, id);
 			DBOperation.executeDrop(algTableName);
 		}
 	}
@@ -491,9 +479,135 @@ public class Util {
 		List<Map<String, String>> lst = getInstanceInfo(dataSetName);
 		for (Map<String, String> map : lst) {
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = ConstantValue.TBL_ALG_PREFIX + instanceCode;
+			String id = map.get(ConstantValue.DB_COL_INS_ID);
+			String algTableName = getAlgorithmTableName(instanceCode, id);
 			DBOperation.executeDel(algTableName, dbp);
 		}
 	}
 
+	/**
+	 * a set s1 minus a set s2
+	 * 
+	 * @param s1,
+	 *            a set
+	 * @param s2,
+	 *            a set
+	 * @return the elements in set s1 not in s2
+	 */
+	public static int[] set1Minus2(int[] s1, int s1Len, int[] s2, int s2Len) {
+		if (s1 == null) {
+			return s1;
+		}
+		if (s2 == null) {
+			return s1;
+		}
+
+		for (int i = 0; i < s2Len; i++) {
+
+			int pos = findPos(s1, s1Len, s2[i]);
+			if (pos != ConstantValue.IMPOSSIBLE_VALUE) {
+				int tmp = s1[pos];
+				s1[pos] = s1[s1Len - 1];
+				s1[s1Len - 1] = tmp;
+				s1Len--;
+			}
+		}
+
+		return Arrays.copyOf(s1, s1Len);
+
+	}
+
+	/**
+	 * a set s1 minus a set s2
+	 * 
+	 * @param s1,
+	 *            a set
+	 * @param s2,
+	 *            a set
+	 * @return the elements in set s1 not in s2
+	 */
+	public static int[] set1Minus2(int[] s1, int s1Len, Set<Integer> s2) {
+		if (s1 == null) {
+			return s1;
+		}
+		if (s2 == null) {
+			return s1;
+		}
+
+		Iterator<Integer> s2It = s2.iterator();
+		while (s2It.hasNext()) {
+			int val = s2It.next().intValue();
+			int pos = findPos(s1, s1Len, val);
+			if (pos != ConstantValue.IMPOSSIBLE_VALUE) {
+				int tmp = s1[pos];
+				s1[pos] = s1[s1Len - 1];
+				s1[s1Len - 1] = tmp;
+				s1Len--;
+			}
+		}
+
+		return Arrays.copyOf(s1, s1Len);
+
+	}
+
+	/**
+	 * a set s1 minus a set s2
+	 * 
+	 * @param s1,
+	 *            a set
+	 * @param s2,
+	 *            a set
+	 * @return the elements in set s1 not in s2
+	 */
+	public static int[] set1Minus2(Set<Integer> s1, int[] s2, int s2Len) {
+		if (s1 == null) {
+			return null;
+		}
+		int s1Len = s1.size();
+		int[] s1Arr = new int[s1Len];
+		Iterator<Integer> s1It = s1.iterator();
+		int pointer = 0;
+		while (s1It.hasNext()) {
+			s1Arr[pointer++] = s1It.next().intValue();
+		}
+
+		return set1Minus2(s1Arr, s1Len, s2, s2Len);
+
+	}
+
+	/**
+	 * @param binary
+	 * @return
+	 */
+	public static String arrayToString(byte[] binary) {
+		int binarySize = binary.length;
+		char[] chArray = new char[binarySize];
+		for (int i = 0; i < binarySize; i++) {
+			chArray[i] = (char) (binary[i] + ConstantValue.ASCII_0_SEQ_NO);
+		}
+		String rtn = new String(chArray);
+		return rtn;
+	}
+
+	/**
+	 * to check if the two sets are intersected
+	 * 
+	 * @param s1
+	 * @param s1Len
+	 * @param s2
+	 * @param s2Len
+	 * @return
+	 */
+	public static boolean setIntersect(int[] s1, int s1Len, int[] s2, int s2Len) {
+		for (int i = 0; i < s1Len; i++) {
+			int s1Val = s1[i];
+			for (int j = 0; j < s2Len; j++) {
+				int s2Val = s2[j];
+				if (s1Val == s2Val) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 }

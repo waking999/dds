@@ -69,7 +69,7 @@ INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (14,3,'Reactome','Reactome','/006327_reactome.konect',6327,147547,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (15,3,'RouteViews','Route Views','/006474_Route_views.konect',6474,13895,1);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (16,3,'PrettyGoodPrivacy','Pretty Good Privacy','/010680_Pretty_Good_Privacy.konect',10680,24316,1);
-INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (17,3,'arXiv','arXiv','/0187771_arXiv.konect',18771,198050,1);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (17,3,'arXiv','arXiv','/018771_arXiv.konect',18771,198050,1);
 
 drop view if exists "v_instance";
 create view "v_instance" as

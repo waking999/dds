@@ -59,32 +59,105 @@ public class TestUtil {
 			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
 			String id = map.get(ConstantValue.DB_COL_INS_ID);
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = ConstantValue.TBL_ALG_PREFIX +id+"_"+ instanceCode;
+			String algTableName = Util.getAlgorithmTableName(instanceCode, id);
 
 			String inputFile = resourcePath + dataSetPath + pathName;
-			// read file
-			GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
-			algo.setGV(gv);
-			long start = System.nanoTime();
-			// run algorithm
-			algo.compute();
-			long end = System.nanoTime();
+			try {
+				// read file
+				GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
+				algo.setGV(gv);
 
-			// ensure the solution is valid
-			Assert.assertTrue(Util.isValidSolution(gv));
+				long start = System.nanoTime();
+				// run algorithm
+				algo.compute();
+				long end = System.nanoTime();
 
-			// write to db
-			DBOperation.createTable(algTableName);
-			dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, className);
-			DBOperation.executeInsert(dbpOut);
+				// ensure the solution is valid
+				Assert.assertTrue(Util.isValidSolution(gv));
 
-			dbpOut = null;
+				// write to db
+				DBOperation.createTable(algTableName);
+				dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, className);
+				DBOperation.executeInsert(dbpOut);
 
-			// write to console
-			StringBuffer sb = new StringBuffer();
-			sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
-					.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
-			log.debug(sb.toString());
+				dbpOut = null;
+
+				// write to console
+				StringBuffer sb = new StringBuffer();
+				sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
+						.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
+				log.debug(sb.toString());
+			} catch (Exception e) {
+				e.printStackTrace();
+				continue;
+			}
+
+		}
+	}
+
+	/**
+	 * the basic structure to run algorithms and write to db
+	 * 
+	 * @param className
+	 * @param dataSetName
+	 * @param algo
+	 * @param log
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws InterruptedException
+	 */
+	public static void basicFunc(String className, String dataSetName, IAlgorithm algo, Logger log, int kLower,
+			int kUpper) throws FileNotFoundException, IOException, InterruptedException {
+		// get the info of the instances of a certain dataset such as id, code, path
+		List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
+
+		// loop to run the algorithm with the instance info and write to db
+		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
+
+		DBParameter dbpOut = null;
+		String batchNum = Util.getBatchNum();
+
+		for (Map<String, String> map : lst) {
+			String dataSetPath = map.get(ConstantValue.DB_COL_DATASET_PATH_NAME);
+			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
+			String id = map.get(ConstantValue.DB_COL_INS_ID);
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String algTableName = Util.getAlgorithmTableName(instanceCode, id);
+
+			String inputFile = resourcePath + dataSetPath + pathName;
+			try {
+				for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
+					for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
+						// read file
+						GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
+						algo.setGV(gv);
+						algo.setKR(tmpK, tmpR);
+						long start = System.nanoTime();
+						// run algorithm
+						algo.compute();
+						long end = System.nanoTime();
+
+						// ensure the solution is valid
+						Assert.assertTrue(Util.isValidSolution(gv));
+
+						// write to db
+						DBOperation.createTable(algTableName);
+						dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, tmpK, tmpR, className);
+						DBOperation.executeInsert(dbpOut);
+
+						dbpOut = null;
+
+						// write to console
+						StringBuffer sb = new StringBuffer();
+						sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
+								.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
+						log.debug(sb.toString());
+					}
+				}
+			} catch (Exception e) {
+
+				continue;
+			}
 
 		}
 	}
@@ -100,15 +173,41 @@ public class TestUtil {
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutPut(String algTableName, String batchNum, String id,
-			GlobalVariable gv, long start, long end, String algoName) {
+	private static DBParameter getDBParamOutPut(String algTableName, String batchNum, String id, GlobalVariable gv,
+			long start, long end, String algoName) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
 		dbpOut.setTableName(algTableName);
-		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID,   ConstantValue.DB_COL_BATCH_NUM,
+		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
 				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_ALGORITHM };
 		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()), Long.toString((end - start)),
 				algoName };
+		dbpOut.setColPairNames(colPairNamesOut);
+		dbpOut.setColPairValues(colPairValuesOut);
+		return dbpOut;
+	}
+
+	/**
+	 * generate the database parameters for being written to db
+	 * 
+	 * @param algTableName
+	 * @param batchNum
+	 * @param id
+	 * @param gv
+	 * @param start
+	 * @param end
+	 * @return
+	 */
+	private static DBParameter getDBParamOutPut(String algTableName, String batchNum, String id, GlobalVariable gv,
+			long start, long end, int tmpK, int tmpR, String algoName) {
+		DBParameter dbpOut;
+		dbpOut = new DBParameter();
+		dbpOut.setTableName(algTableName);
+		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
+				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_K,
+				ConstantValue.DB_COL_R, ConstantValue.DB_COL_ALGORITHM };
+		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()), String.valueOf(end - start),
+				String.valueOf(tmpK), String.valueOf(tmpR), algoName };
 		dbpOut.setColPairNames(colPairNamesOut);
 		dbpOut.setColPairValues(colPairValuesOut);
 		return dbpOut;
@@ -121,18 +220,18 @@ public class TestUtil {
 	 *            global variables
 	 */
 	public static void printGlobalVariableStatus(GlobalVariable gv) {
-		String styleStr = "%-6s %-6s %-6s %-20s %-20s";
+		String styleStr = "%-6s %-6s %-6s %-40s %-40s";
 
 		int[] idxLst = gv.getIdxLst();
 		int actVerCnt = gv.getActVerCnt();
+		int verCnt = gv.getVerCnt();
 		int[] idxUtil = gv.getIdxUtil();
 		int[][] idxAL = gv.getIdxAL();
 		int[][] idxIM = gv.getIdxIM();
 
 		int[] vL = gv.getVerLst();
 
-		printStatus(styleStr, actVerCnt, "vCount", actVerCnt, "vL", vL, "vIL", idxLst, "util", idxUtil, "vAL", idxAL,
-				"vIM", idxIM);
+		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "util", idxUtil, "vAL", idxAL, "vIM", idxIM);
 
 		System.out.println("--------------------------------------------------------");
 	}
@@ -155,15 +254,14 @@ public class TestUtil {
 	 * @param imName
 	 * @param im
 	 */
-	private static void printStatus(String styleStr, int len, String actCountName, int actCount, String lName,
-			int[] l, String ilName, int[] il, String degName, int[] deg, String alName, int[][] al, String imName,
-			int[][] im) {
+	private static void printStatus(String styleStr, int verCnt, int actVerCnt, String lName, int[] l, String ilName,
+			int[] il, String degName, int[] deg, String alName, int[][] al, String imName, int[][] im) {
 		StringBuffer sb = new StringBuffer();
 
-		System.out.println(actCountName + ":" + actCount);
+		System.out.println("Vertex Count:" + verCnt + ",Active Vertex Count:" + actVerCnt);
 		System.out.printf(styleStr, lName, ilName, degName, alName, imName);
 		System.out.println();
-		for (int i = 0; i < len; i++) {
+		for (int i = 0; i < verCnt; i++) {
 			sb.setLength(0);
 
 			System.out.printf(styleStr, i + " " + l[i], i + " " + il[i], i + " " + deg[i],
@@ -255,7 +353,7 @@ public class TestUtil {
 	}
 
 	public static void verifyUnsort(String[] expect, String[] output) {
-
+		 
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
@@ -265,17 +363,18 @@ public class TestUtil {
 	}
 
 	public static void verifySort(String[] expect, String[] output) {
-
+	 
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
+
 		String expectStr = Arrays.asList(expect).stream().sorted().collect(Collectors.joining(","));
 		String outputStr = Arrays.asList(output).stream().sorted().collect(Collectors.joining(","));
 		Assert.assertTrue(expectStr.equals(outputStr));
 	}
 
 	public static void verify(int[] expect, List<Integer> output) {
-
+	 
 		int expectLen = expect.length;
 		int outputSize = output.size();
 		Assert.assertTrue(expectLen == outputSize);
@@ -286,7 +385,7 @@ public class TestUtil {
 	}
 
 	public static void verify(int[] expect, Integer[] output) {
-
+		 
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
@@ -298,7 +397,10 @@ public class TestUtil {
 	}
 
 	public static void verifySort(int[] expect, int[] output) {
-
+		if(expect==null&&output==null) {
+			return;
+			
+		}
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
@@ -310,14 +412,29 @@ public class TestUtil {
 	}
 
 	public static void verifyUnsort(int[] expect, int[] output) {
+	 
+		int expectLen = expect.length;
+		int outputSize = output.length;
+		Assert.assertTrue(expectLen == outputSize);
+		// String expectStr =
+		// Arrays.stream(expect).boxed().collect(Collectors.toList()).stream()
+		// .map(num -> Integer.toString(num)).collect(Collectors.joining(","));
+		// String outputStr =
+		// Arrays.stream(output).boxed().collect(Collectors.toList()).stream()
+		// .map(num -> Integer.toString(num)).collect(Collectors.joining(","));
+		Assert.assertTrue(expectLen == outputSize);
+		String expectStr = Arrays.toString(expect);
+		String outputStr = Arrays.toString(output);
+		Assert.assertTrue(expectStr.equals(outputStr));
+	}
+
+	public static void verifyUnsort(boolean[] expect, boolean[] output) {
 
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
-		String expectStr = Arrays.stream(expect).boxed().collect(Collectors.toList()).stream()
-				.map(num -> Integer.toString(num)).collect(Collectors.joining(","));
-		String outputStr = Arrays.stream(output).boxed().collect(Collectors.toList()).stream()
-				.map(num -> Integer.toString(num)).collect(Collectors.joining(","));
+		String expectStr = Arrays.toString(expect);
+		String outputStr = Arrays.toString(output);
 		Assert.assertTrue(expectStr.equals(outputStr));
 	}
 
@@ -351,6 +468,7 @@ public class TestUtil {
 				eqFlag = false;
 			}
 		}
+
 		Assert.assertTrue(eqFlag);
 	}
 

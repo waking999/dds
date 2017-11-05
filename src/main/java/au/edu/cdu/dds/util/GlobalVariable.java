@@ -7,8 +7,8 @@ package au.edu.cdu.dds.util;
  *            vertex type
  */
 public class GlobalVariable  {
-	int verCnt; // the count of vertices, never change
-	int actVerCnt; // the count active vertices, change
+	private int verCnt; // the count of vertices, never change
+	private int actVerCnt; // the count active vertices, change
 
 	public int getActVerCnt() {
 		return actVerCnt;
