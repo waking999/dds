@@ -6,6 +6,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import au.edu.cdu.dds.algo.sc.IMSC;
+import au.edu.cdu.dds.algo.sc.MSC3;
+import au.edu.cdu.dds.algo.sc.ReturnResult;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
@@ -303,6 +306,10 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 							System.out.println(b);
 
 							// 11. List<List<Integer>> typDomedMap -> msc3 fpt->d3
+							IMSC msc = new MSC3(neigTypeDomedMap);
+							ReturnResult<String> rr = msc.run(); 
+							Set<String> sc=rr.getResults();
+							int scSize=rr.getResultSize();
 							
 							// 12. if d3==null || |d3|>=|d2| continue;
 							// 13. else (|d3|<|d2|)

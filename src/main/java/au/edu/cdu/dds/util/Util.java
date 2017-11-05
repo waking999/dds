@@ -4,6 +4,8 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -346,7 +348,7 @@ public class Util {
 	public static boolean isValidSolution(GlobalVariable gv) {
 
 		int[] idxLst = gv.getIdxLst();
-		List<Integer> idxLstList =   Arrays.stream(idxLst).boxed().collect(Collectors.toList());
+		List<Integer> idxLstList = Arrays.stream(idxLst).boxed().collect(Collectors.toList());
 
 		int[] idxSol = gv.getIdxSol();
 		int idxSolSize = gv.getIdxSolSize();
@@ -609,5 +611,248 @@ public class Util {
 			}
 		}
 		return false;
+	}
+
+	/**
+	 * check if there is a set si is a subset of a set sj in the list s.
+	 * 
+	 * @param map,
+	 *            a list containing sets
+	 * @return an object containing the flag and the subset index. if the flag
+	 *         is false, the index should be ignored
+	 */
+	public static <K, T> ExistQualifiedSet<K> existSubset(Map<K, Set<T>> map) {
+		if (map == null)
+			return new ExistQualifiedSet<K>(false, null);
+		int mapLen = map.size();
+		if (mapLen < 2) {
+			return new ExistQualifiedSet<K>(false, null);
+		}
+		Set<K> keySet = map.keySet();
+		for (K i : keySet) {
+			for (K j : keySet) {
+				if ((!i.equals(j)) && (is1Subset2(map.get(i), map.get(j)))) {
+					return new ExistQualifiedSet<K>(true, i);
+				}
+			}
+		}
+
+		return new ExistQualifiedSet<K>(false, null);
+	}
+
+	/**
+	 * if set s1 is a subset of set s2.
+	 * 
+	 * @param s1,
+	 *            a set
+	 * @param s2,
+	 *            a set
+	 * @return true: s1 is a subset of s2; false: otherwise
+	 */
+	public static <T> boolean is1Subset2(Set<T> s1, Set<T> s2) {
+		if (s1 == null) {
+			return true;
+		}
+		if (s2 == null) {
+			return false;
+		}
+		int s1Len = s1.size();
+		int s2Len = s2.size();
+		if (s2Len < s1Len) {
+			return false;
+		}
+		Iterator<T> s1It = s1.iterator();
+		while (s1It.hasNext()) {
+			if (!s2.contains(s1It.next())) {
+				return false;
+			}
+		}
+
+		return true;
+	}
+
+	/**
+	 * convert an integer array to an integer list
+	 * 
+	 * @param a,
+	 *            an integer array
+	 * @return an integer list
+	 */
+	public static Set<Integer> arrayToSet(int[] a) {
+		int aLen = a.length;
+		if (aLen == 0) {
+			return null;
+		}
+
+		Set<Integer> list = new HashSet<>();
+		for (int i = 0; i < aLen; i++) {
+			if (!list.contains(a[i])) {
+				list.add(a[i]);
+			}
+		}
+
+		return list;
+	}
+
+	/**
+	 * make a copy of a map
+	 * 
+	 * @param map,
+	 *            a map
+	 * @return a copy of the map
+	 */
+	public static <K, T> Map<K, Set<T>> copyMap(Map<K, Set<T>> map) {
+		if (map == null) {
+			return map;
+		}
+		Map<K, Set<T>> mapCopy = new HashMap<K, Set<T>>();
+
+		Set<K> keySet = map.keySet();
+		for (K key : keySet) {
+			Set<T> lCopy = copySet(map.get(key));
+			mapCopy.put(key, lCopy);
+		}
+		return mapCopy;
+	}
+
+	/**
+	 * make a copy of a list
+	 * 
+	 * @param s,
+	 *            a list
+	 * @return a copy of the list
+	 */
+	public static <T> Set<T> copySet(Set<T> s) {
+		if (s == null) {
+			return null;
+		}
+		Set<T> c = new HashSet<T>();
+		c.addAll(s);
+		return c;
+	}
+
+	/**
+	 * union all elements of the subsets of s
+	 * 
+	 * @param map,
+	 *            a list containing sets
+	 * @return a list containing all elements of the subsets of s
+	 */
+	public static <K, T> Set<T> unionSets(Map<K, Set<T>> map) {
+		if (map == null) {
+			return null;
+		}
+		int mapLen = map.size();
+		if (mapLen == 0) {
+			return null;
+		}
+		Set<K> keySet = map.keySet();
+
+		Set<T> uList = new HashSet<T>();
+
+		for (K key : keySet) {
+			Set<T> l = map.get(key);
+
+			uList.addAll(l);
+
+		}
+
+		return uList;
+	}
+
+	/**
+	 * check if there an unique set si containing an element u
+	 * 
+	 * @param u,
+	 *            an element
+	 * @param map,
+	 *            a list containing sets
+	 * @return an object containing the flag and the subset index. if the flag
+	 *         is false, the index should be ignored
+	 */
+	public static <K, T> ExistQualifiedSet<K> existUniqueSetForAElement(T u, Map<K, Set<T>> map) {
+		if (map == null) {
+			return new ExistQualifiedSet<K>(false, null);
+		}
+
+		int count = 0;
+		K containSetIndex = null;
+
+		Set<K> keySet = map.keySet();
+
+		for (K key : keySet) {
+			Set<T> si = map.get(key);
+			if (si.contains(u)) {
+				count++;
+				containSetIndex = key;
+			}
+			if (count > 1) {
+				break;
+			}
+		}
+
+		if (count != 1) {
+			return new ExistQualifiedSet<K>(false, null);
+		}
+
+		return new ExistQualifiedSet<K>(true, containSetIndex);
+	}
+
+	/**
+	 * check if there an unique set si containing an element u in an element
+	 * list
+	 * 
+	 * @param uList,
+	 *            an element list
+	 * @param s,
+	 *            a list containing sets
+	 * @return an object containing the flag and the subset index. if the flag
+	 *         is false, the index should be ignored
+	 */
+	public static <K, T> ExistQualifiedSet<K> existUniqueSetForAElement(Set<T> uList, Map<K, Set<T>> s) {
+		if (uList == null) {
+			return new ExistQualifiedSet<K>(false, null);
+		}
+		if (s == null) {
+			return new ExistQualifiedSet<K>(false, null);
+		}
+		Iterator<T> uListIt = uList.iterator();
+		while (uListIt.hasNext()) {
+			ExistQualifiedSet<K> exist = existUniqueSetForAElement(uListIt.next(), s);
+			if (exist.isExist()) {
+				return exist;
+			}
+		}
+
+		return new ExistQualifiedSet<K>(false, null);
+	}
+
+	/**
+	 * get the max cardinality set index in the list s containing sets
+	 * 
+	 * @param s,
+	 *            a list containing sets
+	 * @return the max cardinality set index in the list s
+	 */
+	public static <K, T> K getMaxCardinalitySetIndex(Map<K, Set<T>> map) {
+		if (map == null) {
+			return null;
+		}
+
+		int maxCardinality = 0;
+
+		Set<K> keySet = map.keySet();
+		K rtnKey = null;
+
+		for (K key : keySet) {
+			Set<T> l = map.get(key);
+			int cardinality = l.size();
+			if (cardinality > maxCardinality) {
+				maxCardinality = cardinality;
+				rtnKey = key;
+			}
+		}
+
+		return rtnKey;
 	}
 }

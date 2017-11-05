@@ -65,7 +65,7 @@ public class GreedyVoteL2HDDSTest {
 		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 		int kLower=10;
