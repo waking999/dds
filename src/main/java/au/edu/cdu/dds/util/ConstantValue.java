@@ -10,8 +10,8 @@ public class ConstantValue {
 
 	public static final float FLOAT_NO_DIFF = 1E-12f;
 
-	public final static byte MARKED = 1;
-	public final static byte UNMARKED = 0;
+	public final static boolean MARKED = true;
+	public final static boolean UNMARKED = false;
 	// the ascii code of 0
 	public static final byte ASCII_0_SEQ_NO = 48;
 

@@ -25,7 +25,7 @@ public class GreedyVoteL2HDDSTest {
 
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void test0() throws IOException {
 		String filePath = TestUtil.getCurrentPath() + "/src/test/resources/sample1.txt";
@@ -35,9 +35,9 @@ public class GreedyVoteL2HDDSTest {
 
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		algo.setGV(gv);
-		int k=3;
-		int r=2;
-		algo.setKR(k,r);
+		int k = 3;
+		int r = 2;
+		algo.setKR(k, r);
 		algo.compute();
 		Assert.assertTrue(Util.isValidSolution(gv));
 
@@ -47,20 +47,39 @@ public class GreedyVoteL2HDDSTest {
 
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
-		int kLower=10;
-		int kUpper=10;
+		int kLower = 10;
+		int kUpper = 10;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-	
-		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log,kLower,kUpper);
+
+		TestUtil.basicLoopFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log, kLower, kUpper);
+	}
+
+	@Test
+	public void testKONECT_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
+ 
+		int k = 5;
+		int r = k - 1;
+		String id = "3_03";
+		String instanceCode = "Dolphins";
+		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/000062_dolphins.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = Util.getAlgorithmTableName(instanceCode, id);
+		
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();		
+
+		TestUtil.basicFunc(CLASS_NAME, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
 	}
 
 	@Ignore
 	@Test
 	public void testCreateReportView() {
-	 
+
 		String batchNum = "20171103-0056";
 		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
@@ -68,9 +87,9 @@ public class GreedyVoteL2HDDSTest {
 	@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
-		int kLower=10;
-		int kUpper=10;
+		int kLower = 10;
+		int kUpper = 10;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log,kLower,kUpper);
+		TestUtil.basicLoopFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log, kLower, kUpper);
 	}
 }

@@ -2,8 +2,6 @@ package au.edu.cdu.dds.util;
 
 import java.util.Arrays;
 
-import au.edu.cdu.dds.TestUtil;
-
 public class AlgoUtil {
 	/**
 	 * add a vertex v to a new graph
@@ -120,11 +118,11 @@ public class AlgoUtil {
 
 		gv.setActVerCnt(gvActVerCnt - 1);
 
-		// copy degree info into util
-		int[] gvIdxUtil = Arrays.copyOf(gvIdxDegre, gv.getVerCnt());
-		gv.setIdxUtil(gvIdxUtil);
-
-		TestUtil.printGlobalVariableStatus(gv);
+//		// copy degree info into util
+//		int[] gvIdxUtil = Arrays.copyOf(gvIdxDegre, gv.getVerCnt());
+//		gv.setIdxUtil(gvIdxUtil);
+//
+//		TestUtil.printGlobalVariableStatus(gv);
 
 	}
 
@@ -142,9 +140,9 @@ public class AlgoUtil {
 		deleteVFromU(gv, uIdx, vIdx);
 		deleteVFromU(gv, vIdx, uIdx);
 		// copy degree info into util
-		int[] gvIdxUtil = Arrays.copyOf(gv.getIdxDegree(), gv.getVerCnt());
-		gv.setIdxUtil(gvIdxUtil);
-		TestUtil.printGlobalVariableStatus(gv);
+//		int[] gvIdxUtil = Arrays.copyOf(gv.getIdxDegree(), gv.getVerCnt());
+//		gv.setIdxUtil(gvIdxUtil);
+//		TestUtil.printGlobalVariableStatus(gv);
 	}
 
 	/**

@@ -1,7 +1,9 @@
 package au.edu.cdu.dds.util;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -118,21 +120,21 @@ public class UtilTest {
 	/*--------------------------*/
 	@Test
 	public void testArrayToString() {
-		byte[] binary;
+		boolean[] binary;
 		String expect;
 		String output;
 
-		binary = new byte[] {};
+		binary = new boolean[] {};
 		expect = "";
 		output = Util.arrayToString(binary);
 		TestUtil.verify(expect, output);
 
-		binary = new byte[] { 1, 0, 1 };
+		binary = new boolean[] { true, false, true };
 		expect = "101";
 		output = Util.arrayToString(binary);
 		TestUtil.verify(expect, output);
 
-		binary = new byte[] { 0, 1, 0 };
+		binary = new boolean[] { false, true, false };
 		expect = "010";
 		output = Util.arrayToString(binary);
 		TestUtil.verify(expect, output);
@@ -282,11 +284,11 @@ public class UtilTest {
 	@Test
 	public void testExistUniqueSetForAElement() {
 		int[] l1 = { 2, 3 };
-		//int[] l2 = { 1, 2 };
+		// int[] l2 = { 1, 2 };
 		int[] l3 = { 1, 2, 3 };
 
 		Set<Integer> list1 = Util.arrayToSet(l1);
-		//Set<Integer> list2 = Util.arrayToSet(l2);
+		// Set<Integer> list2 = Util.arrayToSet(l2);
 		Set<Integer> list3 = Util.arrayToSet(l3);
 
 		Map<String, Set<Integer>> map = null;
@@ -326,4 +328,59 @@ public class UtilTest {
 
 	}
 
+	@Test
+	public void testArrayOr() {
+		boolean[] arr1;
+		boolean[] arr2;
+		boolean[] output;
+		boolean[] expect;
+
+		arr1 = new boolean[] { true, false };
+		arr2 = new boolean[] { false, false };
+		expect = new boolean[] { true, false };
+		output = Util.arrayOr(arr1, arr2);
+		TestUtil.verifyUnsort(expect, output);
+
+	}
+
+	@Test
+	public void testValidCombin() {
+		boolean[] arr0;
+		boolean[] arr1;
+		boolean[] arr2;
+		boolean[] arr3;
+		List<Ruler> rulerArr;
+
+		boolean output;
+		boolean expect;
+
+		arr0 = new boolean[] { false, false, false, true, false, true };
+		arr1 = new boolean[] { true, false, true, false, true, false };
+		arr2 = new boolean[] { false, false, true, false, false, true };
+		arr3 = new boolean[] { false, true, false, true, true, false };
+
+		rulerArr = new ArrayList<Ruler>();
+		rulerArr.add(new Ruler("0", arr0));
+		rulerArr.add(new Ruler("1", arr1));
+		rulerArr.add(new Ruler("2", arr2));
+		rulerArr.add(new Ruler("3", arr3));
+		expect = true;
+		output = Util.validCombin(rulerArr);
+		Assert.assertTrue(expect == output);
+
+		arr0 = new boolean[] { false, false, false, false, false, true };
+		arr1 = new boolean[] { true, false, true, false, true, false };
+		arr2 = new boolean[] { false, false, true, false, false, true };
+		arr3 = new boolean[] { false, true, false, false, true, false };
+
+		rulerArr = new ArrayList<Ruler>();
+		rulerArr.add(new Ruler("0", arr0));
+		rulerArr.add(new Ruler("1", arr1));
+		rulerArr.add(new Ruler("2", arr2));
+		rulerArr.add(new Ruler("3", arr3));
+		expect = false;
+		output = Util.validCombin(rulerArr);
+		Assert.assertTrue(expect == output);
+
+	}
 }

@@ -1,5 +1,6 @@
 package au.edu.cdu.dds.util;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -374,8 +375,8 @@ public class Util {
 	public static String getBatchNum() {
 		Date date = new Date(); // given date
 		Calendar calendar = GregorianCalendar.getInstance(); // creates a new
-															 // calendar
-															 // instance
+																// calendar
+																// instance
 		calendar.setTime(date); // assigns calendar to given date
 		int year = calendar.get(Calendar.YEAR);
 		int month = calendar.get(Calendar.MONTH);
@@ -581,11 +582,11 @@ public class Util {
 	 * @param binary
 	 * @return
 	 */
-	public static String arrayToString(byte[] binary) {
+	public static String arrayToString(boolean[] binary) {
 		int binarySize = binary.length;
 		char[] chArray = new char[binarySize];
 		for (int i = 0; i < binarySize; i++) {
-			chArray[i] = (char) (binary[i] + ConstantValue.ASCII_0_SEQ_NO);
+			chArray[i] = binary[i] ? '1' : '0';
 		}
 		String rtn = new String(chArray);
 		return rtn;
@@ -618,8 +619,8 @@ public class Util {
 	 * 
 	 * @param map,
 	 *            a list containing sets
-	 * @return an object containing the flag and the subset index. if the flag
-	 *         is false, the index should be ignored
+	 * @return an object containing the flag and the subset index. if the flag is
+	 *         false, the index should be ignored
 	 */
 	public static <K, T> ExistQualifiedSet<K> existSubset(Map<K, Set<T>> map) {
 		if (map == null)
@@ -767,8 +768,8 @@ public class Util {
 	 *            an element
 	 * @param map,
 	 *            a list containing sets
-	 * @return an object containing the flag and the subset index. if the flag
-	 *         is false, the index should be ignored
+	 * @return an object containing the flag and the subset index. if the flag is
+	 *         false, the index should be ignored
 	 */
 	public static <K, T> ExistQualifiedSet<K> existUniqueSetForAElement(T u, Map<K, Set<T>> map) {
 		if (map == null) {
@@ -799,15 +800,14 @@ public class Util {
 	}
 
 	/**
-	 * check if there an unique set si containing an element u in an element
-	 * list
+	 * check if there an unique set si containing an element u in an element list
 	 * 
 	 * @param uList,
 	 *            an element list
 	 * @param s,
 	 *            a list containing sets
-	 * @return an object containing the flag and the subset index. if the flag
-	 *         is false, the index should be ignored
+	 * @return an object containing the flag and the subset index. if the flag is
+	 *         false, the index should be ignored
 	 */
 	public static <K, T> ExistQualifiedSet<K> existUniqueSetForAElement(Set<T> uList, Map<K, Set<T>> s) {
 		if (uList == null) {
@@ -854,5 +854,107 @@ public class Util {
 		}
 
 		return rtnKey;
+	}
+
+	public static Ruler[] converRulerMapToArray(Map<String, boolean[]> map) {
+		Set<String> keySet = map.keySet();
+		int mapSize = map.size();
+		Ruler[] rulerArr = new Ruler[mapSize];
+		int pos = 0;
+		for (String key : keySet) {
+			boolean[] ruler = map.get(key);
+			rulerArr[pos++] = new Ruler(key, ruler);
+		}
+		return rulerArr;
+	}
+
+	protected static boolean[] arrayOr(boolean[] arr1, boolean[] arr2) {
+		int arr1Len = arr1.length;
+		for (int i = 0; i < arr1Len; i++) {
+			arr1[i] = arr1[i] || arr2[i];
+		}
+		return arr1;
+	}
+
+	public static boolean validCombin(List<Ruler> data) {
+		int dataLen = data.size();
+
+		int rowLen = data.get(0).getRuler().length;
+		
+		boolean[] base = new boolean[rowLen];
+		Arrays.fill(base, true);
+		
+		
+		
+		boolean[] frow = data.get(0).getRuler();
+		boolean[] comp=Arrays.copyOf(frow, frow.length);
+		
+		for (int i = 1; i < dataLen; i++) {
+			boolean[] row = data.get(i).getRuler();
+			comp = arrayOr(comp, row);
+		}
+		return verifyUnsort(base, comp);
+
+	}
+
+	public static List<List<Ruler>> combineRuler(Ruler[] rulerArr, int r) {
+		List<List<Ruler>> result = new ArrayList<>();
+		int n = rulerArr.length;
+		if (n <= 0 || n < r)
+			return result;
+
+		List<Ruler> item = new ArrayList<Ruler>();
+		combineDfs(rulerArr, r, 0, item, result); // because it need to begin from 1
+
+		return result;
+	}
+
+	private static List<Ruler> copyRulerList(List<Ruler> item) {
+		int itemLen = item.size();
+		List<Ruler> newItem = new ArrayList<Ruler>(itemLen);
+		for (Ruler r : item) {
+			// not neccessary deep copy since we just read rather than write to ruler.
+			newItem.add(r);
+		}
+		return newItem;
+
+	}
+
+	private static void combineDfs(Ruler[] rulerArr, int r, int start, List<Ruler> item, List<List<Ruler>> res) {
+		if (item.size() == r) {
+			List<Ruler> newItem = copyRulerList(item);
+
+			res.add(newItem);
+
+			return;
+		}
+		int n = rulerArr.length;
+		for (int i = start; i < n; i++) {
+			item.add(rulerArr[i]);
+			combineDfs(rulerArr, r, i + 1, item, res);
+			item.remove(item.size() - 1);
+		}
+	}
+
+ 
+	public static int[] convertRResultToSet(List<Ruler> rulerResult, int r, Map<String,Set<Integer>> typeDomingMap) {
+		int[] rtn=new int[r];
+		for(int i=0;i<r;i++) {
+			Ruler ruler=rulerResult.get(i);
+			String key=ruler.getKey();
+			Set<Integer> vIdxs=typeDomingMap.get(key);
+			Iterator<Integer> vIdxsIt=vIdxs.iterator();
+			rtn[i]=vIdxsIt.next();
+		}
+		return rtn;
+	}
+	
+	
+	public static boolean verifyUnsort(boolean[] expect, boolean[] output) {
+		String expectStr = Arrays.toString(expect);
+		String outputStr = Arrays.toString(output);
+
+		boolean cmp = expectStr.equals(outputStr);
+		return cmp;
 	}
 }

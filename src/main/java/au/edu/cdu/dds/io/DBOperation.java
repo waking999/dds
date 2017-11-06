@@ -369,6 +369,8 @@ public class DBOperation {
 			sb.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append("(\n");
 			sb.append(" id INTEGER PRIMARY KEY AUTOINCREMENT, \n");
 			sb.append(" i_id varchar2(10),\n");
+			sb.append(" k INTEGER,\n");
+			sb.append(" r INTEGER,\n");
 			sb.append(" result_size INTEGER,\n");
 			sb.append(" running_nano_sec INTEGER,\n");
 			sb.append(" batch_num varchar2(30),\n");

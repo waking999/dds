@@ -3,15 +3,14 @@ package au.edu.cdu.dds.algo.ds;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import au.edu.cdu.dds.algo.sc.IMSC;
-import au.edu.cdu.dds.algo.sc.MSC3;
-import au.edu.cdu.dds.algo.sc.ReturnResult;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.Ruler;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -60,14 +59,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 	}
 
-	// private void backup(Set<Integer>[] step, int stepPos) {
-	//
-	// Set<Integer> vIdxs = step[stepPos];
-	// for (int vIdx : vIdxs) {
-	// AlgoUtil.deleteVertex(gvi, vIdx);
-	//
-	// }
-	// }
 
 	@SuppressWarnings("unchecked")
 	public void compute() {
@@ -215,46 +206,45 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 							// c is a vertex cover and b is independent set after applying r1,r2,r3
 							// 10. get neighbor type: typeDomedMap, typeDomingMap
-							byte[] comparedRuler = new byte[cLen];
+							boolean[] comparedRuler = new boolean[cLen];
 							Arrays.fill(comparedRuler, ConstantValue.MARKED);
 
-							Map<String, Set<Integer>> neigTypeDomedMap = new HashMap<>();
+							Map<String, boolean[]> neigTypeDomedMap = new HashMap<>();
 							Map<String, Set<Integer>> neigTypeDomingMap = new HashMap<>();
 
 							/*
-							 * because the vertices in the vertex cover can dominate other
-							 * vertices in the vertex cover,they are considered
+							 * because the vertices in the vertex cover can dominate other vertices in the
+							 * vertex cover,they are considered
 							 */
 							for (int cVIdx : c) {
-								Set<Integer> domedVerSet = new HashSet<>();
+								// Set<Integer> domedVerSet = new HashSet<>();
 
 								int[] cVNeigs = gviStarIdxAL[cVIdx];
 
-								byte ruler[] = new byte[cLen];
+								boolean ruler[] = new boolean[cLen];
 								Arrays.fill(ruler, ConstantValue.UNMARKED);
 
 								// the vertex can dominated by itself
 								int pos = Util.findPos(c, cLen, cVIdx);
 								ruler[pos] = ConstantValue.MARKED;
-								domedVerSet.add(cVIdx);
+								// domedVerSet.add(cVIdx);
 								for (int cVNeigIdx : cVNeigs) {
 									/*
-									 * the position of the dominated vertex in the vertex cover will
-									 * set 1
+									 * the position of the dominated vertex in the vertex cover will set 1
 									 * 
-									 * a neighbour of the vertex is likely not to be in the vertex
-									 * cover
+									 * a neighbour of the vertex is likely not to be in the vertex cover
 									 */
 									pos = Util.findPos(c, cLen, cVNeigIdx);
 									if (pos != ConstantValue.IMPOSSIBLE_VALUE) {
 										ruler[pos] = ConstantValue.MARKED;
-										domedVerSet.add(cVNeigIdx);
+										// domedVerSet.add(cVNeigIdx);
 									}
 								}
 
 								String rulerStr = Util.arrayToString(ruler);
 								if (!neigTypeDomedMap.containsKey(rulerStr)) {
-									neigTypeDomedMap.put(rulerStr, domedVerSet);
+									// neigTypeDomedMap.put(rulerStr, domedVerSet);
+									neigTypeDomedMap.put(rulerStr, ruler);
 									Set<Integer> domingVerSet = new HashSet<>();
 									domingVerSet.add(cVIdx);
 									neigTypeDomingMap.put(rulerStr, domingVerSet);
@@ -266,33 +256,33 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 							}
 
 							/*
-							 * because the vertices in the independent set can dominate
-							 * vertices in the vertex cover,they are considered
+							 * because the vertices in the independent set can dominate vertices in the
+							 * vertex cover,they are considered
 							 */
 							for (int bVIdx : b) {
 
-								Set<Integer> domedVerSet = new HashSet<>();
+								// Set<Integer> domedVerSet = new HashSet<>();
 
 								int[] bVNeigs = gviStarIdxAL[bVIdx];
 
-								byte ruler[] = new byte[cLen];
+								boolean ruler[] = new boolean[cLen];
 								Arrays.fill(ruler, ConstantValue.UNMARKED);
 
 								for (int bVNeigIdx : bVNeigs) {
 									/*
-									 * the position of the dominate vertex in the vertex cover will
-									 * set 1
+									 * the position of the dominate vertex in the vertex cover will set 1
 									 */
 									int pos = Util.findPos(c, cLen, bVNeigIdx);
 									if (pos != ConstantValue.IMPOSSIBLE_VALUE) {
 										ruler[pos] = ConstantValue.MARKED;
-										domedVerSet.add(bVNeigIdx);
+										// domedVerSet.add(bVNeigIdx);
 									}
 								}
 
 								String rulerStr = Util.arrayToString(ruler);
 								if (!neigTypeDomedMap.containsKey(rulerStr)) {
-									neigTypeDomedMap.put(rulerStr, domedVerSet);
+									// neigTypeDomedMap.put(rulerStr, domedVerSet);
+									neigTypeDomedMap.put(rulerStr, ruler);
 									Set<Integer> domingVerSet = new HashSet<>();
 									domingVerSet.add(bVIdx);
 									neigTypeDomingMap.put(rulerStr, domingVerSet);
@@ -303,26 +293,46 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 								}
 
 							}
-							System.out.println(b);
 
-							// 11. List<List<Integer>> typDomedMap -> msc3 fpt->d3
-							IMSC msc = new MSC3(neigTypeDomedMap);
-							ReturnResult<String> rr = msc.run(); 
-							Set<String> sc=rr.getResults();
-							int scSize=rr.getResultSize();
+							// 11. choose all possible r out of the neighTypeDomedMap to check if there is a
+							// solution
+							Ruler[] rulers = Util.converRulerMapToArray(neigTypeDomedMap);
+							List<List<Ruler>> allRCombins = Util.combineRuler(rulers, r);
+							boolean getRResult=false;
+							List<Ruler> validResult=null;
+							for(List<Ruler> rulerCom:allRCombins) {
+								getRResult= Util.validCombin(rulerCom);
+								if(getRResult) {
+									validResult=rulerCom;
+									break;
+								}
+							}
 							
-							// 12. if d3==null || |d3|>=|d2| continue;
-							// 13. else (|d3|<|d2|)
-							// 13.a gv.sol \ gv.stepU
-							// 13.b gv.domed = false for N[gv.stepU] in gv
-							// 13.c gv.added= false for N[gv.stepU] in gv
-							// 13.c.1 resetweight(gv)
-							// 13.d delete gvi.stepU,gvi.stepV from gvi
-							// 13.e gvi.add N[d3]
-							// 13.f gvi.stepU=d3, gvi.StepV=N[d3] staring from 0
-							// 13.d gv.sol U N[d3]
-							// 13.e gv.domed=true for N[d3->getverbyidx] in gv
-							// 13.f gv.added=true for N[d3->getverbyidx] in gv
+							
+							System.out.println(b);
+							if(!getRResult) {
+								// 12. if d3==null || |d3|>=|d2| continue;
+								continue;
+							}else {
+								int[] d3=Util.convertRResultToSet(validResult, r, neigTypeDomingMap);
+								System.out.println(d3);
+								
+								
+								// 13.a gv.sol \ gv.stepU
+								// 13.b gv.domed = false for N[gv.stepU] in gv
+								// 13.c gv.added= false for N[gv.stepU] in gv
+								// 13.c.1 resetweight(gv)
+								// 13.d delete gvi.stepU,gvi.stepV from gvi
+								// 13.e gvi.add N[d3]
+								// 13.f gvi.stepU=d3, gvi.StepV=N[d3] staring from 0
+								// 13.d gv.sol U N[d3]
+								// 13.e gv.domed=true for N[d3->getverbyidx] in gv
+								// 13.f gv.added=true for N[d3->getverbyidx] in gv
+							}
+
+							
+							
+			
 							b = null;
 							c = null;
 							gviStar = null;

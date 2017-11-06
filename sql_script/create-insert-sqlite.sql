@@ -1,3 +1,21 @@
+Skip to content
+This repository
+Search
+Pull requests
+Issues
+Marketplace
+Explore
+ @waking999
+ Sign out
+ Unwatch 1
+  Star 0  Fork 0 waking999/dds
+ Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
+Branch: master Find file Copy pathdds/sql_script/create-insert-sqlite.sql
+9bebe4e  20 hours ago
+ waking999 add ads steps
+0 contributors
+RawBlameHistory     
+Executable File  151 lines (125 sloc)  13 KB
 
 drop table IF EXISTS "dataset";
 CREATE TABLE "dataset" (
@@ -88,34 +106,27 @@ CREATE TABLE "instance_ds_opt" (
     allowed_running_time INTEGER,
 	FOREIGN KEY(i_id) REFERENCES "v_instance"(i_id)
 );
-
  
-
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_1',12,12,14,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_2',12,12,14,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_3',12,12,14,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_4',12,12,14,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_5',12,12,14,0);
-
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_6',14,14,16,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_7',14,14,16,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_8',15,15,17,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_9',17,17,19,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_10',14,14,16,0);
-
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_11',16,16,18,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_12',17,17,19,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_13',17,17,19,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_14',17,17,19,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_15',16,16,18,0);
-
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_16',18,18,20,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_17',19,19,21,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_18',18,18,20,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_19',18,18,20,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('2_20',19,19,21,0);
-
-
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('3_1',18,20,22,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('3_2',13,15,17,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('3_3',52,52,55,0);
@@ -125,7 +136,6 @@ INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unacce
 VALUES ('3_6',241,241,243,0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('3_7',416,416,419,  0);
 INSERT INTO "instance_ds_opt" (i_id,best_result_size,accepted_result_size,unaccepted_result_size,allowed_running_time) VALUES ('3_8',10,10,12, 0);
-
 */
 drop view if exists "v_instance_opt";
 
@@ -149,3 +159,4 @@ CREATE TABLE "alg1running" (
 	FOREIGN KEY(i_id) REFERENCES "v_instance"(i_id)
 );
 */
+ 

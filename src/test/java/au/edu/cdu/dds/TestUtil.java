@@ -106,7 +106,7 @@ public class TestUtil {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static void basicFunc(String className, String dataSetName, IAlgorithm algo, Logger log, int kLower,
+	public static void basicLoopFunc(String className, String dataSetName, IAlgorithm algo, Logger log, int kLower,
 			int kUpper) throws FileNotFoundException, IOException, InterruptedException {
 		// get the info of the instances of a certain dataset such as id, code, path
 		List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
@@ -114,7 +114,7 @@ public class TestUtil {
 		// loop to run the algorithm with the instance info and write to db
 		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
 
-		DBParameter dbpOut = null;
+		 
 		String batchNum = Util.getBatchNum();
 
 		for (Map<String, String> map : lst) {
@@ -128,30 +128,8 @@ public class TestUtil {
 			try {
 				for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
 					for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
-						// read file
-						GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
-						algo.setGV(gv);
-						algo.setKR(tmpK, tmpR);
-						long start = System.nanoTime();
-						// run algorithm
-						algo.compute();
-						long end = System.nanoTime();
-
-						// ensure the solution is valid
-						Assert.assertTrue(Util.isValidSolution(gv));
-
-						// write to db
-						DBOperation.createTable(algTableName);
-						dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, tmpK, tmpR, className);
-						DBOperation.executeInsert(dbpOut);
-
-						dbpOut = null;
-
-						// write to console
-						StringBuffer sb = new StringBuffer();
-						sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
-								.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
-						log.debug(sb.toString());
+						basicFunc(className, algo, log, batchNum, id, instanceCode, algTableName, inputFile, tmpK,
+								tmpR);
 					}
 				}
 			} catch (Exception e) {
@@ -160,6 +138,35 @@ public class TestUtil {
 			}
 
 		}
+	}
+
+	public static void basicFunc(String className, IAlgorithm algo, Logger log, String batchNum, String id,
+			String instanceCode, String algTableName, String inputFile, int k, int r) throws IOException {
+		DBParameter dbpOut;
+		// read file
+		GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
+		algo.setGV(gv);
+		algo.setKR(k, r);
+		long start = System.nanoTime();
+		// run algorithm
+		algo.compute();
+		long end = System.nanoTime();
+
+		// ensure the solution is valid
+		Assert.assertTrue(Util.isValidSolution(gv));
+
+		// write to db
+		DBOperation.createTable(algTableName);
+		dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, k, r, className);
+		DBOperation.executeInsert(dbpOut);
+
+		dbpOut = null;
+
+		// write to console
+		StringBuffer sb = new StringBuffer();
+		sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
+				.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
+		log.debug(sb.toString());
 	}
 
 	/**
@@ -427,16 +434,20 @@ public class TestUtil {
 		String outputStr = Arrays.toString(output);
 		Assert.assertTrue(expectStr.equals(outputStr));
 	}
+	 
 
 	public static void verifyUnsort(boolean[] expect, boolean[] output) {
 
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
-		String expectStr = Arrays.toString(expect);
-		String outputStr = Arrays.toString(output);
-		Assert.assertTrue(expectStr.equals(outputStr));
+		
+		boolean cmp = Util.verifyUnsort(expect, output);
+		
+		Assert.assertTrue(cmp);
 	}
+
+
 
 	public static void verifySort(float[] expect, float[] output) {
 
