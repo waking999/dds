@@ -8,16 +8,16 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import au.edu.cdu.dds.LogUtil;
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.LogUtil;
 
 public class GreedyVoteH2LTest {
-	private Logger log = LogUtil.getLogger(GreedyVoteH2LTest.class);
+	private Logger log = LogUtil.getLogger(GreedyVoteH2LTest.class.getSimpleName());
 	private static final String CLASS_NAME = GreedyVoteH2LTest.class.getSimpleName();
 
 	@Ignore
@@ -41,7 +41,7 @@ public class GreedyVoteH2LTest {
 
 		TestUtil.verifySort(expect, sol);
 	}
-
+	
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 		IAlgorithm algo = new GreedyVoteH2L();

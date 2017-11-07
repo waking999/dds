@@ -3,12 +3,10 @@ package au.edu.cdu.dds.algo.ds;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import au.edu.cdu.dds.LogUtil;
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
@@ -18,7 +16,7 @@ import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HDDSTest {
-	private Logger log = LogUtil.getLogger(GreedyVoteL2HDDSTest.class);
+	// private Logger log = LogUtil.getLogger(GreedyVoteL2HDDSTest.class);
 	private static final String CLASS_NAME = GreedyVoteL2HDDSTest.class.getSimpleName();
 
 	@Ignore
@@ -55,7 +53,7 @@ public class GreedyVoteL2HDDSTest {
 		int r = 7;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 
-		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log, k, r);
+		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r);
 	}
 
 	@Ignore
@@ -75,7 +73,7 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFunc(CLASS_NAME, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r);
 	}
 
 	@Ignore
@@ -95,7 +93,7 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFunc(CLASS_NAME, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r);
 	}
 
 	@Ignore
@@ -115,11 +113,10 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
-				inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
 	}
 
-	//run
+	// run
 	@Ignore
 	@Test
 	public void testKONECT_LoopKR_HamsterFul() throws InterruptedException, IOException, FileNotFoundException {
@@ -137,10 +134,9 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
-				inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
 	}
-	
+
 	@Ignore
 	@Test
 	public void testKONECT_LoopKR_DavidCopperfield() throws InterruptedException, IOException, FileNotFoundException {
@@ -158,10 +154,10 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
-				inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
 	}
-	//run
+
+	// run
 	@Ignore
 	@Test
 	public void testKONECT_LoopKR_Powergrid() throws InterruptedException, IOException, FileNotFoundException {
@@ -179,8 +175,7 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
-				inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
 	}
 
 	@Ignore
@@ -197,6 +192,6 @@ public class GreedyVoteL2HDDSTest {
 		int kLower = 10;
 		int kUpper = 10;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log, kLower, kUpper);
+		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, kLower, kUpper);
 	}
 }

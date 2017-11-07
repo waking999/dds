@@ -8,22 +8,23 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import au.edu.cdu.dds.LogUtil;
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.LogUtil;
 
 public class GreedyVoteL2HAddTest {
-	private Logger log = LogUtil.getLogger(GreedyVoteL2HAddTest.class);
-	private static final String CLASS_NAME = GreedyVoteL2HAddTest.class.getSimpleName();
+	private static final String CLASS_NAME = GreedyVoteL2HTest.class.getSimpleName();
+	private Logger log = LogUtil.getLogger(CLASS_NAME);
 
 	@Ignore
 	public void testIgnore() {
 
 	}
+
 	@Ignore
 	@Test
 	public void test0() throws IOException {
@@ -47,7 +48,7 @@ public class GreedyVoteL2HAddTest {
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 
 		IAlgorithm algo = new GreedyVoteL2HAdd();
-		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
+		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo,log);
 	}
 
 	@Ignore
@@ -57,11 +58,12 @@ public class GreedyVoteL2HAddTest {
 		String batchNum = "20171103-0056";
 		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
+
 	@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 
 		IAlgorithm algo = new GreedyVoteL2HAdd();
-		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log);
+		TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo,log);
 	}
 }

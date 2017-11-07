@@ -8,22 +8,24 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import au.edu.cdu.dds.LogUtil;
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.LogUtil;
 
 public class GreedyVoteL2HTest {
-	private Logger log = LogUtil.getLogger(GreedyVoteL2HTest.class);
+
 	private static final String CLASS_NAME = GreedyVoteL2HTest.class.getSimpleName();
+	private Logger log = LogUtil.getLogger(CLASS_NAME);
 
 	@Ignore
 	public void testIgnore() {
 
 	}
+
 	@Ignore
 	@Test
 	public void test0() throws IOException {
@@ -57,6 +59,7 @@ public class GreedyVoteL2HTest {
 		String batchNum = "20171103-0957";
 		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
+
 	@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {

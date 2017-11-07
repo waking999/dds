@@ -120,8 +120,8 @@ public class TestUtil {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static void basicFuncLoopInsLoopKR(String className, String dataSetName, IAlgorithm algo, Logger log,
-			int kLower, int kUpper) throws FileNotFoundException, IOException, InterruptedException {
+	public static void basicFuncLoopInsLoopKR(String className, String dataSetName, IAlgorithm algo, int kLower,
+			int kUpper) throws FileNotFoundException, IOException, InterruptedException {
 		/*
 		 * get the info of the instances of a certain dataset such as id, code,
 		 * path
@@ -142,8 +142,7 @@ public class TestUtil {
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
-				basicFuncLoopKR(className, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
-						inputFile);
+				basicFuncLoopKR(className, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
 			} catch (Exception e) {
 
 				continue;
@@ -168,11 +167,11 @@ public class TestUtil {
 	 * @param inputFile
 	 * @throws IOException
 	 */
-	public static void basicFuncLoopKR(String className, IAlgorithm algo, Logger log, int kLower, int kUpper,
-			String batchNum, String id, String instanceCode, String algTableName, String inputFile) throws IOException {
+	public static void basicFuncLoopKR(String className, IAlgorithm algo, int kLower, int kUpper, String batchNum,
+			String id, String instanceCode, String algTableName, String inputFile) throws IOException {
 		for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
 			for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
-				basicFunc(className, algo, log, batchNum, id, instanceCode, algTableName, inputFile, tmpK, tmpR);
+				basicFunc(className, algo, batchNum, id, instanceCode, algTableName, inputFile, tmpK, tmpR);
 			}
 		}
 	}
@@ -188,8 +187,7 @@ public class TestUtil {
 	 * @param k
 	 * @param r
 	 */
-	public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, Logger log, int k,
-			int r) {
+	public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, int k, int r) {
 		/*
 		 * get the info of the instances of a certain dataset such as id, code,
 		 * path
@@ -210,7 +208,7 @@ public class TestUtil {
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
-				basicFunc(className, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+				basicFunc(className, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r);
 			} catch (Exception e) {
 
 				continue;
@@ -235,8 +233,8 @@ public class TestUtil {
 	 * @param r
 	 * @throws IOException
 	 */
-	public static void basicFunc(String className, IAlgorithm algo, Logger log, String batchNum, String id,
-			String instanceCode, String algTableName, String inputFile, int k, int r) throws IOException {
+	public static void basicFunc(String className, IAlgorithm algo, String batchNum, String id, String instanceCode,
+			String algTableName, String inputFile, int k, int r) throws IOException {
 		DBParameter dbpOut;
 		// read file
 		GlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
@@ -261,7 +259,7 @@ public class TestUtil {
 		StringBuffer sb = new StringBuffer();
 		sb.append(instanceCode).append(":").append(g.getIdxSolSize()).append(":")
 				.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
-		log.debug(sb.toString());
+		// log.debug(sb.toString());
 	}
 
 	/**
