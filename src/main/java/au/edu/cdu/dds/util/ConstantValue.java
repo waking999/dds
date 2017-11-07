@@ -50,7 +50,7 @@ public class ConstantValue {
 	public static final String DB_COL_K = "k";
 	public static final String DB_COL_R = "r";
 
-	public static final String TBL_ALG_PREFIX = "algRunning_";
+	public static final String TBL_ALG_PREFIX = "result_";
 
 	public static final String CLN_MODE_DROP = "drop";
 	public static final String CLN_MODE_DEL = "delete";

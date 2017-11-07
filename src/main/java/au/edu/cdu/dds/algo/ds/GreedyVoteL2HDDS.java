@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
@@ -19,6 +18,7 @@ import au.edu.cdu.dds.util.Util;
  * order of weight is listed from lowest to highest. during the period, a new
  * graph starting from empty to the final graph step by step of adding vertices.
  * In addition, a dds fpt subroutine will be invoked.
+ * 
  * @author kwang
  */
 public class GreedyVoteL2HDDS implements IAlgorithm {
@@ -283,10 +283,13 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									idxSol[idxSolSize - 1] = tmp;
 									idxSolSize--;
 								}
-							
+
 								// TestUtil.printGlobalVariableStatus(g);
 
 								// recover weight
+								if (p >= k) {
+									p = p % k;
+								}
 								g.setIdxWeight(gStepWeight[p]);
 								// TestUtil.printGlobalVariableStatus(g);
 
@@ -294,16 +297,16 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 								 * N[d2ToRemove]\N[gi.sol\d2ToRemove]\giD2Add in gi:
 								 * delete from gi
 								 */
-								//TestUtil.printGlobalVariableStatus(gi);
+								// TestUtil.printGlobalVariableStatus(gi);
 								int[] giIdxSolToKeep = Util.set1Minus2(giIdxSol, giIdxSolSize, giD2Rm, giD2Rm.length);
 								Set<Integer> giIdxSolToKeepNeigs = AlgoUtil.getCloseNeigs(gi, giIdxSolToKeep);
 								Set<Integer> giD2RmNeigs = AlgoUtil.getCloseNeigs(gi, giD2Rm);
 								int[] giIdxSetD = Util.set1Minus2(giD2RmNeigs, giIdxSolToKeepNeigs);
-								giIdxSetD=Util.set1Minus2(giIdxSetD,giIdxSetD.length, giD2Add,giD2Add.length);
+								giIdxSetD = Util.set1Minus2(giIdxSetD, giIdxSetD.length, giD2Add, giD2Add.length);
 								for (int vIdxD : giIdxSetD) {
 									AlgoUtil.deleteVertex(gi, vIdxD);
 								}
-								//TestUtil.printGlobalVariableStatus(gi);
+								// TestUtil.printGlobalVariableStatus(gi);
 
 								/*
 								 * for giD2Rm in gi:
@@ -316,7 +319,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									giIdxSol[pos] = giIdxSol[giIdxSolSize - 1];
 									giIdxSol[giIdxSolSize - 1] = tmp;
 									giIdxSolSize--;
-								}						 
+								}
 								// TestUtil.printGlobalVariableStatus(gi);
 
 								// the vertices to be added:
@@ -324,7 +327,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 								 * for N[d2ToAdd] in g:
 								 * domed=true;
 								 */
-								//TestUtil.printGlobalVariableStatus(g);
+								// TestUtil.printGlobalVariableStatus(g);
 								Set<Integer> d2AddNeigs = AlgoUtil.getCloseNeigs(g, d2Add);
 								for (int vIdxT : d2AddNeigs) {
 									idxDomed[vIdxT] = true;
@@ -334,25 +337,25 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 								 * add to sol
 								 * adjustWeight;
 								 */
-								//TestUtil.printGlobalVariableStatus(g);
-								for(int uIdxT: d2Add) {
-									idxAdded[uIdxT]=true;
+								// TestUtil.printGlobalVariableStatus(g);
+								for (int uIdxT : d2Add) {
+									idxAdded[uIdxT] = true;
 									AlgoUtil.adjustWeight(g, uIdxT);
-									idxSol[idxSolSize++]=uIdxT;
+									idxSol[idxSolSize++] = uIdxT;
 								}
 								g.setIdxSol(idxSol);
 								g.setIdxSolSize(idxSolSize);
-								//TestUtil.printGlobalVariableStatus(g);
+								// TestUtil.printGlobalVariableStatus(g);
 								/* 
 								 * for giD2ToAdd in gi:
 								 * add to gisol
 								 */
-								for(int giUIdxT:giD2Add) {
-									giIdxSol[giIdxSolSize++]=giUIdxT;
+								for (int giUIdxT : giD2Add) {
+									giIdxSol[giIdxSolSize++] = giUIdxT;
 								}
 								gi.setIdxSol(giIdxSol);
-								gi.setIdxSolSize(giIdxSolSize);;
-								
+								gi.setIdxSolSize(giIdxSolSize);
+							 
 
 								// 13.e gi.add N[d2ToAdd]
 								// 13.d g.sol U N[d2ToAdd]
@@ -604,7 +607,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		// we don't allow this to be true, otherwise, it always get a blank
 		// d1 at the first k.
 		if ((p < k) && (stepV[p] == ConstantValue.IMPOSSIBLE_VALUE) && (p > 1)) {
-			return true;
+			return false;
 		}
 
 		/*

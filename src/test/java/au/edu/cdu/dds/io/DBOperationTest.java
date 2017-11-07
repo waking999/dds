@@ -12,9 +12,10 @@ import au.edu.cdu.dds.util.ConstantValue;
 public class DBOperationTest {
 	@Ignore
 	public void testIgnore() {
-		
+
 	}
 
+	@Ignore
 	@Test
 	public void testExecuteQuery() throws Exception {
 		DBParameter dbp = new DBParameter();
@@ -34,6 +35,7 @@ public class DBOperationTest {
 		Assert.assertTrue(lst.size() > 0);
 	}
 
+	@Ignore
 	@Test
 	public void testExecuteQuery2() throws Exception {
 		DBParameter dbp = new DBParameter();
@@ -56,6 +58,7 @@ public class DBOperationTest {
 
 	}
 
+	@Ignore
 	@Test
 	public void testExecuteQuery3() throws Exception {
 		DBParameter dbp = new DBParameter();
@@ -101,7 +104,7 @@ public class DBOperationTest {
 	 * 
 	 * }
 	 */
-	
+
 	@Ignore
 	@Test
 	public void testCleanAlgoTablesDel() {
@@ -116,7 +119,7 @@ public class DBOperationTest {
 
 	}
 
-	@Ignore
+	// @Ignore
 	@Test
 	public void testCleanAlgoTablesDrop() {
 
@@ -124,5 +127,4 @@ public class DBOperationTest {
 		DBOperation.cleanAlgoTables(ConstantValue.CLN_MODE_DROP, ConstantValue.DATASET_BHOSLIB, null);
 	}
 
-	
 }

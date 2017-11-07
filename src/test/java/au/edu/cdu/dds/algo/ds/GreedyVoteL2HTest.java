@@ -24,7 +24,7 @@ public class GreedyVoteL2HTest {
 	public void testIgnore() {
 
 	}
-
+	@Ignore
 	@Test
 	public void test0() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
@@ -57,7 +57,7 @@ public class GreedyVoteL2HTest {
 		String batchNum = "20171103-0957";
 		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
-
+	@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 

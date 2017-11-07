@@ -388,7 +388,6 @@ public class DBOperation {
 			sb.append(" result_size INTEGER,\n");
 			sb.append(" running_nano_sec INTEGER,\n");
 			sb.append(" batch_num varchar2(30),\n");
-			sb.append(" algorithm varchar2(30),\n");
 			sb.append(" FOREIGN KEY(i_id) REFERENCES \"v_instance\"(i_id)\n");
 			sb.append(");");
 
@@ -432,43 +431,36 @@ public class DBOperation {
 	}
 
 	/**
-	 * drop algorithm tables
+	 * drop algorithm table
 	 * 
-	 * @param dataSetName
+	 * @param algorithmNam
 	 */
-	private static void cleanAlgoTableDrop(String dataSetName) {
-		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
-		for (Map<String, String> map : lst) {
-			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String id = map.get(ConstantValue.DB_COL_INS_ID);
-			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
-			executeDrop(algTableName);
-		}
+	private static void cleanAlgoTableDrop(String algorithmNam) {
+
+		String algTableName = DBOperation.getAlgorithmTableName(algorithmNam);
+		executeDrop(algTableName);
+
 	}
 
 	/**
-	 * delete data from algorithm tables
+	 * delete data from a algorithm table
 	 * 
-	 * @param dataSetName
+	 * @param algorithmNam
 	 * @param dbp
 	 */
-	private static void cleanAlgoTableDel(String dataSetName, DBParameter dbp) {
-		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
-		for (Map<String, String> map : lst) {
-			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String id = map.get(ConstantValue.DB_COL_INS_ID);
-			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
-			executeDel(algTableName, dbp);
-		}
+	private static void cleanAlgoTableDel(String algorithmNam, DBParameter dbp) {
+
+		String algTableName = DBOperation.getAlgorithmTableName(algorithmNam);
+		executeDel(algTableName, dbp);
+
 	}
 
 	/**
-	 * @param instanceCode
-	 * @param id
+	 * @param algorithmNam, algorithm name
 	 * @return
 	 */
-	public static String getAlgorithmTableName(String instanceCode, String id) {
-		String algTableName = ConstantValue.TBL_ALG_PREFIX + id + "_" + instanceCode;
+	public static String getAlgorithmTableName(String algorithmNam) {
+		String algTableName = ConstantValue.TBL_ALG_PREFIX +  algorithmNam;
 		return algTableName;
 	}
 

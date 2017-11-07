@@ -50,31 +50,137 @@ public class GreedyVoteL2HDDSTest {
 
 	@Ignore
 	@Test
-	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
-		int kLower = 10;
-		int kUpper = 10;
+	public void testKONECT_LoopIns() throws InterruptedException, IOException, FileNotFoundException {
+		int k = 10;
+		int r = 7;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 
-		TestUtil.basicLoopFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log, kLower, kUpper);
+		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log, k, r);
 	}
 
+	@Ignore
 	@Test
 	public void testKONECT_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
 
 		int k = 20;
-		int r =7;
+		int r = 7;
 		String id = "3_03";
 		String instanceCode = "Dolphins";
 		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
 		String dataSetPath = "/KONECT";
 		String pathName = "/000062_dolphins.konect";
 		String inputFile = resourcePath + dataSetPath + pathName;
-		String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
 
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
 		TestUtil.basicFunc(CLASS_NAME, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+	}
+
+	@Ignore
+	@Test
+	public void testKONECT_Rovira() throws InterruptedException, IOException, FileNotFoundException {
+
+		int k = 20;
+		int r = 7;
+		String id = "3_07";
+		String instanceCode = "Rovira";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/001133_rovira.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFunc(CLASS_NAME, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+	}
+
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_Rovira() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 3;
+		int kUpper = 50;
+		String id = "3_07";
+		String instanceCode = "Rovira";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/001133_rovira.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
+				inputFile);
+	}
+
+	//run
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_HamsterFul() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 26;
+		int kUpper = 50;
+		String id = "3_10";
+		String instanceCode = "HamsterFul";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/002426_hamster_ful.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
+				inputFile);
+	}
+	
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_DavidCopperfield() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 2;
+		int kUpper = 20;
+		String id = "3_04";
+		String instanceCode = "DavidCopperfield";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/000112_David_Copperfield.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
+				inputFile);
+	}
+	//run
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_Powergrid() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 3;
+		int kUpper = 50;
+		String id = "3_13";
+		String instanceCode = "Powergrid";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/004941_powergrid.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
+				inputFile);
 	}
 
 	@Ignore
@@ -91,6 +197,6 @@ public class GreedyVoteL2HDDSTest {
 		int kLower = 10;
 		int kUpper = 10;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-		TestUtil.basicLoopFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log, kLower, kUpper);
+		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log, kLower, kUpper);
 	}
 }

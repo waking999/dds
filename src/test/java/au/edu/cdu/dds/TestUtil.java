@@ -32,6 +32,7 @@ public class TestUtil {
 
 	/**
 	 * get the base path of the project
+	 * 
 	 * @return
 	 */
 	public static String getBasePath() {
@@ -70,13 +71,13 @@ public class TestUtil {
 			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
 			String id = map.get(ConstantValue.DB_COL_INS_ID);
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
+			String algTableName = DBOperation.getAlgorithmTableName(className);
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
 				// read file
-				GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
-				algo.setGlobalVariable(gv);
+				GlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
+				algo.setGlobalVariable(g);
 
 				long start = System.nanoTime();
 				// run algorithm
@@ -84,18 +85,18 @@ public class TestUtil {
 				long end = System.nanoTime();
 
 				// ensure the solution is valid
-				Assert.assertTrue(AlgoUtil.isValidSolution(gv));
+				Assert.assertTrue(AlgoUtil.isValidSolution(g));
 
 				// write to db
 				DBOperation.createTable(algTableName);
-				dbpOut = getDBParamOutput(algTableName, batchNum, id, gv, start, end, className);
+				dbpOut = getDBParamOutput(algTableName, batchNum, id, g, start, end, className);
 				DBOperation.executeInsert(dbpOut);
 
 				dbpOut = null;
 
 				// write to console
 				StringBuffer sb = new StringBuffer();
-				sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
+				sb.append(instanceCode).append(":").append(g.getIdxSolSize()).append(":")
 						.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
 				log.debug(sb.toString());
 			} catch (Exception e) {
@@ -119,8 +120,8 @@ public class TestUtil {
 	 * @throws IOException
 	 * @throws InterruptedException
 	 */
-	public static void basicLoopFunc(String className, String dataSetName, IAlgorithm algo, Logger log, int kLower,
-			int kUpper) throws FileNotFoundException, IOException, InterruptedException {
+	public static void basicFuncLoopInsLoopKR(String className, String dataSetName, IAlgorithm algo, Logger log,
+			int kLower, int kUpper) throws FileNotFoundException, IOException, InterruptedException {
 		/*
 		 * get the info of the instances of a certain dataset such as id, code,
 		 * path
@@ -137,16 +138,79 @@ public class TestUtil {
 			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
 			String id = map.get(ConstantValue.DB_COL_INS_ID);
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
+			String algTableName = DBOperation.getAlgorithmTableName(className);
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
-				for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
-					for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
-						basicFunc(className, algo, log, batchNum, id, instanceCode, algTableName, inputFile, tmpK,
-								tmpR);
-					}
-				}
+				basicFuncLoopKR(className, algo, log, kLower, kUpper, batchNum, id, instanceCode, algTableName,
+						inputFile);
+			} catch (Exception e) {
+
+				continue;
+			}
+		}
+	}
+
+	/**
+	 * the basic structure to run algorithms and write to db
+	 * loop on k, r to get result on one instance
+	 * which is used for greedy dds algorithms
+	 * 
+	 * @param className
+	 * @param algo
+	 * @param log
+	 * @param kLower
+	 * @param kUpper
+	 * @param batchNum
+	 * @param id
+	 * @param instanceCode
+	 * @param algTableName
+	 * @param inputFile
+	 * @throws IOException
+	 */
+	public static void basicFuncLoopKR(String className, IAlgorithm algo, Logger log, int kLower, int kUpper,
+			String batchNum, String id, String instanceCode, String algTableName, String inputFile) throws IOException {
+		for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
+			for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
+				basicFunc(className, algo, log, batchNum, id, instanceCode, algTableName, inputFile, tmpK, tmpR);
+			}
+		}
+	}
+
+	/**
+	 * the basic structure to run algorithms and write to db
+	 * loop on instance with specified k,r
+	 * 
+	 * @param className
+	 * @param dataSetName
+	 * @param algo
+	 * @param log
+	 * @param k
+	 * @param r
+	 */
+	public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, Logger log, int k,
+			int r) {
+		/*
+		 * get the info of the instances of a certain dataset such as id, code,
+		 * path
+		 */
+		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
+
+		// loop to run the algorithm with the instance info and write to db
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+
+		String batchNum = Util.getBatchNum();
+
+		for (Map<String, String> map : lst) {
+			String dataSetPath = map.get(ConstantValue.DB_COL_DATASET_PATH_NAME);
+			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
+			String id = map.get(ConstantValue.DB_COL_INS_ID);
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String algTableName = DBOperation.getAlgorithmTableName(className);
+
+			String inputFile = resourcePath + dataSetPath + pathName;
+			try {
+				basicFunc(className, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
 			} catch (Exception e) {
 
 				continue;
@@ -175,8 +239,8 @@ public class TestUtil {
 			String instanceCode, String algTableName, String inputFile, int k, int r) throws IOException {
 		DBParameter dbpOut;
 		// read file
-		GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
-		algo.setGlobalVariable(gv);
+		GlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
+		algo.setGlobalVariable(g);
 		algo.setKR(k, r);
 		long start = System.nanoTime();
 		// run algorithm
@@ -184,18 +248,18 @@ public class TestUtil {
 		long end = System.nanoTime();
 
 		// ensure the solution is valid
-		Assert.assertTrue(AlgoUtil.isValidSolution(gv));
+		Assert.assertTrue(AlgoUtil.isValidSolution(g));
 
 		// write to db
 		DBOperation.createTable(algTableName);
-		dbpOut = getDBParamOutput(algTableName, batchNum, id, gv, start, end, k, r, className);
+		dbpOut = getDBParamOutput(algTableName, batchNum, id, g, start, end, k, r);
 		DBOperation.executeInsert(dbpOut);
 
 		dbpOut = null;
 
 		// write to console
 		StringBuffer sb = new StringBuffer();
-		sb.append(instanceCode).append(":").append(gv.getIdxSolSize()).append(":")
+		sb.append(instanceCode).append(":").append(g.getIdxSolSize()).append(":")
 				.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
 		log.debug(sb.toString());
 	}
@@ -218,9 +282,9 @@ public class TestUtil {
 		dbpOut = new DBParameter();
 		dbpOut.setTableName(algTableName);
 		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
-				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_ALGORITHM };
-		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()), Long.toString((end - start)),
-				algoName };
+				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME };
+		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()),
+				Long.toString((end - start)) };
 		dbpOut.setColPairNames(colPairNamesOut);
 		dbpOut.setColPairValues(colPairValuesOut);
 		return dbpOut;
@@ -239,15 +303,15 @@ public class TestUtil {
 	 * @return
 	 */
 	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, GlobalVariable gv,
-			long start, long end, int tmpK, int tmpR, String algoName) {
+			long start, long end, int k, int r) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
 		dbpOut.setTableName(algTableName);
 		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
 				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_K,
-				ConstantValue.DB_COL_R, ConstantValue.DB_COL_ALGORITHM };
+				ConstantValue.DB_COL_R };
 		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()), String.valueOf(end - start),
-				String.valueOf(tmpK), String.valueOf(tmpR), algoName };
+				String.valueOf(k), String.valueOf(r) };
 		dbpOut.setColPairNames(colPairNamesOut);
 		dbpOut.setColPairValues(colPairValuesOut);
 		return dbpOut;
@@ -257,37 +321,36 @@ public class TestUtil {
 	 * print status of global variables in a format
 	 *
 	 * @param gv,
-	 * global variables
+	 *            global variables
 	 */
 	public static void printGlobalVariableStatus(GlobalVariable gv) {
 		String styleStr = "%-6s %-6s %-6s %-6s %-15s %-6s %-15s %-40s %-40s";
 
 		int[] idxLst = gv.getIdxLst();
 		int actVerCnt = gv.getActVerCnt();
-		int verCnt = gv.getVerCnt(); 
+		int verCnt = gv.getVerCnt();
 		int[] idxDegree = gv.getIdxDegree();
 		int[][] idxAL = gv.getIdxAL();
 		int[][] idxIM = gv.getIdxIM();
-		boolean[] idxDomed=gv.getIdxDomed();
-		boolean[] idxAdded=gv.getIdxAdded();
-		float[] idxVote=gv.getIdxVote();
-		float[] idxWeight=gv.getIdxWeight();
+		boolean[] idxDomed = gv.getIdxDomed();
+		boolean[] idxAdded = gv.getIdxAdded();
+		float[] idxVote = gv.getIdxVote();
+		float[] idxWeight = gv.getIdxWeight();
 
 		int[] vL = gv.getLabLst();
 
-		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "degree", idxDegree, "domed", idxDomed, "vote", idxVote, "added", idxAdded,"weight", idxWeight, "vAL", idxAL, "vIM",	idxIM);
+		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "degree", idxDegree, "domed", idxDomed,
+				"vote", idxVote, "added", idxAdded, "weight", idxWeight, "vAL", idxAL, "vIM", idxIM);
 
-		int[] idxSol=gv.getIdxSol();
-		int idxSolSize=gv.getIdxSolSize();
-		StringBuffer sb=new StringBuffer();
+		int[] idxSol = gv.getIdxSol();
+		int idxSolSize = gv.getIdxSolSize();
+		StringBuffer sb = new StringBuffer();
 		sb.append(idxSolSize).append(":");
-		for(int i=0;i<idxSolSize;i++) {
+		for (int i = 0; i < idxSolSize; i++) {
 			sb.append(idxSol[i]).append(",");
 		}
 		System.out.println(sb.toString());
-		
-		
-		
+
 		System.out.println("--------------------------------------------------------");
 	}
 
@@ -310,17 +373,20 @@ public class TestUtil {
 	 * @param im
 	 */
 	private static void printStatus(String styleStr, int verCnt, int actVerCnt, String lName, int[] l, String ilName,
-			int[] il, String degName, int[] deg,  String domName, boolean[] dom, String voteName, float[] vote, String addName, boolean[] added, String weightName, float[] weight, String alName, int[][] al, String imName, int[][] im) {
-	 
+			int[] il, String degName, int[] deg, String domName, boolean[] dom, String voteName, float[] vote,
+			String addName, boolean[] added, String weightName, float[] weight, String alName, int[][] al,
+			String imName, int[][] im) {
+
 		System.out.println("Vertex Count:" + verCnt + ",Active Vertex Count:" + actVerCnt);
 		System.out.printf(styleStr, lName, ilName, degName, domName, voteName, addName, weightName, alName, imName);
 		System.out.println();
 		for (int i = 0; i < verCnt; i++) {
- 
-		 
-			System.out.printf(styleStr, i + " " + l[i], i + " " + il[i], i + " " + deg[i],i + " " + (dom[i]?"T":"F"),i + " " + String.format("%.4f",vote[i]),i + " " + (added[i]?"T":"F"),i + " " + String.format("%.4f", weight[i]),
+
+			System.out.printf(styleStr, i + " " + l[i], i + " " + il[i], i + " " + deg[i],
+					i + " " + (dom[i] ? "T" : "F"), i + " " + String.format("%.4f", vote[i]),
+					i + " " + (added[i] ? "T" : "F"), i + " " + String.format("%.4f", weight[i]),
 					i + " " + arrayToString(al[i]), arrayToString(im[i]));
-			
+
 			System.out.println();
 		}
 	}
@@ -470,7 +536,7 @@ public class TestUtil {
 
 		int expectLen = expect.length;
 		int outputSize = output.length;
-		Assert.assertTrue(expectLen == outputSize); 
+		Assert.assertTrue(expectLen == outputSize);
 		Assert.assertTrue(expectLen == outputSize);
 		String expectStr = Arrays.toString(expect);
 		String outputStr = Arrays.toString(output);
@@ -538,7 +604,7 @@ public class TestUtil {
 	 * convert an integer array to an integer list
 	 * 
 	 * @param a,
-	 * an integer array
+	 *            an integer array
 	 * @return an integer list
 	 */
 	public static Set<Integer> arrayToSet(int[] a) {

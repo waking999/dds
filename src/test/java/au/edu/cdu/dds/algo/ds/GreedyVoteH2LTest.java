@@ -24,6 +24,7 @@ public class GreedyVoteH2LTest {
 	public void testIgnore() {
 	}
 
+	@Ignore
 	@Test
 	public void test0() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
@@ -55,6 +56,7 @@ public class GreedyVoteH2LTest {
 		DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
 	}
 
+	@Ignore
 	@Test
 	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
 		IAlgorithm algo = new GreedyVoteH2L();
