@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Map;
 
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.Util;
 
 /**
  * this class is used for database operation including query, update and insert
@@ -19,7 +18,12 @@ import au.edu.cdu.dds.util.Util;
  * @author kwang
  */
 public class DBOperation {
-
+	/**
+	 * to get database connect to a specific db file
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
 	private static Connection getConnection() throws Exception {
 		String clzName = "org.sqlite.JDBC";
 		String dbName = "jdbc:sqlite:result/db/result.db";
@@ -48,7 +52,8 @@ public class DBOperation {
 	 * execute query by sql statement
 	 * 
 	 * @param dbp,
-	 *            db operation parameters
+	 *            db operation parameters, including table name, fields for select
+	 *            clause and conditions in where clause
 	 * @return query result map
 	 * @throws Exception
 	 */
@@ -121,6 +126,14 @@ public class DBOperation {
 		}
 	}
 
+	/**
+	 * execute delete operation
+	 * 
+	 * @param tableName,
+	 *            the table name
+	 * @param dbp,
+	 *            conditions in where clauses
+	 */
 	public static void executeDel(String tableName, DBParameter dbp) {
 		Connection c = null;
 		Statement stmt = null;
@@ -270,13 +283,16 @@ public class DBOperation {
 	}
 
 	@SuppressWarnings({ "finally" })
+	/**
+	 * create report view for a certain algorithm and data set in a particular
+	 * running
+	 * 
+	 * @param dataSetName
+	 * @param algorithm
+	 * @param batchNum
+	 */
 	public static void createReportView(String dataSetName, String algorithm, String batchNum) {
-		/*
-		 * 	select a.algorithm, i.i_name, a.result_size, a.running_nano_sec/100000000.0 as running_sec
-		from algRunning_Zebra a, v_instance i
-		where a.i_id=i.i_id
-		and batch_num="20171103-0011";
-		 */
+
 		Connection c = null;
 		Statement stmt = null;
 
@@ -286,25 +302,25 @@ public class DBOperation {
 
 			StringBuffer sqlSb = new StringBuffer();
 			sqlSb.append("drop view if exists ").append(viewName).append(";");
-			//System.out.println(sqlSb.toString());
+			// System.out.println(sqlSb.toString());
 			c = getConnection();
 			c.setAutoCommit(false);
 			stmt = c.createStatement();
 			stmt.execute(sqlSb.toString());
 
 			// get the info of the instances of a certain dataset such as id, code, path
-			List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
+			List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
 
 			sqlSb.setLength(0);
 			sqlSb.append("CREATE view IF NOT EXISTS ").append(viewName).append(" as \n");
 			for (Map<String, String> map : lst) {
 				String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
 				String id = map.get(ConstantValue.DB_COL_INS_ID);
-				String algTableName = ConstantValue.TBL_ALG_PREFIX +id+"_"+ instanceCode;
-
+				String algTableName = ConstantValue.TBL_ALG_PREFIX + id + "_" + instanceCode;
 
 				sqlSb.append("select ");
-				sqlSb.append("i.").append(ConstantValue.DB_COL_INS_ID).append(ConstantValue.COMMA).append("a.").append(ConstantValue.DB_COL_ALGORITHM).append(ConstantValue.COMMA).append("i.")
+				sqlSb.append("i.").append(ConstantValue.DB_COL_INS_ID).append(ConstantValue.COMMA).append("a.")
+						.append(ConstantValue.DB_COL_ALGORITHM).append(ConstantValue.COMMA).append("i.")
 						.append(ConstantValue.DB_COL_INS_NAME).append(ConstantValue.COMMA).append("a.")
 						.append(ConstantValue.DB_COL_RESULT_SIZE).append(ConstantValue.COMMA).append("a.")
 						.append(ConstantValue.DB_COL_RUNNING_TIME).append("\n");
@@ -353,8 +369,6 @@ public class DBOperation {
 		Connection c = null;
 		Statement stmt = null;
 
-		 
-
 		try {
 			StringBuffer sb = new StringBuffer();
 			// sqlSb.append("drop table if exists
@@ -397,136 +411,211 @@ public class DBOperation {
 		}
 	}
 
+	/**
+	 * clean algorithm tables
+	 * 
+	 * @param mode
+	 * @param dataSetName
+	 * @param dbp
+	 */
+	public static void cleanAlgoTables(String mode, String dataSetName, DBParameter dbp) {
+		switch (mode) {
+		case ConstantValue.CLN_MODE_DROP:
+			DBOperation.cleanAlgoTableDrop(dataSetName);
+			break;
+		case ConstantValue.CLN_MODE_DEL:
+			DBOperation.cleanAlgoTableDel(dataSetName, dbp);
+			break;
+		default:
+			break;
+		}
+	}
+
+	/**
+	 * drop algorithm tables
+	 * 
+	 * @param dataSetName
+	 */
+	private static void cleanAlgoTableDrop(String dataSetName) {
+		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
+		for (Map<String, String> map : lst) {
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String id = map.get(ConstantValue.DB_COL_INS_ID);
+			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
+			executeDrop(algTableName);
+		}
+	}
+
+	/**
+	 * delete data from algorithm tables
+	 * 
+	 * @param dataSetName
+	 * @param dbp
+	 */
+	private static void cleanAlgoTableDel(String dataSetName, DBParameter dbp) {
+		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
+		for (Map<String, String> map : lst) {
+			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
+			String id = map.get(ConstantValue.DB_COL_INS_ID);
+			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
+			executeDel(algTableName, dbp);
+		}
+	}
+
+	/**
+	 * @param instanceCode
+	 * @param id
+	 * @return
+	 */
+	public static String getAlgorithmTableName(String instanceCode, String id) {
+		String algTableName = ConstantValue.TBL_ALG_PREFIX + id + "_" + instanceCode;
+		return algTableName;
+	}
+
+	/**
+	 * get the infomation of instances by data set such as id, code, path and so on
+	 * 
+	 * @param dataSetName
+	 * @return
+	 */
+	public static List<Map<String, String>> getInstanceInfo(String dataSetName) {
+		DBParameter dbpIn = new DBParameter();
+		dbpIn.setTableName(ConstantValue.DB_VNAME_INS);
+		String[] colNames = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_INS_CODE, ConstantValue.DB_COL_INS_NAME,
+				ConstantValue.DB_COL_DATASET_NAME, ConstantValue.DB_COL_DATASET_PATH_NAME,
+				ConstantValue.DB_COL_INS_PATH_NAME };
+		String[] colPairNames = { ConstantValue.DB_COL_DATASET_NAME, ConstantValue.DB_COL_TO_BE_TESTED };
+		String[] colPairOperators = { "=", "=" };
+		String[] colPairValues = { dataSetName, "1" };
+		dbpIn.setColNames(colNames);
+		dbpIn.setColPairNames(colPairNames);
+		dbpIn.setColPairOperators(colPairOperators);
+		dbpIn.setColPairValues(colPairValues);
+
+		List<Map<String, String>> lst = executeQuery(dbpIn);
+		dbpIn = null;
+		return lst;
+	}
+
 	/*
-		private static String singleInstanceQueryStr(String code) {
-			StringBuffer sb = new StringBuffer();
-			// String tblPrefix = ConstantValue.TBL_ALG_PREFIX;
-			String viewPre = "v_";
-			String viewSuff = "_alg2";
-			String maxSuff = "_max";
-			String minSuff = "_min";
-	
-			String tblAbbA = "a";
-			String tblAbbB = "b";
-			// v_algRunning_code
-			sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(" as (\n");
-			sb.append("select ").append(tblAbbA).append(".* from (\n");
-			sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",");
-			sb.append(ConstantValue.DB_COL_RESULT_SIZE).append(",");
-			sb.append("max(").append(ConstantValue.DB_COL_THRESHOLD).append(") max_").append(ConstantValue.DB_COL_THRESHOLD)
-					.append("\n");
-			sb.append(" from ").append(ConstantValue.TBL_ALG_PREFIX).append(code).append("\n");
-			sb.append(" group by ").append(ConstantValue.DB_COL_INS_ID).append(",")
-					.append(ConstantValue.DB_COL_ACCEPT_RESULT_SIZE).append("\n");
-			sb.append(") ").append(tblAbbB).append(",").append(ConstantValue.TBL_ALG_PREFIX).append(code).append(" ")
-					.append(tblAbbA).append("\n");
-			sb.append("where ").append(tblAbbA).append(".").append(ConstantValue.DB_COL_INS_ID).append("=").append(tblAbbB)
-					.append(".").append(ConstantValue.DB_COL_INS_ID).append("\n");
-			sb.append("and ").append(tblAbbA).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).append("=")
-					.append(tblAbbB).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).append("\n");
-			sb.append("and ").append(tblAbbA).append(".").append(ConstantValue.DB_COL_THRESHOLD).append("=").append(tblAbbB)
-					.append(".max_").append(ConstantValue.DB_COL_THRESHOLD).append("\n");
-			sb.append("),\n");
-			// v_algRunning_code_max
-			sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(maxSuff).append(" as (\n");
-			sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",").append(ConstantValue.DB_COL_THRESHOLD)
-					.append(",").append(ConstantValue.DB_COL_RUNNING_TIME).append(",")
-					.append(ConstantValue.DB_COL_RESULT_SIZE).append("\n");
-			sb.append("from").append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append("\n");
-			sb.append("where ").append(ConstantValue.DB_COL_THRESHOLD).append("=(").append("select max(")
-					.append(ConstantValue.DB_COL_THRESHOLD).append(" from ").append(viewPre)
-					.append(ConstantValue.TBL_ALG_PREFIX).append(code).append(")\n");
-			sb.append("),\n");
-			// v_algRunning_code_min
-			sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(minSuff).append(" as (\n");
-			sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",").append(ConstantValue.DB_COL_THRESHOLD)
-					.append(",").append(ConstantValue.DB_COL_RUNNING_TIME).append(",")
-					.append(ConstantValue.DB_COL_RESULT_SIZE).append("\n");
-			sb.append("from").append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append("\n");
-			sb.append("where ").append(ConstantValue.DB_COL_THRESHOLD).append("=(").append("select min(")
-					.append(ConstantValue.DB_COL_THRESHOLD).append(" from ").append(viewPre)
-					.append(ConstantValue.TBL_ALG_PREFIX).append(code).append(")\n");
-			sb.append("),\n");
-			// v_algRunning_code_alg2
-			sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(viewSuff).append(" as (\n");
-			sb.append("select ").append(tblAbbA).append(".").append(ConstantValue.DB_COL_INS_ID).append(",");
-			sb.append(tblAbbA).append(".").append(ConstantValue.DB_COL_THRESHOLD).append(" ")
-					.append(ConstantValue.DB_COL_THRESHOLD1).append(",");
-			sb.append(tblAbbA).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).append(" ")
-					.append(ConstantValue.DB_COL_RESULT_SIZE1).append(",");
-			sb.append(tblAbbA).append(".").append(ConstantValue.DB_COL_RUNNING_TIME).append(" ")
-					.append(ConstantValue.DB_COL_RUNNING_TIME1).append(",");
-	
-			sb.append(tblAbbB).append(".").append(ConstantValue.DB_COL_THRESHOLD).append(" ")
-					.append(ConstantValue.DB_COL_THRESHOLD2).append(",");
-			sb.append(tblAbbB).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).append(" ")
-					.append(ConstantValue.DB_COL_RESULT_SIZE2).append(",");
-			sb.append(tblAbbB).append(".").append(ConstantValue.DB_COL_RUNNING_TIME).append(" ")
-					.append(ConstantValue.DB_COL_RUNNING_TIME2).append("\n");
-	
-			sb.append("from ").append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(maxSuff).append(" ")
-					.append(tblAbbA).append(",");
-			sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(minSuff).append(" ").append(tblAbbB)
-					.append("\n");
-			sb.append("where ").append(tblAbbA).append(".").append(ConstantValue.DB_COL_INS_ID).append("=").append(tblAbbB)
-					.append(".").append(ConstantValue.DB_COL_INS_ID).append("\n");
-			sb.append(")");
-	
-			return sb.toString();
-		}
-	
-		@SuppressWarnings("finally")
-		public static String generateReportSql(String datasetName) {
-			Connection c = null;
-			Statement stmt = null;
-			ResultSet rs = null;
-	
-			try {
-				StringBuffer sqlSb = new StringBuffer();
-				sqlSb.append("select i_code from \"v_instance_opt\" where \"d_name\"=\"").append(datasetName).append("\";");
-				c = getConnection();
-				c.setAutoCommit(false);
-				stmt = c.createStatement();
-				rs = stmt.executeQuery(sqlSb.toString());
-	
-				StringBuffer sqlWithSb = new StringBuffer();
-				StringBuffer sqlQueSb = new StringBuffer();
-	
-				sqlWithSb.append("with ");
-	
-				while (rs.next()) {
-					String code = rs.getString(1);
-					String insQuStr = singleInstanceQueryStr(code);
-					sqlWithSb.append(insQuStr).append(",");
-					sqlQueSb.append("select * from ").append("v_").append(ConstantValue.TBL_ALG_PREFIX).append(code)
-							.append("_alg2").append("\n");
-					sqlQueSb.append("union\n");
-				}
-	
-				String sqlWith = sqlWithSb.substring(0, sqlWithSb.length() - 1);
-				String sqlQue = sqlQueSb.substring(0, sqlQueSb.length() - "union\n".length());
-	
-				sqlSb.setLength(0);
-				sqlSb.append(sqlWith).append("\n").append(sqlQue);
-	
-				return sqlSb.toString();
-	
-			} catch (Exception e) {
-				e.printStackTrace();
-			} finally {
-				try {
-					stmt.close();
-					c.commit();
-					c.close();
-				} catch (final Exception e) {
-	
-					e.printStackTrace();
-				} finally {
-					return null;
-				}
-	
-			}
-		}
-		*/
+	 * private static String singleInstanceQueryStr(String code) { StringBuffer sb =
+	 * new StringBuffer(); // String tblPrefix = ConstantValue.TBL_ALG_PREFIX;
+	 * String viewPre = "v_"; String viewSuff = "_alg2"; String maxSuff = "_max";
+	 * String minSuff = "_min";
+	 * 
+	 * String tblAbbA = "a"; String tblAbbB = "b"; // v_algRunning_code
+	 * sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).
+	 * append(" as (\n");
+	 * sb.append("select ").append(tblAbbA).append(".* from (\n");
+	 * sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",");
+	 * sb.append(ConstantValue.DB_COL_RESULT_SIZE).append(",");
+	 * sb.append("max(").append(ConstantValue.DB_COL_THRESHOLD).append(") max_").
+	 * append(ConstantValue.DB_COL_THRESHOLD) .append("\n");
+	 * sb.append(" from ").append(ConstantValue.TBL_ALG_PREFIX).append(code).append(
+	 * "\n");
+	 * sb.append(" group by ").append(ConstantValue.DB_COL_INS_ID).append(",")
+	 * .append(ConstantValue.DB_COL_ACCEPT_RESULT_SIZE).append("\n");
+	 * sb.append(") ").append(tblAbbB).append(",").append(ConstantValue.
+	 * TBL_ALG_PREFIX).append(code).append(" ") .append(tblAbbA).append("\n");
+	 * sb.append("where ").append(tblAbbA).append(".").append(ConstantValue.
+	 * DB_COL_INS_ID).append("=").append(tblAbbB)
+	 * .append(".").append(ConstantValue.DB_COL_INS_ID).append("\n");
+	 * sb.append("and ").append(tblAbbA).append(".").append(ConstantValue.
+	 * DB_COL_RESULT_SIZE).append("=")
+	 * .append(tblAbbB).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).append(
+	 * "\n"); sb.append("and ").append(tblAbbA).append(".").append(ConstantValue.
+	 * DB_COL_THRESHOLD).append("=").append(tblAbbB)
+	 * .append(".max_").append(ConstantValue.DB_COL_THRESHOLD).append("\n");
+	 * sb.append("),\n"); // v_algRunning_code_max
+	 * sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(
+	 * maxSuff).append(" as (\n");
+	 * sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",").append(
+	 * ConstantValue.DB_COL_THRESHOLD)
+	 * .append(",").append(ConstantValue.DB_COL_RUNNING_TIME).append(",")
+	 * .append(ConstantValue.DB_COL_RESULT_SIZE).append("\n");
+	 * sb.append("from").append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append
+	 * (code).append("\n");
+	 * sb.append("where ").append(ConstantValue.DB_COL_THRESHOLD).append("=(").
+	 * append("select max(")
+	 * .append(ConstantValue.DB_COL_THRESHOLD).append(" from ").append(viewPre)
+	 * .append(ConstantValue.TBL_ALG_PREFIX).append(code).append(")\n");
+	 * sb.append("),\n"); // v_algRunning_code_min
+	 * sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(
+	 * minSuff).append(" as (\n");
+	 * sb.append("select ").append(ConstantValue.DB_COL_INS_ID).append(",").append(
+	 * ConstantValue.DB_COL_THRESHOLD)
+	 * .append(",").append(ConstantValue.DB_COL_RUNNING_TIME).append(",")
+	 * .append(ConstantValue.DB_COL_RESULT_SIZE).append("\n");
+	 * sb.append("from").append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append
+	 * (code).append("\n");
+	 * sb.append("where ").append(ConstantValue.DB_COL_THRESHOLD).append("=(").
+	 * append("select min(")
+	 * .append(ConstantValue.DB_COL_THRESHOLD).append(" from ").append(viewPre)
+	 * .append(ConstantValue.TBL_ALG_PREFIX).append(code).append(")\n");
+	 * sb.append("),\n"); // v_algRunning_code_alg2
+	 * sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(
+	 * viewSuff).append(" as (\n");
+	 * sb.append("select ").append(tblAbbA).append(".").append(ConstantValue.
+	 * DB_COL_INS_ID).append(",");
+	 * sb.append(tblAbbA).append(".").append(ConstantValue.DB_COL_THRESHOLD).
+	 * append(" ") .append(ConstantValue.DB_COL_THRESHOLD1).append(",");
+	 * sb.append(tblAbbA).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).
+	 * append(" ") .append(ConstantValue.DB_COL_RESULT_SIZE1).append(",");
+	 * sb.append(tblAbbA).append(".").append(ConstantValue.DB_COL_RUNNING_TIME).
+	 * append(" ") .append(ConstantValue.DB_COL_RUNNING_TIME1).append(",");
+	 * 
+	 * sb.append(tblAbbB).append(".").append(ConstantValue.DB_COL_THRESHOLD).
+	 * append(" ") .append(ConstantValue.DB_COL_THRESHOLD2).append(",");
+	 * sb.append(tblAbbB).append(".").append(ConstantValue.DB_COL_RESULT_SIZE).
+	 * append(" ") .append(ConstantValue.DB_COL_RESULT_SIZE2).append(",");
+	 * sb.append(tblAbbB).append(".").append(ConstantValue.DB_COL_RUNNING_TIME).
+	 * append(" ") .append(ConstantValue.DB_COL_RUNNING_TIME2).append("\n");
+	 * 
+	 * sb.append("from ").append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).
+	 * append(code).append(maxSuff).append(" ") .append(tblAbbA).append(",");
+	 * sb.append(viewPre).append(ConstantValue.TBL_ALG_PREFIX).append(code).append(
+	 * minSuff).append(" ").append(tblAbbB) .append("\n");
+	 * sb.append("where ").append(tblAbbA).append(".").append(ConstantValue.
+	 * DB_COL_INS_ID).append("=").append(tblAbbB)
+	 * .append(".").append(ConstantValue.DB_COL_INS_ID).append("\n");
+	 * sb.append(")");
+	 * 
+	 * return sb.toString(); }
+	 * 
+	 * @SuppressWarnings("finally") public static String generateReportSql(String
+	 * datasetName) { Connection c = null; Statement stmt = null; ResultSet rs =
+	 * null;
+	 * 
+	 * try { StringBuffer sqlSb = new StringBuffer();
+	 * sqlSb.append("select i_code from \"v_instance_opt\" where \"d_name\"=\"").
+	 * append(datasetName).append("\";"); c = getConnection();
+	 * c.setAutoCommit(false); stmt = c.createStatement(); rs =
+	 * stmt.executeQuery(sqlSb.toString());
+	 * 
+	 * StringBuffer sqlWithSb = new StringBuffer(); StringBuffer sqlQueSb = new
+	 * StringBuffer();
+	 * 
+	 * sqlWithSb.append("with ");
+	 * 
+	 * while (rs.next()) { String code = rs.getString(1); String insQuStr =
+	 * singleInstanceQueryStr(code); sqlWithSb.append(insQuStr).append(",");
+	 * sqlQueSb.append("select * from ").append("v_").append(ConstantValue.
+	 * TBL_ALG_PREFIX).append(code) .append("_alg2").append("\n");
+	 * sqlQueSb.append("union\n"); }
+	 * 
+	 * String sqlWith = sqlWithSb.substring(0, sqlWithSb.length() - 1); String
+	 * sqlQue = sqlQueSb.substring(0, sqlQueSb.length() - "union\n".length());
+	 * 
+	 * sqlSb.setLength(0); sqlSb.append(sqlWith).append("\n").append(sqlQue);
+	 * 
+	 * return sqlSb.toString();
+	 * 
+	 * } catch (Exception e) { e.printStackTrace(); } finally { try { stmt.close();
+	 * c.commit(); c.close(); } catch (final Exception e) {
+	 * 
+	 * e.printStackTrace(); } finally { return null; }
+	 * 
+	 * } }
+	 */
 
 }

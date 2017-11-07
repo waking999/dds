@@ -12,31 +12,29 @@ import junit.framework.Assert;
 public class AlgoUtilTest {
 	@Ignore
 	public void testIgnore() {
-
 	}
-	
+
 	@Test
 	public void testCopyGloablVariable() throws IOException {
-		String filePath = TestUtil.getCurrentPath() + "/src/test/resources/sample1.txt";
+		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 
-		GlobalVariable  gv = new FileOperation().readGraphByEdgePair(filePath);
-		GlobalVariable gvStar=AlgoUtil.copyGloablVariable(gv);
-		
-		TestUtil.verifyUnsort(gv.getIdxDegree(), gvStar.getIdxDegree());
-		TestUtil.verifyUnsort(gv.getIdxLst(), gvStar.getIdxLst());
-		TestUtil.verifyUnsort(gv.getIdxSol(), gvStar.getIdxSol());
-		TestUtil.verifyUnsort(gv.getIdxUtil(), gvStar.getIdxUtil());
-		TestUtil.verifyUnsort(gv.getIdxVote(), gvStar.getIdxVote());
-		TestUtil.verifyUnsort(gv.getIdxWeight(), gvStar.getIdxWeight());
-		TestUtil.verifyUnsort(gv.getVerLst(), gvStar.getVerLst());
-		TestUtil.verifyUnsort(gv.getIdxAdded(), gvStar.getIdxAdded());
-		TestUtil.verifyUnsort(gv.getIdxDomed(), gvStar.getIdxDomed());
-		
-		Assert.assertEquals(gv.getActVerCnt(), gvStar.getActVerCnt());
-		Assert.assertEquals(gv.getIdxSolSize(), gvStar.getIdxSolSize());
-		Assert.assertEquals(gv.getVerCnt(), gvStar.getVerCnt());
-		
-		TestUtil.verifyUnsort(gv.getIdxAL(), gvStar.getIdxAL());
-		TestUtil.verifyUnsort(gv.getIdxIM(), gvStar.getIdxIM());
+		GlobalVariable g = new FileOperation().readGraphByEdgePair(filePath);
+		GlobalVariable gNew = AlgoUtil.copyGloablVariable(g);
+
+		TestUtil.verifyUnsort(g.getIdxDegree(), gNew.getIdxDegree());
+		TestUtil.verifyUnsort(g.getIdxLst(), gNew.getIdxLst());
+		TestUtil.verifyUnsort(g.getIdxSol(), gNew.getIdxSol());
+		TestUtil.verifyUnsort(g.getIdxVote(), gNew.getIdxVote());
+		TestUtil.verifyUnsort(g.getIdxWeight(), gNew.getIdxWeight());
+		TestUtil.verifyUnsort(g.getLabLst(), gNew.getLabLst());
+		TestUtil.verifyUnsort(g.getIdxAdded(), gNew.getIdxAdded());
+		TestUtil.verifyUnsort(g.getIdxDomed(), gNew.getIdxDomed());
+
+		Assert.assertEquals(g.getActVerCnt(), gNew.getActVerCnt());
+		Assert.assertEquals(g.getIdxSolSize(), gNew.getIdxSolSize());
+		Assert.assertEquals(g.getVerCnt(), gNew.getVerCnt());
+
+		TestUtil.verifyUnsort(g.getIdxAL(), gNew.getIdxAL());
+		TestUtil.verifyUnsort(g.getIdxIM(), gNew.getIdxIM());
 	}
 }

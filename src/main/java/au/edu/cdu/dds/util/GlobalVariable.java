@@ -1,14 +1,26 @@
 package au.edu.cdu.dds.util;
 
 /**
- * a java bean to store graph representations  
+ * a java bean to store graph representations
  * 
  * @param <VT>
- *            vertex type
+ * vertex type
  */
-public class GlobalVariable  {
-	private int verCnt; // the count of vertices, never change
-	private int actVerCnt; // the count active vertices, change
+public class GlobalVariable {
+	private int verCnt; // the count of vertices 
+	// by labLst and idxLst, it allows vertex to be in any range
+	private int[] labLst; // the list of vertex
+	private int[] idxLst; // the list of vertex index
+	private int[] idxDegree; // the degree of each vertex (in index format),
+	private int[][] idxIM; // the incident matrix of vertex (in index format)
+	private int[][] idxAL;// the adjacent list of vertex (in index format)
+
+	private int actVerCnt; // the count active vertices
+	private float[] idxVote; // the vote of each vertex (in index format)
+	private float[] idxWeight; // the weight of each vertex (in index format)
+
+	private int[] idxSol; // solution in process
+	private int idxSolSize; // size of solution in process
 
 	public int getActVerCnt() {
 		return actVerCnt;
@@ -18,11 +30,6 @@ public class GlobalVariable  {
 		this.actVerCnt = actVerCnt;
 	}
 
-	// this allow vertex to be in any range
-	private int[] verLst; // the list of vertex
-	private int[] idxLst; // the list of vertex index
-
-	private int[] idxDegree; //the degree of each vertex (in index format), never change
 	public int[] getIdxDegree() {
 		return idxDegree;
 	}
@@ -30,10 +37,6 @@ public class GlobalVariable  {
 	public void setIdxDegree(int[] idxDegree) {
 		this.idxDegree = idxDegree;
 	}
-
-	private int[] idxUtil; // the utility of each vertex (in index format), change
-	private float[] idxVote; //the vote of each vertex (in index format), change
-	private float[] idxWeight; //the weight of each vertex (in index format), change
 
 	public float[] getIdxVote() {
 		return idxVote;
@@ -51,10 +54,11 @@ public class GlobalVariable  {
 		this.idxWeight = idxWeight;
 	}
 
-	private boolean[] idxDomed; // if a vertex (in index format) is dominated	
+	private boolean[] idxDomed; // if a vertex (in index format) is dominated
 	private int undomCnt; // the count of vertices which are not dominated
-	
-	private boolean[] idxAdded; // if a vertex (in index format) is add to another graph
+
+	private boolean[] idxAdded; // if a vertex (in index format) is add to
+								// another graph
 
 	public boolean[] getIdxAdded() {
 		return idxAdded;
@@ -63,15 +67,6 @@ public class GlobalVariable  {
 	public void setIdxAdded(boolean[] idxAdded) {
 		this.idxAdded = idxAdded;
 	}
-
-	private int[][] idxIM; // the incident matrix of vertex (in index format)
-	private int[][] idxAL;// the adjacent list of vertex (in index format)
-
-	private int[] idxSol; //  solution in process
-	private int idxSolSize; // size of solution in process
-
- 
-
 
 	public int[] getIdxSol() {
 		return idxSol;
@@ -97,12 +92,12 @@ public class GlobalVariable  {
 		this.verCnt = verCnt;
 	}
 
-	public int[] getVerLst() {
-		return verLst;
+	public int[] getLabLst() {
+		return labLst;
 	}
 
-	public void setVerLst(int[] verLst) {
-		this.verLst = verLst;
+	public void setLabLst(int[] labLst) {
+		this.labLst = labLst;
 	}
 
 	public int[] getIdxLst() {
@@ -111,14 +106,6 @@ public class GlobalVariable  {
 
 	public void setIdxLst(int[] idxLst) {
 		this.idxLst = idxLst;
-	}
-
-	public int[] getIdxUtil() {
-		return idxUtil;
-	}
-
-	public void setIdxUtil(int[] idxUtils) {
-		this.idxUtil = idxUtils;
 	}
 
 	public boolean[] getIdxDomed() {

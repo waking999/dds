@@ -13,7 +13,7 @@ import au.edu.cdu.dds.util.UtilTest;
  * a test suit for utilities classes
  */
 @RunWith(Suite.class)
-@SuiteClasses({ UtilTest.class, FileOperationTest.class, DBOperationTest.class , AlgoUtilTest.class})
+@SuiteClasses({ UtilTest.class, FileOperationTest.class, DBOperationTest.class, AlgoUtilTest.class })
 public class UtilTests {
 
 }

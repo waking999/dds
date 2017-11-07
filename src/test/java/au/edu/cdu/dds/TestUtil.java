@@ -4,8 +4,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -16,6 +18,7 @@ import au.edu.cdu.dds.algo.ds.IAlgorithm;
 import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.DBParameter;
 import au.edu.cdu.dds.io.FileOperation;
+import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
@@ -27,13 +30,18 @@ public class TestUtil {
 
 	public static final String FUNCTION_SEP = "***********************************************************";
 
-	//
-	public static String getCurrentPath() {
+	/**
+	 * get the base path of the project
+	 * @return
+	 */
+	public static String getBasePath() {
 		return Paths.get(".").toAbsolutePath().normalize().toString();
 	}
 
 	/**
 	 * the basic structure to run algorithms and write to db
+	 * loop to get dataset instances to run the algorithm on them
+	 * which is used for greedy algorithms
 	 * 
 	 * @param className
 	 * @param dataSetName
@@ -45,11 +53,14 @@ public class TestUtil {
 	 */
 	public static void basicFunc(String className, String dataSetName, IAlgorithm algo, Logger log)
 			throws FileNotFoundException, IOException, InterruptedException {
-		// get the info of the instances of a certain dataset such as id, code, path
-		List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
+		/*
+		 * get the info of the instances of a certain dataset such as id, code,
+		 * path
+		 */
+		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
 
 		// loop to run the algorithm with the instance info and write to db
-		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
 
 		DBParameter dbpOut = null;
 		String batchNum = Util.getBatchNum();
@@ -59,13 +70,13 @@ public class TestUtil {
 			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
 			String id = map.get(ConstantValue.DB_COL_INS_ID);
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = Util.getAlgorithmTableName(instanceCode, id);
+			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
 				// read file
 				GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
-				algo.setGV(gv);
+				algo.setGlobalVariable(gv);
 
 				long start = System.nanoTime();
 				// run algorithm
@@ -73,11 +84,11 @@ public class TestUtil {
 				long end = System.nanoTime();
 
 				// ensure the solution is valid
-				Assert.assertTrue(Util.isValidSolution(gv));
+				Assert.assertTrue(AlgoUtil.isValidSolution(gv));
 
 				// write to db
 				DBOperation.createTable(algTableName);
-				dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, className);
+				dbpOut = getDBParamOutput(algTableName, batchNum, id, gv, start, end, className);
 				DBOperation.executeInsert(dbpOut);
 
 				dbpOut = null;
@@ -97,6 +108,8 @@ public class TestUtil {
 
 	/**
 	 * the basic structure to run algorithms and write to db
+	 * loop to get dataset instances to run the algorithm on them
+	 * which is used for greedy dds algorithms
 	 * 
 	 * @param className
 	 * @param dataSetName
@@ -108,13 +121,15 @@ public class TestUtil {
 	 */
 	public static void basicLoopFunc(String className, String dataSetName, IAlgorithm algo, Logger log, int kLower,
 			int kUpper) throws FileNotFoundException, IOException, InterruptedException {
-		// get the info of the instances of a certain dataset such as id, code, path
-		List<Map<String, String>> lst = Util.getInstanceInfo(dataSetName);
+		/*
+		 * get the info of the instances of a certain dataset such as id, code,
+		 * path
+		 */
+		List<Map<String, String>> lst = DBOperation.getInstanceInfo(dataSetName);
 
 		// loop to run the algorithm with the instance info and write to db
-		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
 
-		 
 		String batchNum = Util.getBatchNum();
 
 		for (Map<String, String> map : lst) {
@@ -122,7 +137,7 @@ public class TestUtil {
 			String pathName = map.get(ConstantValue.DB_COL_INS_PATH_NAME);
 			String id = map.get(ConstantValue.DB_COL_INS_ID);
 			String instanceCode = map.get(ConstantValue.DB_COL_INS_CODE);
-			String algTableName = Util.getAlgorithmTableName(instanceCode, id);
+			String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
@@ -136,16 +151,32 @@ public class TestUtil {
 
 				continue;
 			}
-
 		}
 	}
 
+	/**
+	 * the basic structure to run algorithms and write to db
+	 * run on only one instance
+	 * which is used for greedy dds algorithms
+	 * 
+	 * @param className
+	 * @param algo
+	 * @param log
+	 * @param batchNum
+	 * @param id
+	 * @param instanceCode
+	 * @param algTableName
+	 * @param inputFile
+	 * @param k
+	 * @param r
+	 * @throws IOException
+	 */
 	public static void basicFunc(String className, IAlgorithm algo, Logger log, String batchNum, String id,
 			String instanceCode, String algTableName, String inputFile, int k, int r) throws IOException {
 		DBParameter dbpOut;
 		// read file
 		GlobalVariable gv = new FileOperation().readGraphByEdgePair(inputFile);
-		algo.setGV(gv);
+		algo.setGlobalVariable(gv);
 		algo.setKR(k, r);
 		long start = System.nanoTime();
 		// run algorithm
@@ -153,11 +184,11 @@ public class TestUtil {
 		long end = System.nanoTime();
 
 		// ensure the solution is valid
-		Assert.assertTrue(Util.isValidSolution(gv));
+		Assert.assertTrue(AlgoUtil.isValidSolution(gv));
 
 		// write to db
 		DBOperation.createTable(algTableName);
-		dbpOut = getDBParamOutPut(algTableName, batchNum, id, gv, start, end, k, r, className);
+		dbpOut = getDBParamOutput(algTableName, batchNum, id, gv, start, end, k, r, className);
 		DBOperation.executeInsert(dbpOut);
 
 		dbpOut = null;
@@ -171,6 +202,7 @@ public class TestUtil {
 
 	/**
 	 * generate the database parameters for being written to db
+	 * used for greedy
 	 * 
 	 * @param algTableName
 	 * @param batchNum
@@ -180,7 +212,7 @@ public class TestUtil {
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutPut(String algTableName, String batchNum, String id, GlobalVariable gv,
+	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, GlobalVariable gv,
 			long start, long end, String algoName) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
@@ -196,6 +228,7 @@ public class TestUtil {
 
 	/**
 	 * generate the database parameters for being written to db
+	 * used for greedy dds
 	 * 
 	 * @param algTableName
 	 * @param batchNum
@@ -205,7 +238,7 @@ public class TestUtil {
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutPut(String algTableName, String batchNum, String id, GlobalVariable gv,
+	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, GlobalVariable gv,
 			long start, long end, int tmpK, int tmpR, String algoName) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
@@ -224,21 +257,22 @@ public class TestUtil {
 	 * print status of global variables in a format
 	 *
 	 * @param gv,
-	 *            global variables
+	 * global variables
 	 */
 	public static void printGlobalVariableStatus(GlobalVariable gv) {
 		String styleStr = "%-6s %-6s %-6s %-40s %-40s";
 
 		int[] idxLst = gv.getIdxLst();
 		int actVerCnt = gv.getActVerCnt();
-		int verCnt = gv.getVerCnt();
-		int[] idxUtil = gv.getIdxUtil();
+		int verCnt = gv.getVerCnt(); 
+		int[] idxDegree = gv.getIdxDegree();
 		int[][] idxAL = gv.getIdxAL();
 		int[][] idxIM = gv.getIdxIM();
 
-		int[] vL = gv.getVerLst();
+		int[] vL = gv.getLabLst();
 
-		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "util", idxUtil, "vAL", idxAL, "vIM", idxIM);
+		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "degree", idxDegree, "vAL", idxAL, "vIM",
+				idxIM);
 
 		System.out.println("--------------------------------------------------------");
 	}
@@ -360,7 +394,7 @@ public class TestUtil {
 	}
 
 	public static void verifyUnsort(String[] expect, String[] output) {
-		 
+
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
@@ -370,7 +404,7 @@ public class TestUtil {
 	}
 
 	public static void verifySort(String[] expect, String[] output) {
-	 
+
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
@@ -381,7 +415,7 @@ public class TestUtil {
 	}
 
 	public static void verify(int[] expect, List<Integer> output) {
-	 
+
 		int expectLen = expect.length;
 		int outputSize = output.size();
 		Assert.assertTrue(expectLen == outputSize);
@@ -392,7 +426,7 @@ public class TestUtil {
 	}
 
 	public static void verify(int[] expect, Integer[] output) {
-		 
+
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
@@ -404,9 +438,9 @@ public class TestUtil {
 	}
 
 	public static void verifySort(int[] expect, int[] output) {
-		if(expect==null&&output==null) {
+		if (expect == null && output == null) {
 			return;
-			
+
 		}
 		int expectLen = expect.length;
 		int outputSize = output.length;
@@ -419,35 +453,26 @@ public class TestUtil {
 	}
 
 	public static void verifyUnsort(int[] expect, int[] output) {
-	 
+
 		int expectLen = expect.length;
 		int outputSize = output.length;
-		Assert.assertTrue(expectLen == outputSize);
-		// String expectStr =
-		// Arrays.stream(expect).boxed().collect(Collectors.toList()).stream()
-		// .map(num -> Integer.toString(num)).collect(Collectors.joining(","));
-		// String outputStr =
-		// Arrays.stream(output).boxed().collect(Collectors.toList()).stream()
-		// .map(num -> Integer.toString(num)).collect(Collectors.joining(","));
+		Assert.assertTrue(expectLen == outputSize); 
 		Assert.assertTrue(expectLen == outputSize);
 		String expectStr = Arrays.toString(expect);
 		String outputStr = Arrays.toString(output);
 		Assert.assertTrue(expectStr.equals(outputStr));
 	}
-	 
 
 	public static void verifyUnsort(boolean[] expect, boolean[] output) {
 
 		int expectLen = expect.length;
 		int outputSize = output.length;
 		Assert.assertTrue(expectLen == outputSize);
-		
+
 		boolean cmp = Util.verifyUnsort(expect, output);
-		
+
 		Assert.assertTrue(cmp);
 	}
-
-
 
 	public static void verifySort(float[] expect, float[] output) {
 
@@ -493,6 +518,27 @@ public class TestUtil {
 
 	public static void verify(String expect, String output) {
 		Assert.assertTrue(expect.equals(output));
+	}
+
+	/**
+	 * convert an integer array to an integer list
+	 * 
+	 * @param a,
+	 * an integer array
+	 * @return an integer list
+	 */
+	public static Set<Integer> arrayToSet(int[] a) {
+		int aLen = a.length;
+		if (aLen == 0) {
+			return null;
+		}
+
+		Set<Integer> set = new HashSet<>();
+		for (int i = 0; i < aLen; i++) {
+			set.add(a[i]);
+		}
+
+		return set;
 	}
 
 }

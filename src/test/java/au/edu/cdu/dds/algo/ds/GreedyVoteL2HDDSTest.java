@@ -8,12 +8,13 @@ import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import au.edu.cdu.dds.LogUtil;
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
+import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
-import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HDDSTest {
@@ -28,20 +29,20 @@ public class GreedyVoteL2HDDSTest {
 	@Ignore
 	@Test
 	public void test0() throws IOException {
-		String filePath = TestUtil.getCurrentPath() + "/src/test/resources/sample1.txt";
+		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] expect = new int[] { 1, 5 };
 
 		GlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
 
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-		algo.setGV(gv);
+		algo.setGlobalVariable(gv);
 		int k = 3;
 		int r = 2;
 		algo.setKR(k, r);
 		algo.compute();
-		Assert.assertTrue(Util.isValidSolution(gv));
+		Assert.assertTrue(AlgoUtil.isValidSolution(gv));
 
-		int[] sol = Util.getVertexSolution(gv);
+		int[] sol = AlgoUtil.getLabSolution(gv);
 
 		TestUtil.verifySort(expect, sol);
 
@@ -59,19 +60,19 @@ public class GreedyVoteL2HDDSTest {
 
 	@Test
 	public void testKONECT_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
- 
+
 		int k = 5;
 		int r = k - 1;
 		String id = "3_03";
 		String instanceCode = "Dolphins";
-		String resourcePath = TestUtil.getCurrentPath() + "/src/test/resources";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
 		String dataSetPath = "/KONECT";
 		String pathName = "/000062_dolphins.konect";
 		String inputFile = resourcePath + dataSetPath + pathName;
-		String algTableName = Util.getAlgorithmTableName(instanceCode, id);
-		
+		String algTableName = DBOperation.getAlgorithmTableName(instanceCode, id);
+
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-		String batchNum = Util.getBatchNum();		
+		String batchNum = Util.getBatchNum();
 
 		TestUtil.basicFunc(CLASS_NAME, algo, log, batchNum, id, instanceCode, algTableName, inputFile, k, r);
 	}

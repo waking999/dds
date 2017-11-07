@@ -4,11 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import au.edu.cdu.dds.util.ConstantValue;
 
 public class DBOperationTest {
+	@Ignore
+	public void testIgnore() {
+		
+	}
 
 	@Test
 	public void testExecuteQuery() throws Exception {
@@ -71,7 +76,7 @@ public class DBOperationTest {
 		Assert.assertTrue(lst.size() > 0);
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testExecuteInsert() throws Exception {
 		DBParameter dbp = new DBParameter();
@@ -96,4 +101,28 @@ public class DBOperationTest {
 	 * 
 	 * }
 	 */
+	
+	@Ignore
+	@Test
+	public void testCleanAlgoTablesDel() {
+		DBParameter dbp = new DBParameter();
+		String[] colPairNames = { ConstantValue.DB_COL_BATCH_NUM };
+		String[] colPairOperators = { "=" };
+		String[] colPairValues = { "20171103-0051" };
+		dbp.setColPairNames(colPairNames);
+		dbp.setColPairOperators(colPairOperators);
+		dbp.setColPairValues(colPairValues);
+		DBOperation.cleanAlgoTables(ConstantValue.CLN_MODE_DEL, ConstantValue.DATASET_KONECT, dbp);
+
+	}
+
+	@Ignore
+	@Test
+	public void testCleanAlgoTablesDrop() {
+
+		DBOperation.cleanAlgoTables(ConstantValue.CLN_MODE_DROP, ConstantValue.DATASET_KONECT, null);
+		DBOperation.cleanAlgoTables(ConstantValue.CLN_MODE_DROP, ConstantValue.DATASET_BHOSLIB, null);
+	}
+
+	
 }

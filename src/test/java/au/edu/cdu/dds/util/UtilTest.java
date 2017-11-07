@@ -1,10 +1,7 @@
 package au.edu.cdu.dds.util;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -12,42 +9,74 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import au.edu.cdu.dds.TestUtil;
-import au.edu.cdu.dds.io.DBParameter;
 
 public class UtilTest {
 	@Ignore
 	public void testIgnore() {
-
 	}
 
-	@Ignore
 	@Test
 	public void testGetBatchNum() {
-
 		String batchNum = Util.getBatchNum();
 		System.out.println(batchNum);
 	}
 
-	@Ignore
 	@Test
-	public void testCleanAlgoTablesDel() {
-		DBParameter dbp = new DBParameter();
-		String[] colPairNames = { ConstantValue.DB_COL_BATCH_NUM };
-		String[] colPairOperators = { "=" };
-		String[] colPairValues = { "20171103-0051" };
-		dbp.setColPairNames(colPairNames);
-		dbp.setColPairOperators(colPairOperators);
-		dbp.setColPairValues(colPairValues);
-		Util.cleanAlgoTables(ConstantValue.CLN_MODE_DEL, ConstantValue.DATASET_KONECT, dbp);
+	public void testArrayToString() {
+		boolean[] binary;
+		String expect;
+		String output;
 
+		binary = new boolean[] {};
+		expect = "";
+		output = Util.arrayToString(binary);
+		TestUtil.verify(expect, output);
+
+		binary = new boolean[] { true, false, true };
+		expect = "101";
+		output = Util.arrayToString(binary);
+		TestUtil.verify(expect, output);
+
+		binary = new boolean[] { false, true, false };
+		expect = "010";
+		output = Util.arrayToString(binary);
+		TestUtil.verify(expect, output);
 	}
 
-	@Ignore
 	@Test
-	public void testCleanAlgoTablesDrop() {
+	public void testSetIntersect() {
+		int[] s1;
+		int s1Len;
+		int[] s2;
+		int s2Len;
+		boolean expect;
+		boolean output;
 
-		Util.cleanAlgoTables(ConstantValue.CLN_MODE_DROP, ConstantValue.DATASET_KONECT, null);
-		Util.cleanAlgoTables(ConstantValue.CLN_MODE_DROP, ConstantValue.DATASET_BHOSLIB, null);
+		s1 = new int[] { 1, 2, 3 };
+		s1Len = 2;
+		s2 = new int[] { 3, 4, 5 };
+		s2Len = 2;
+		expect = false;
+		output = Util.setsIntersect(s1, s1Len, s2, s2Len);
+		TestUtil.verify(expect, output);
+
+		s1 = new int[] { 1, 2, 3 };
+		s1Len = 3;
+		s2 = new int[] { 3, 4, 5 };
+		s2Len = 2;
+		expect = true;
+		output = Util.setsIntersect(s1, s1Len, s2, s2Len);
+		TestUtil.verify(expect, output);
+	}
+
+	@Test
+	public void testArrayToList() {
+		int[] l1 = { 1, 2, 3 };
+		Set<Integer> list1 = TestUtil.arrayToSet(l1);
+		Assert.assertTrue(list1.contains(1));
+		Assert.assertTrue(list1.contains(2));
+		Assert.assertTrue(list1.contains(3));
+		Assert.assertFalse(list1.contains(4));
 	}
 
 	@Test
@@ -117,217 +146,6 @@ public class UtilTest {
 
 	}
 
-	/*--------------------------*/
-	@Test
-	public void testArrayToString() {
-		boolean[] binary;
-		String expect;
-		String output;
-
-		binary = new boolean[] {};
-		expect = "";
-		output = Util.arrayToString(binary);
-		TestUtil.verify(expect, output);
-
-		binary = new boolean[] { true, false, true };
-		expect = "101";
-		output = Util.arrayToString(binary);
-		TestUtil.verify(expect, output);
-
-		binary = new boolean[] { false, true, false };
-		expect = "010";
-		output = Util.arrayToString(binary);
-		TestUtil.verify(expect, output);
-	}
-
-	@Test
-	public void testSetIntersect() {
-		int[] s1;
-		int s1Len;
-		int[] s2;
-		int s2Len;
-		boolean expect;
-		boolean output;
-
-		s1 = new int[] { 1, 2, 3 };
-		s1Len = 2;
-		s2 = new int[] { 3, 4, 5 };
-		s2Len = 2;
-		expect = false;
-		output = Util.setIntersect(s1, s1Len, s2, s2Len);
-		TestUtil.verify(expect, output);
-
-		s1 = new int[] { 1, 2, 3 };
-		s1Len = 3;
-		s2 = new int[] { 3, 4, 5 };
-		s2Len = 2;
-		expect = true;
-		output = Util.setIntersect(s1, s1Len, s2, s2Len);
-		TestUtil.verify(expect, output);
-	}
-
-	@Test
-	public void testArrayToList() {
-		int[] l1 = { 1, 2, 3 };
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		Assert.assertTrue(list1.contains(1));
-		Assert.assertTrue(list1.contains(2));
-		Assert.assertTrue(list1.contains(3));
-		Assert.assertFalse(list1.contains(4));
-	}
-
-	@Test
-	public void testIs1Subset2() {
-		int[] l1 = { 1, 2, 3 };
-		int[] l2 = { 1, 2 };
-
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		Set<Integer> list2 = Util.arrayToSet(l2);
-
-		Assert.assertTrue(Util.is1Subset2(list2, list1));
-		Assert.assertFalse(Util.is1Subset2(list1, list2));
-
-		list1 = null;
-		Assert.assertFalse(Util.is1Subset2(list2, list1));
-
-		list2 = null;
-		Assert.assertTrue(Util.is1Subset2(list2, list1));
-	}
-
-	@Test
-	public void testCopySet() {
-		int[] l1 = { 2, 3 };
-		Set<Integer> list1 = null;
-		Set<Integer> list1Copy = Util.copySet(list1);
-		Assert.assertNull(list1Copy);
-
-		list1 = new HashSet<Integer>();
-		list1Copy = Util.copySet(list1);
-		Assert.assertEquals(0, list1Copy.size());
-
-		list1 = Util.arrayToSet(l1);
-		list1Copy = Util.copySet(list1);
-		Assert.assertEquals(2, list1Copy.size());
-		Assert.assertTrue(list1Copy.contains(2));
-		Assert.assertTrue(list1Copy.contains(3));
-
-	}
-
-	@Test
-	public void testCopyMap() {
-		int[] l1 = { 2, 3 };
-		int[] l2 = { 1, 2 };
-		int[] l3 = { 1, 2, 3 };
-
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		Set<Integer> list2 = Util.arrayToSet(l2);
-		Set<Integer> list3 = Util.arrayToSet(l3);
-
-		Map<String, Set<Integer>> map = new HashMap<String, Set<Integer>>();
-		map.put("1", list1);
-		map.put("2", list2);
-		map.put("3", list3);
-
-		Map<String, Set<Integer>> map1 = Util.copyMap(map);
-		Assert.assertEquals(3, map1.size());
-
-	}
-
-	@Test
-	public void testUnionSets() {
-		int[] l1 = { 2, 3 };
-		int[] l2 = { 1, 2 };
-
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		Set<Integer> list2 = Util.arrayToSet(l2);
-
-		Map<String, Set<Integer>> map = null;
-		Assert.assertNull(Util.unionSets(map));
-
-		map = new HashMap<>();
-		Assert.assertNull(Util.unionSets(map));
-
-		map.put("1", list1);
-		Set<Integer> uList = Util.unionSets(map);
-		Assert.assertNotNull(uList);
-		Assert.assertEquals(2, uList.size());
-		Assert.assertTrue(uList.contains(2));
-		Assert.assertTrue(uList.contains(3));
-
-		map.put("2", list2);
-		uList = Util.unionSets(map);
-		Assert.assertEquals(3, uList.size());
-		Assert.assertTrue(uList.contains(1));
-	}
-
-	@Test
-	public void testExistUniqueSetForAElementList() {
-		int[] l1 = { 1, 2, 3 };
-		int[] l2 = { 1, 2 };
-
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		Set<Integer> list2 = Util.arrayToSet(l2);
-		Map<String, Set<Integer>> map = null;
-		Assert.assertFalse(Util.existUniqueSetForAElement(2, map).isExist());
-		map = new HashMap<String, Set<Integer>>();
-		Assert.assertFalse(Util.existUniqueSetForAElement(2, map).isExist());
-		Assert.assertFalse(Util.existUniqueSetForAElement(3, map).isExist());
-
-		map.put("1", list1);
-		map.put("2", list2);
-
-		Assert.assertTrue(Util.existUniqueSetForAElement(3, map).isExist());
-		Assert.assertEquals("1", Util.existUniqueSetForAElement(3, map).getSetKey());
-		Assert.assertFalse(Util.existUniqueSetForAElement(2, map).isExist());
-	}
-
-	@Test
-	public void testExistUniqueSetForAElement() {
-		int[] l1 = { 2, 3 };
-		// int[] l2 = { 1, 2 };
-		int[] l3 = { 1, 2, 3 };
-
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		// Set<Integer> list2 = Util.arrayToSet(l2);
-		Set<Integer> list3 = Util.arrayToSet(l3);
-
-		Map<String, Set<Integer>> map = null;
-		Assert.assertFalse(Util.existUniqueSetForAElement(list3, map).isExist());
-
-		map = new HashMap<String, Set<Integer>>();
-		Assert.assertFalse(Util.existUniqueSetForAElement(list3, map).isExist());
-
-		map.put("1", list1);
-		Assert.assertTrue(Util.existUniqueSetForAElement(list3, map).isExist());
-		Assert.assertEquals("1", Util.existUniqueSetForAElement(list3, map).getSetKey());
-
-		map.put("3", list3);
-		Assert.assertTrue(Util.existUniqueSetForAElement(list3, map).isExist());
-		Assert.assertEquals("3", Util.existUniqueSetForAElement(list3, map).getSetKey());
-	}
-
-	@Test
-	public void testGetMaxCardinalitySet() {
-		int[] l1 = { 2, 3 };
-		int[] l2 = { 1, 2 };
-		int[] l3 = { 1, 2, 3 };
-
-		Set<Integer> list1 = Util.arrayToSet(l1);
-		Set<Integer> list2 = Util.arrayToSet(l2);
-		Set<Integer> list3 = Util.arrayToSet(l3);
-
-		Map<String, Set<Integer>> map = null;
-
-		map = new HashMap<String, Set<Integer>>();
-
-		map.put("1", list1);
-		map.put("2", list2);
-		map.put("3", list3);
-
-		Assert.assertEquals("3", Util.getMaxCardinalitySetIndex(map));
-
-	}
-
 	@Test
 	public void testArrayOr() {
 		boolean[] arr1;
@@ -349,7 +167,7 @@ public class UtilTest {
 		boolean[] arr1;
 		boolean[] arr2;
 		boolean[] arr3;
-		List<Ruler> rulerArr;
+		Ruler[] rulerArr;
 
 		boolean output;
 		boolean expect;
@@ -359,11 +177,11 @@ public class UtilTest {
 		arr2 = new boolean[] { false, false, true, false, false, true };
 		arr3 = new boolean[] { false, true, false, true, true, false };
 
-		rulerArr = new ArrayList<Ruler>();
-		rulerArr.add(new Ruler("0", arr0));
-		rulerArr.add(new Ruler("1", arr1));
-		rulerArr.add(new Ruler("2", arr2));
-		rulerArr.add(new Ruler("3", arr3));
+		rulerArr = new Ruler[4];
+		rulerArr[0] = new Ruler("0", arr0);
+		rulerArr[1] = new Ruler("1", arr1);
+		rulerArr[2] = new Ruler("2", arr2);
+		rulerArr[3] = new Ruler("3", arr3);
 		expect = true;
 		output = Util.validCombin(rulerArr);
 		Assert.assertTrue(expect == output);
@@ -373,14 +191,62 @@ public class UtilTest {
 		arr2 = new boolean[] { false, false, true, false, false, true };
 		arr3 = new boolean[] { false, true, false, false, true, false };
 
-		rulerArr = new ArrayList<Ruler>();
-		rulerArr.add(new Ruler("0", arr0));
-		rulerArr.add(new Ruler("1", arr1));
-		rulerArr.add(new Ruler("2", arr2));
-		rulerArr.add(new Ruler("3", arr3));
+		rulerArr = new Ruler[4];
+		rulerArr[0] = new Ruler("0", arr0);
+		rulerArr[1] = new Ruler("1", arr1);
+		rulerArr[2] = new Ruler("2", arr2);
+		rulerArr[3] = new Ruler("3", arr3);
 		expect = false;
 		output = Util.validCombin(rulerArr);
 		Assert.assertTrue(expect == output);
+
+	}
+
+	@Test
+	public void testGetAllRoutOfNCombines() {
+		boolean[] arr0;
+		boolean[] arr1;
+		boolean[] arr2;
+		boolean[] arr3;
+		Ruler[] rulerArr;
+
+		int r;
+
+		List<Ruler[]> expect;
+		List<Ruler[]> output;
+
+		arr0 = new boolean[] { false, false, false, true, false, true };
+		arr1 = new boolean[] { true, false, true, false, true, false };
+		arr2 = new boolean[] { false, false, true, false, false, true };
+		arr3 = new boolean[] { false, true, false, true, true, false };
+		rulerArr = new Ruler[4];
+		rulerArr[0] = new Ruler("0", arr0);
+		rulerArr[1] = new Ruler("1", arr1);
+		rulerArr[2] = new Ruler("2", arr2);
+		rulerArr[3] = new Ruler("3", arr3);
+		r = 2;
+		expect = new ArrayList<Ruler[]>();
+		expect.add(new Ruler[] { rulerArr[0], rulerArr[1] });
+		expect.add(new Ruler[] { rulerArr[0], rulerArr[2] });
+		expect.add(new Ruler[] { rulerArr[0], rulerArr[3] });
+		expect.add(new Ruler[] { rulerArr[1], rulerArr[2] });
+		expect.add(new Ruler[] { rulerArr[1], rulerArr[3] });
+		expect.add(new Ruler[] { rulerArr[2], rulerArr[3] });
+		output = Util.getAllRoutOfNCombines(rulerArr, r);
+		Assert.assertEquals(expect.size(), output.size());
+		for (int i = 0; i < expect.size(); i++) {
+			Ruler[] expectRow = expect.get(0);
+			Ruler[] outputRow = output.get(0);
+			for (int j = 0; j < r; j++) {
+				Ruler eR = expectRow[j];
+				Ruler oR = outputRow[j];
+				Assert.assertEquals(eR.getKey(), oR.getKey());
+				String eRRulerStr = Util.arrayToString(eR.getRuler());
+				String oRRulerStr = Util.arrayToString(oR.getRuler());
+				Assert.assertEquals(eRRulerStr, oRRulerStr);
+			}
+
+		}
 
 	}
 }

@@ -1,8 +1,8 @@
 package au.edu.cdu.dds.algo.ds;
 
+import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
-import au.edu.cdu.dds.util.Util;
 
 /**
  * this class implements the greedy vote algorithm for dominating set, where the
@@ -11,43 +11,44 @@ import au.edu.cdu.dds.util.Util;
  * @author kwang
  */
 public class GreedyVoteL2H implements IAlgorithm {
-	GlobalVariable gv;
-
-	@Override
-	public void setKR(int k, int r) {
-
-	}
-
-	@Override
-	public void setGV(GlobalVariable gv) {
-		this.gv = gv;
-	}
+	GlobalVariable g; // representing the graph
 
 	public GreedyVoteL2H() {
 	}
 
+	@Override
+	public void setKR(int k, int r) {
+		// this greedy does not need such parameters
+	}
+
+	@Override
+	public void setGlobalVariable(GlobalVariable g) {
+		this.g = g;
+	}
+
+	@Override
 	public void compute() {
-		int[] idxSol = gv.getIdxSol();
-		int idxSolSize = gv.getIdxSolSize();
+		int[] idxSol = g.getIdxSol();
+		int idxSolSize = g.getIdxSolSize();
 
 		do {
 			// get a vertex with the lowest weight;
-			int vIdx = Util.getUndomedLowestWeightVertexIdx(gv);
+			int vIdx = AlgoUtil.getUndomedLowestWeightVertexIdx(g);
 			// get a neigh of the vertex with the highest weight
-			int uIdx = Util.getHighestWeightNeighIdx(gv, vIdx);
+			int uIdx = AlgoUtil.getHighestWeightNeighIdx(g, vIdx);
 			if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
 				// if such a vertex is valid
 				// add uIdx into solution
 				idxSol[idxSolSize++] = uIdx;
 
 				// adjust weight;
-				Util.adjustWeight(gv, uIdx);
+				AlgoUtil.adjustWeight(g, uIdx);
 			}
 
-		} while (!Util.isAllDominated(gv));
+		} while (!AlgoUtil.isAllDominated(g));
 
-		gv.setIdxSol(idxSol);
-		gv.setIdxSolSize(idxSolSize);
+		g.setIdxSol(idxSol);
+		g.setIdxSolSize(idxSolSize);
 	}
 
 }

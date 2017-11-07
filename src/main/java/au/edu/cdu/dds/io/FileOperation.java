@@ -11,7 +11,6 @@ import java.util.List;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
-import au.edu.cdu.dds.util.Util;
 
 /**
  * implement operation system file operations
@@ -20,7 +19,8 @@ public class FileOperation {
 	private static final String BLANK = " ";
 
 	/**
-	 * read data file to initalize the global variables for the data structure and
+	 * read data file to initialize the global variables for the data structure
+	 * and
 	 * algorithms
 	 * 
 	 * @param filePath
@@ -33,8 +33,11 @@ public class FileOperation {
 		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
 		String line0 = lines.get(0);
 		String[] line0Array = line0.split(BLANK);
-		// the first line shows vertex count and edge count, which are separated by a
-		// blank
+		/*
+		 * the first line shows vertex count and edge count, which are separated
+		 * by a
+		 * blank
+		 */
 		String vCountStr = line0Array[0];
 		String eCountStr = line0Array[1];
 
@@ -44,9 +47,9 @@ public class FileOperation {
 		// initialize the global variables
 		GlobalVariable gv = new GlobalVariable();
 
-		Util.initGlobalVariable(gv, vCount);
+		AlgoUtil.initGlobalVariable(gv, vCount);
 
-		int[] verLst = gv.getVerLst();
+		int[] verLst = gv.getLabLst();
 		int[][] idxIM = gv.getIdxIM();
 		int[] idxDegree = gv.getIdxDegree();
 		int[][] idxAL = gv.getIdxAL();
@@ -56,7 +59,8 @@ public class FileOperation {
 		int currentVCount = 0;
 		for (int i = 1; i <= eCount; i++) {
 			tmpLine = lines.get(i);
-			// the edge pair is presented by two vertex labels separated by a blank
+			// the edge pair is presented by two vertex labels separated by a
+			// blank
 			String[] tmpLineArray = tmpLine.split(BLANK);
 			String uStr = tmpLineArray[0];
 			String vStr = tmpLineArray[1];
@@ -65,8 +69,8 @@ public class FileOperation {
 				// we don't allow self circle of each vertex
 
 				// we get the index of the vertices
-				int uIdx = AlgoUtil.getIndexByVertex(gv, Integer.parseInt(uStr));
-				int vIdx = AlgoUtil.getIndexByVertex(gv, Integer.parseInt(vStr));
+				int uIdx = AlgoUtil.getIdxByLab(gv, Integer.parseInt(uStr));
+				int vIdx = AlgoUtil.getIdxByLab(gv, Integer.parseInt(vStr));
 
 				// if this vertex is not in the list, add it to vertex list
 				if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {
@@ -80,7 +84,8 @@ public class FileOperation {
 					currentVCount++;
 				}
 
-				// we set the incident matrix cells of the two vertices are set to not null
+				// we set the incident matrix cells of the two vertices are set
+				// to not null
 				// first
 				idxIM[uIdx][vIdx] = ConstantValue.NOT_NULL;
 				idxIM[vIdx][uIdx] = ConstantValue.NOT_NULL;
@@ -92,9 +97,6 @@ public class FileOperation {
 			}
 
 		}
-		// the utility of each vertex is the same as degree at beginning
-		int[] idxUtil = Arrays.copyOf(idxDegree, vCount);
-		gv.setIdxUtil(idxUtil);
 
 		// calculate im and al
 		for (int i = 0; i < vCount; i++) {
@@ -114,7 +116,7 @@ public class FileOperation {
 		}
 
 		// initialize weight
-		Util.initWeight(gv);
+		AlgoUtil.initWeight(gv);
 
 		return gv;
 	}
