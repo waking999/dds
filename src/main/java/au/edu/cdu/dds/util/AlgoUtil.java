@@ -1,20 +1,53 @@
 package au.edu.cdu.dds.util;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
  * this is a util class for algorithm relevant methods
- * 
  * @author kwang1
- *
  */
 public class AlgoUtil {
+	/**
+	 * get the close neigborhood of a set of vIdx
+	 * @param g
+	 * @param idxSet
+	 * @return
+	 */
+	public static Set<Integer> getCloseNeigs(GlobalVariable g, int[] idxSet) {
+		Set<Integer> neigs = new HashSet<Integer>();
+		int[][] idxAL = g.getIdxAL();
+		int[] idxDegree = g.getIdxDegree();
+
+		for (int vIdx : idxSet) {
+			neigs.add(vIdx);
+			int degree = idxDegree[vIdx];
+			int[] vNeigs = idxAL[vIdx];
+			for (int j = 0; j < degree; j++) {
+				neigs.add(vNeigs[j]);
+			}
+
+		}
+
+		return neigs;
+	}
+
+	private static int getFirstUnusedIdx(GlobalVariable g) {
+		int[] idxLst = g.getIdxLst();
+		int actVerCnt = g.getActVerCnt();
+		int verCnt = g.getVerCnt();
+		if (actVerCnt == verCnt) {
+			return verCnt;
+		}
+		return idxLst[actVerCnt];
+
+	}
 
 	/**
 	 * add a vertex v to a new graph
-	 * 
 	 * @param g,
 	 * the global variable of a source graph
 	 * @param gi,
@@ -23,6 +56,7 @@ public class AlgoUtil {
 	 * the index of v in gv
 	 */
 	public static void addVerToGI(GlobalVariable g, GlobalVariable gi, int vIdx) {
+		//TestUtil.printGlobalVariableStatus(gi);
 		boolean[] idxAdded = g.getIdxAdded();
 		if (idxAdded[vIdx]) {
 			return;
@@ -35,7 +69,6 @@ public class AlgoUtil {
 		int[] giIdxDegree = gi.getIdxDegree();
 		int[] giLabLst = gi.getLabLst();
 		int[] giIdxLst = gi.getIdxLst();
-		int giVerCnt = gi.getVerCnt();
 
 		// mark v is added to gvi
 		idxAdded[vIdx] = true;
@@ -44,7 +77,9 @@ public class AlgoUtil {
 		 * position
 		 * index for the new vertex;
 		 */
-		int giCurrVerCnt = gi.getVerCnt();
+		// int giCurrVerCnt = gi.getVerCnt();
+		int giCurrVerCnt = gi.getActVerCnt();
+
 		/*
 		 * since gi is a new graph, we use the index of g as the label of gi
 		 * such that
@@ -52,12 +87,14 @@ public class AlgoUtil {
 		 * g.idx)
 		 */
 		giLabLst[giCurrVerCnt] = vIdx;
-		giIdxLst[giCurrVerCnt] = giCurrVerCnt;
+		giIdxLst[giCurrVerCnt] = getFirstUnusedIdx(gi);
 
 		// increase the the number of current vertex;
 		giCurrVerCnt++;
 		gi.setActVerCnt(giCurrVerCnt);
-		gi.setVerCnt(giCurrVerCnt);
+		if (gi.getVerCnt() < gi.getActVerCnt()) {
+			gi.setVerCnt(giCurrVerCnt);
+		}
 
 		// get the new index of v in gi
 		int giVIdx = AlgoUtil.getIdxByLab(gi, vIdx);
@@ -71,22 +108,25 @@ public class AlgoUtil {
 		// get the neighbours of v in g
 		int[] vGNeighs = idxAL[vIdx];
 
+//		int giVerCnt = gi.getVerCnt();
 		for (int uIdx : vGNeighs) {
 			// for any neighbour u of v in g
-			if (Util.findPos(giLabLst, giVerCnt, uIdx) != ConstantValue.IMPOSSIBLE_VALUE) {
+			int uIdxPos = Util.findPos(giLabLst, gi.getActVerCnt(), uIdx);
+			if (uIdxPos != ConstantValue.IMPOSSIBLE_VALUE) {
 				// if u in gvi
 				// get the index of u in gi
-				int giUIdx = AlgoUtil.getIdxByLab(gi, uIdx);
+				// int giUIdx = AlgoUtil.getIdxByLab(gi, uIdx);
+				int giUIdx = giIdxLst[uIdxPos];
 
 				// set the AL of giUIdx, giVIdx
 				int giUIdxDegree = giIdxDegree[giUIdx];
 				giIdxAL[giUIdx][giUIdxDegree] = giVIdx;
-				int gviVIdxDegree = giIdxDegree[giVIdx];
-				giIdxAL[giVIdx][gviVIdxDegree] = giUIdx;
+				int giVIdxDegree = giIdxDegree[giVIdx];
+				giIdxAL[giVIdx][giVIdxDegree] = giUIdx;
 
 				// set the IM of giUIdx, giVIdx
 				giIdxIM[giVIdx][giUIdx] = giUIdxDegree;
-				giIdxIM[giUIdx][giVIdx] = gviVIdxDegree;
+				giIdxIM[giUIdx][giVIdx] = giVIdxDegree;
 
 				// set the degree of giUIdx, giVIdx;
 				giIdxDegree[giUIdx]++;
@@ -100,7 +140,6 @@ public class AlgoUtil {
 
 	/**
 	 * delete a vertex from a graph by the index of the vertex
-	 * 
 	 * @param g,
 	 * @param vIdx,
 	 * index of a vertex
@@ -144,7 +183,6 @@ public class AlgoUtil {
 
 	/**
 	 * delete the edge between u and v in a graph
-	 * 
 	 * @param g
 	 * , a graph
 	 * @param uIdx,
@@ -161,7 +199,6 @@ public class AlgoUtil {
 
 	/**
 	 * delete the edge between u and v in a graph, where is from the u side
-	 * 
 	 * @param g,
 	 * the global variable of the graph
 	 * @param uIdx,
@@ -192,7 +229,6 @@ public class AlgoUtil {
 	/**
 	 * need a new copy of a graph so that the changes on the new copy will not
 	 * affect the original graph
-	 * 
 	 * @param g
 	 * @return
 	 */
@@ -257,13 +293,13 @@ public class AlgoUtil {
 
 	/**
 	 * get the index of a vertex by its label
-	 * 
 	 * @param g
 	 * @param lab
 	 * @return
 	 */
 	public static int getIdxByLab(GlobalVariable g, int lab) {
 		int actVerCnt = g.getActVerCnt();
+		//int verCnt = g.getVerCnt();
 		int[] labLst = g.getLabLst();
 		int[] idxLst = g.getIdxLst();
 
@@ -277,7 +313,6 @@ public class AlgoUtil {
 
 	/**
 	 * initialize the global variables with the number of vertex
-	 * 
 	 * @param g
 	 * @param vCount
 	 */
@@ -361,7 +396,6 @@ public class AlgoUtil {
 
 	/**
 	 * convert the idx solution into label solution
-	 * 
 	 * @param g
 	 * @return
 	 */
@@ -376,7 +410,6 @@ public class AlgoUtil {
 
 	/**
 	 * initialize the vote and weight after a graph loaded
-	 * 
 	 * @param g
 	 */
 	public static void initWeight(GlobalVariable g) {
@@ -412,7 +445,6 @@ public class AlgoUtil {
 	 * adjust the weight of the graph after the domination status of some
 	 * vertices
 	 * change
-	 * 
 	 * @param g
 	 * @param uIdx
 	 */
@@ -459,7 +491,6 @@ public class AlgoUtil {
 
 	/**
 	 * to check if all vertices are dominated
-	 * 
 	 * @param g
 	 * @return
 	 */
@@ -475,7 +506,6 @@ public class AlgoUtil {
 
 	/**
 	 * get a vertex with the highest weight among the vertices
-	 * 
 	 * @param gv
 	 * @return
 	 */
@@ -507,7 +537,6 @@ public class AlgoUtil {
 
 	/**
 	 * get a vertex with the lowest weight among unadded vertices
-	 * 
 	 * @param gv
 	 * @return
 	 */
@@ -536,7 +565,6 @@ public class AlgoUtil {
 
 	/**
 	 * get a vertex with the lowest weight among undominated vertices
-	 * 
 	 * @param gv
 	 * @return
 	 */
@@ -569,7 +597,6 @@ public class AlgoUtil {
 
 	/**
 	 * get an neighbor with the highest weight of a vertex
-	 * 
 	 * @param g
 	 * @param vIdx
 	 * @return
@@ -600,7 +627,6 @@ public class AlgoUtil {
 
 	/**
 	 * to check if a solution is valid
-	 * 
 	 * @param gv,
 	 * global variables
 	 * @return true if it is valid, otherwise false

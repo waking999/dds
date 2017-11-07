@@ -17,7 +17,6 @@ public class Util {
 
 	/**
 	 * find the position of a value in a range of an array
-	 * 
 	 * @param array
 	 * @param arrayLen,
 	 * the range
@@ -35,7 +34,6 @@ public class Util {
 
 	/**
 	 * generate a batch num by date and time
-	 * 
 	 * @return
 	 */
 	public static String getBatchNum() {
@@ -66,7 +64,6 @@ public class Util {
 
 	/**
 	 * a set s1 minus a set s2, s1-s2
-	 * 
 	 * @param s1,
 	 * a set
 	 * @param s2,
@@ -96,7 +93,6 @@ public class Util {
 
 	/**
 	 * a set s1 minus a set s2, s1-s2
-	 * 
 	 * @param s1,
 	 * a set
 	 * @param s2,
@@ -111,21 +107,14 @@ public class Util {
 			return s1;
 		}
 
+		int[] s2Arr = convertSetToArray(s2);
 		int s2Len = s2.size();
-		int[] s2Arr = new int[s2Len];
-		Iterator<Integer> s2It = s2.iterator();
-		int pointer = 0;
-		while (s2It.hasNext()) {
-			s2Arr[pointer++] = s2It.next().intValue();
-		}
-
 		return set1Minus2(s1, s1Len, s2Arr, s2Len);
 
 	}
 
 	/**
 	 * a set s1 minus a set s2, s1-s2
-	 * 
 	 * @param s1,
 	 * a set
 	 * @param s2,
@@ -136,21 +125,58 @@ public class Util {
 		if (s1 == null) {
 			return null;
 		}
-		int s1Len = s1.size();
-		int[] s1Arr = new int[s1Len];
-		Iterator<Integer> s1It = s1.iterator();
-		int pointer = 0;
-		while (s1It.hasNext()) {
-			s1Arr[pointer++] = s1It.next().intValue();
-		}
 
+		int[] s1Arr = convertSetToArray(s1);
+		int s1Len = s1.size();
 		return set1Minus2(s1Arr, s1Len, s2, s2Len);
 
 	}
 
 	/**
+	 * a set s1 minus a set s2, s1-s2
+	 * @param s1,
+	 * a set
+	 * @param s2,
+	 * a set
+	 * @return the elements in set s1 not in s2
+	 */
+	public static int[] set1Minus2(Set<Integer> s1, Set<Integer> s2) {
+		if (s1 == null) {
+			return null;
+		}
+
+		int[] s1Arr = convertSetToArray(s1);
+		int s1Len = s1.size();
+		if (s2 == null) {
+			return s1Arr;
+		}
+
+		int[] s2Arr = convertSetToArray(s2);
+		int s2Len = s2.size();
+
+		return set1Minus2(s1Arr, s1Len, s2Arr, s2Len);
+
+	}
+
+	/**
+	 * convert set to array
+	 * @param s
+	 * @param sLen
+	 * @return
+	 */
+	public static int[] convertSetToArray(Set<Integer> s) {
+		int sLen = s.size();
+		int[] sArr = new int[sLen];
+		Iterator<Integer> s1It = s.iterator();
+		int pointer = 0;
+		while (s1It.hasNext()) {
+			sArr[pointer++] = s1It.next().intValue();
+		}
+		return sArr;
+	}
+
+	/**
 	 * convert a boolean array to 01 string
-	 * 
 	 * @param
 	 * @return
 	 */
@@ -166,7 +192,6 @@ public class Util {
 
 	/**
 	 * to check if the two sets are intersected, s1 n s2
-	 * 
 	 * @param s1
 	 * @param s1Len
 	 * @param s2
@@ -188,7 +213,6 @@ public class Util {
 
 	/**
 	 * convert a neigh type domed map into an array of ruler object
-	 * 
 	 * @param map
 	 * @return
 	 */
@@ -206,7 +230,6 @@ public class Util {
 
 	/**
 	 * to do or operation on cooresponding elements of the two boolean arrays
-	 * 
 	 * @param arr1
 	 * @param arr2
 	 * @return
@@ -220,7 +243,6 @@ public class Util {
 	}
 
 	/**
-	 * 
 	 * @param combin
 	 * @return
 	 */
@@ -249,7 +271,6 @@ public class Util {
 
 	/**
 	 * get the list of all r out of n combinations for the ruler array
-	 * 
 	 * @param rulerArr,
 	 * the options to be chosen
 	 * @param r,
@@ -271,7 +292,6 @@ public class Util {
 
 	/**
 	 * a dfs helper for get the combinations.
-	 * 
 	 * @param combinTry
 	 * @return
 	 */
@@ -299,7 +319,6 @@ public class Util {
 	 * that
 	 * the modification on the ruler list in the middle step will not affect the
 	 * array
-	 * 
 	 * @param rulerList
 	 * @return
 	 */
@@ -319,7 +338,6 @@ public class Util {
 	 * by combination, we can a solution with key string, we need convert the
 	 * key
 	 * string to valid vertex
-	 * 
 	 * @param combin,
 	 * the combination of rulers. each ruler has a key string
 	 * @param typeDomingMap,
@@ -327,15 +345,28 @@ public class Util {
 	 * one, so far we choose the first one
 	 * @return
 	 */
-	public static int[] convertCombinToIdxSet(Ruler[] combin, Map<String, Set<Integer>> typeDomingMap) {
+	public static int[] convertCombinToIdxSet(Ruler[] combin, Map<String, Set<Integer>> typeDomingMap, int[] d2) {
 		int r = combin.length;
 		int[] rtn = new int[r];
+		int d2Len = d2.length;
 		for (int i = 0; i < r; i++) {
 			Ruler ruler = combin[i];
 			String key = ruler.getKey();
 			Set<Integer> vIdxs = typeDomingMap.get(key);
-			Iterator<Integer> vIdxsIt = vIdxs.iterator();
-			rtn[i] = vIdxsIt.next();
+			boolean findInD2 = false;
+			// we try to find the vertex which has already in the dominating set
+			for (int j = 0; j < d2Len; j++) {
+				if (vIdxs.contains(d2[j])) {
+					findInD2 = true;
+					rtn[i] = d2[j];
+				}
+			}
+
+			if (!findInD2) {
+				// if we can't, we just take the first one.
+				Iterator<Integer> vIdxsIt = vIdxs.iterator();
+				rtn[i] = vIdxsIt.next();
+			}
 		}
 		return rtn;
 	}
@@ -343,7 +374,6 @@ public class Util {
 	/**
 	 * verify if the array expect is same as output which are in original order
 	 * (unsorted)
-	 * 
 	 * @param expect
 	 * @param output
 	 * @return

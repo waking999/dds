@@ -61,8 +61,8 @@ public class GreedyVoteL2HDDSTest {
 	@Test
 	public void testKONECT_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
 
-		int k = 5;
-		int r = k - 1;
+		int k = 20;
+		int r =7;
 		String id = "3_03";
 		String instanceCode = "Dolphins";
 		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";

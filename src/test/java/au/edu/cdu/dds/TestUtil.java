@@ -260,7 +260,7 @@ public class TestUtil {
 	 * global variables
 	 */
 	public static void printGlobalVariableStatus(GlobalVariable gv) {
-		String styleStr = "%-6s %-6s %-6s %-40s %-40s";
+		String styleStr = "%-6s %-6s %-6s %-6s %-15s %-6s %-15s %-40s %-40s";
 
 		int[] idxLst = gv.getIdxLst();
 		int actVerCnt = gv.getActVerCnt();
@@ -268,12 +268,26 @@ public class TestUtil {
 		int[] idxDegree = gv.getIdxDegree();
 		int[][] idxAL = gv.getIdxAL();
 		int[][] idxIM = gv.getIdxIM();
+		boolean[] idxDomed=gv.getIdxDomed();
+		boolean[] idxAdded=gv.getIdxAdded();
+		float[] idxVote=gv.getIdxVote();
+		float[] idxWeight=gv.getIdxWeight();
 
 		int[] vL = gv.getLabLst();
 
-		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "degree", idxDegree, "vAL", idxAL, "vIM",
-				idxIM);
+		printStatus(styleStr, verCnt, actVerCnt, "vL", vL, "vIL", idxLst, "degree", idxDegree, "domed", idxDomed, "vote", idxVote, "added", idxAdded,"weight", idxWeight, "vAL", idxAL, "vIM",	idxIM);
 
+		int[] idxSol=gv.getIdxSol();
+		int idxSolSize=gv.getIdxSolSize();
+		StringBuffer sb=new StringBuffer();
+		sb.append(idxSolSize).append(":");
+		for(int i=0;i<idxSolSize;i++) {
+			sb.append(idxSol[i]).append(",");
+		}
+		System.out.println(sb.toString());
+		
+		
+		
 		System.out.println("--------------------------------------------------------");
 	}
 
@@ -296,17 +310,17 @@ public class TestUtil {
 	 * @param im
 	 */
 	private static void printStatus(String styleStr, int verCnt, int actVerCnt, String lName, int[] l, String ilName,
-			int[] il, String degName, int[] deg, String alName, int[][] al, String imName, int[][] im) {
-		StringBuffer sb = new StringBuffer();
-
+			int[] il, String degName, int[] deg,  String domName, boolean[] dom, String voteName, float[] vote, String addName, boolean[] added, String weightName, float[] weight, String alName, int[][] al, String imName, int[][] im) {
+	 
 		System.out.println("Vertex Count:" + verCnt + ",Active Vertex Count:" + actVerCnt);
-		System.out.printf(styleStr, lName, ilName, degName, alName, imName);
+		System.out.printf(styleStr, lName, ilName, degName, domName, voteName, addName, weightName, alName, imName);
 		System.out.println();
 		for (int i = 0; i < verCnt; i++) {
-			sb.setLength(0);
-
-			System.out.printf(styleStr, i + " " + l[i], i + " " + il[i], i + " " + deg[i],
+ 
+		 
+			System.out.printf(styleStr, i + " " + l[i], i + " " + il[i], i + " " + deg[i],i + " " + (dom[i]?"T":"F"),i + " " + String.format("%.4f",vote[i]),i + " " + (added[i]?"T":"F"),i + " " + String.format("%.4f", weight[i]),
 					i + " " + arrayToString(al[i]), arrayToString(im[i]));
+			
 			System.out.println();
 		}
 	}
