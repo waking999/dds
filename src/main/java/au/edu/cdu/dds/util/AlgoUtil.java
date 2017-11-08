@@ -34,7 +34,22 @@ public class AlgoUtil {
 
 		return neigs;
 	}
-
+	
+	
+	/**
+	 * convert a giIdx array to gIdx array 
+	 * @param giIdxSet
+	 * @param giLabLst
+	 * @return
+	 */
+	public static int[] convertGIIdxToGIdx(int[] giIdxSet, int[] giLabLst) {
+		int[] gIdxSet = new int[giIdxSet.length];
+		for (int i = 0; i < giIdxSet.length; i++) {
+			gIdxSet[i] = giLabLst[giIdxSet[i]];
+		}
+		return gIdxSet;
+	}
+	
 	private static int getFirstUnusedIdx(GlobalVariable g) {
 		int[] idxLst = g.getIdxLst();
 		int actVerCnt = g.getActVerCnt();
@@ -237,7 +252,7 @@ public class AlgoUtil {
 
 		gNew.setActVerCnt(g.getActVerCnt());
 		gNew.setVerCnt(g.getVerCnt());
-		gNew.setUndomCnt(g.getUndomCnt());
+		//gNew.setUndomCnt(g.getUndomCnt());
 		// labLst
 		int[] labLst = g.getLabLst();
 		gNew.setLabLst(Arrays.copyOf(labLst, labLst.length));
@@ -249,21 +264,21 @@ public class AlgoUtil {
 		gNew.setIdxDegree(Arrays.copyOf(idxDegree, idxDegree.length));
 
 		// domed
-		boolean[] idxDomed = g.getIdxDomed();
-		gNew.setIdxDomed(Arrays.copyOf(idxDomed, idxDomed.length));
-		// added
-		boolean[] idxAdded = g.getIdxAdded();
-		gNew.setIdxAdded(Arrays.copyOf(idxAdded, idxAdded.length));
+//		boolean[] idxDomed = g.getIdxDomed();
+//		gNew.setIdxDomed(Arrays.copyOf(idxDomed, idxDomed.length));
+//		// added
+//		boolean[] idxAdded = g.getIdxAdded();
+//		gNew.setIdxAdded(Arrays.copyOf(idxAdded, idxAdded.length));
 		// sol, solsize
-		int[] idxSol = g.getIdxSol();
-		gNew.setIdxSol(Arrays.copyOf(idxSol, idxSol.length));
-		gNew.setIdxSolSize(g.getIdxSolSize());
+//		int[] idxSol = g.getIdxSol();
+//		gNew.setIdxSol(Arrays.copyOf(idxSol, idxSol.length));
+//		gNew.setIdxSolSize(g.getIdxSolSize());
 		// vote
-		float[] idxVote = g.getIdxVote();
-		gNew.setIdxVote(Arrays.copyOf(idxVote, idxVote.length));
-		// weight
-		float[] idxWeight = g.getIdxWeight();
-		gNew.setIdxWeight(Arrays.copyOf(idxWeight, idxWeight.length));
+//		float[] idxVote = g.getIdxVote();
+//		gNew.setIdxVote(Arrays.copyOf(idxVote, idxVote.length));
+//		// weight
+//		float[] idxWeight = g.getIdxWeight();
+//		gNew.setIdxWeight(Arrays.copyOf(idxWeight, idxWeight.length));
 		// IM
 		int[][] idxIM = g.getIdxIM();
 		int idxIMLen = idxIM.length;
@@ -341,7 +356,7 @@ public class AlgoUtil {
 		// the dominated status of each vertex is false initially
 		boolean[] idxDomed = new boolean[vCount];
 		Arrays.fill(idxDomed, false);
-		int undomCnt = vCount;
+		//int undomCnt = vCount;
 
 		// the added status of each vertex is false initially
 		boolean[] idxAdded = new boolean[vCount];
@@ -375,7 +390,7 @@ public class AlgoUtil {
 		g.setIdxDegree(idxDegree);
 		g.setIdxLst(idxLst);
 		g.setLabLst(labLst);
-		g.setUndomCnt(undomCnt);
+		//g.setUndomCnt(undomCnt);
 		g.setIdxVote(idxVote);
 		g.setIdxWeight(idxWeight);
 	}
@@ -651,5 +666,9 @@ public class AlgoUtil {
 
 		return (idxLstList.size() == 0);
 	}
+	
+	
+	
+
 
 }

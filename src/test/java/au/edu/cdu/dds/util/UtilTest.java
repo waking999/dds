@@ -1,7 +1,9 @@
 package au.edu.cdu.dds.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -167,7 +169,8 @@ public class UtilTest {
 		boolean[] arr1;
 		boolean[] arr2;
 		boolean[] arr3;
-		Ruler[] rulerArr;
+		Map<String, boolean[]> map;
+		String[] rulerKeyArr;
 
 		boolean output;
 		boolean expect;
@@ -176,74 +179,61 @@ public class UtilTest {
 		arr1 = new boolean[] { true, false, true, false, true, false };
 		arr2 = new boolean[] { false, false, true, false, false, true };
 		arr3 = new boolean[] { false, true, false, true, true, false };
-
-		rulerArr = new Ruler[4];
-		rulerArr[0] = new Ruler("0", arr0);
-		rulerArr[1] = new Ruler("1", arr1);
-		rulerArr[2] = new Ruler("2", arr2);
-		rulerArr[3] = new Ruler("3", arr3);
+		map = new HashMap<>();
+		map.put("0", arr0);
+		map.put("1", arr1);
+		map.put("2", arr2);
+		map.put("3", arr3);
+		rulerKeyArr = new String[] { "0", "1", "2", "3" };
 		expect = true;
-		output = Util.validCombin(rulerArr);
+		output = Util.validCombin(rulerKeyArr, map);
 		Assert.assertTrue(expect == output);
 
 		arr0 = new boolean[] { false, false, false, false, false, true };
 		arr1 = new boolean[] { true, false, true, false, true, false };
 		arr2 = new boolean[] { false, false, true, false, false, true };
 		arr3 = new boolean[] { false, true, false, false, true, false };
+		map.clear();
+		map.put("0", arr0);
+		map.put("1", arr0);
+		map.put("2", arr0);
+		map.put("3", arr0);
+		rulerKeyArr = new String[] { "0", "1", "2", "3" };
 
-		rulerArr = new Ruler[4];
-		rulerArr[0] = new Ruler("0", arr0);
-		rulerArr[1] = new Ruler("1", arr1);
-		rulerArr[2] = new Ruler("2", arr2);
-		rulerArr[3] = new Ruler("3", arr3);
 		expect = false;
-		output = Util.validCombin(rulerArr);
+		output = Util.validCombin(rulerKeyArr, map);
 		Assert.assertTrue(expect == output);
 
 	}
 
 	@Test
-	public void testGetAllRoutOfNCombines() {
-		boolean[] arr0;
-		boolean[] arr1;
-		boolean[] arr2;
-		boolean[] arr3;
-		Ruler[] rulerArr;
+	public void testGetAllRoutOfNCombines() { 
+		String[] rulerKeyArr;
 
 		int r;
 
-		List<Ruler[]> expect;
-		List<Ruler[]> output;
+		List<String[]> expect;
+		List<String[]> output;
 
-		arr0 = new boolean[] { false, false, false, true, false, true };
-		arr1 = new boolean[] { true, false, true, false, true, false };
-		arr2 = new boolean[] { false, false, true, false, false, true };
-		arr3 = new boolean[] { false, true, false, true, true, false };
-		rulerArr = new Ruler[4];
-		rulerArr[0] = new Ruler("0", arr0);
-		rulerArr[1] = new Ruler("1", arr1);
-		rulerArr[2] = new Ruler("2", arr2);
-		rulerArr[3] = new Ruler("3", arr3);
+		 
+		rulerKeyArr = new String[]{ "0", "1", "2", "3" };
 		r = 2;
-		expect = new ArrayList<Ruler[]>();
-		expect.add(new Ruler[] { rulerArr[0], rulerArr[1] });
-		expect.add(new Ruler[] { rulerArr[0], rulerArr[2] });
-		expect.add(new Ruler[] { rulerArr[0], rulerArr[3] });
-		expect.add(new Ruler[] { rulerArr[1], rulerArr[2] });
-		expect.add(new Ruler[] { rulerArr[1], rulerArr[3] });
-		expect.add(new Ruler[] { rulerArr[2], rulerArr[3] });
-		output = Util.getAllRoutOfNCombines(rulerArr, r);
+		expect = new ArrayList<String[]>();
+		expect.add(new String[] { rulerKeyArr[0], rulerKeyArr[1] });
+		expect.add(new String[] { rulerKeyArr[0], rulerKeyArr[2] });
+		expect.add(new String[] { rulerKeyArr[0], rulerKeyArr[3] });
+		expect.add(new String[] { rulerKeyArr[1], rulerKeyArr[2] });
+		expect.add(new String[] { rulerKeyArr[1], rulerKeyArr[3] });
+		expect.add(new String[] { rulerKeyArr[2], rulerKeyArr[3] });
+		output = Util.getAllRoutOfNCombines(rulerKeyArr, r);
 		Assert.assertEquals(expect.size(), output.size());
 		for (int i = 0; i < expect.size(); i++) {
-			Ruler[] expectRow = expect.get(0);
-			Ruler[] outputRow = output.get(0);
+			String[] expectRow = expect.get(0);
+			String[] outputRow = output.get(0);
 			for (int j = 0; j < r; j++) {
-				Ruler eR = expectRow[j];
-				Ruler oR = outputRow[j];
-				Assert.assertEquals(eR.getKey(), oR.getKey());
-				String eRRulerStr = Util.arrayToString(eR.getRuler());
-				String oRRulerStr = Util.arrayToString(oR.getRuler());
-				Assert.assertEquals(eRRulerStr, oRRulerStr);
+				String eR = expectRow[j];
+				String oR = outputRow[j]; 
+				Assert.assertTrue(eR.equals(oR));
 			}
 
 		}

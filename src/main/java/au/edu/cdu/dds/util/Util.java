@@ -216,16 +216,15 @@ public class Util {
 	 * @param map
 	 * @return
 	 */
-	public static Ruler[] converRulerMapToArray(Map<String, boolean[]> map) {
+	public static String[] converRulerMapToArray(Map<String, boolean[]> map) {
 		Set<String> keySet = map.keySet();
-		int mapSize = map.size();
-		Ruler[] rulerArr = new Ruler[mapSize];
-		int pos = 0;
+		int keySetSize = keySet.size();
+		String[] rtn = new String[keySetSize];
+		int i = 0;
 		for (String key : keySet) {
-			boolean[] ruler = map.get(key);
-			rulerArr[pos++] = new Ruler(key, ruler);
+			rtn[i++] = key;
 		}
-		return rulerArr;
+		return rtn;
 	}
 
 	/**
@@ -246,21 +245,21 @@ public class Util {
 	 * @param combin
 	 * @return
 	 */
-	public static boolean validCombin(Ruler[] combin) {
+	public static boolean validCombin(String[] combin,Map<String,boolean[]> neigTypeDomedMap) {
 
 		int dataLen = combin.length;
-		int rulerLen = combin[0].getRuler().length;
+		boolean[] frow=neigTypeDomedMap.get(combin[0]);
+		int rulerLen = frow.length;
 
 		// base means all positions should be true
 		boolean[] base = new boolean[rulerLen];
 		Arrays.fill(base, true);
 
-		// or all rows as the compared
-		boolean[] frow = combin[0].getRuler();
+		// or all rows as the compared 
 		boolean[] comp = Arrays.copyOf(frow, frow.length);
 
 		for (int i = 1; i < dataLen; i++) {
-			boolean[] row = combin[i].getRuler();
+			boolean[] row = neigTypeDomedMap.get(combin[i]);
 			comp = arrayOr(comp, row);
 		}
 
@@ -277,15 +276,15 @@ public class Util {
 	 * choose r out of the n options
 	 * @return
 	 */
-	public static List<Ruler[]> getAllRoutOfNCombines(Ruler[] rulerArr, int r) {
-		List<Ruler[]> result = new ArrayList<>();
-		int n = rulerArr.length;
+	public static List<String[]> getAllRoutOfNCombines(String[] rulerKeyArr, int r) {
+		List<String[]> result = new ArrayList<>();
+		int n = rulerKeyArr.length;
 		if (n <= 0 || n < r)
 			return result;
 
-		List<Ruler> combinTry = new ArrayList<>(r);
-		combineDfs(rulerArr, r, 0, combinTry, result); // because it need to
-														// begin from 1
+		List<String> combinTry = new ArrayList<>(r);
+		combineDfs(rulerKeyArr, r, 0, combinTry, result); // because it need to
+															// begin from 1
 
 		return result;
 	}
@@ -295,21 +294,21 @@ public class Util {
 	 * @param combinTry
 	 * @return
 	 */
-	private static void combineDfs(Ruler[] rulerArr, int r, int start, List<Ruler> combinTry, List<Ruler[]> res) {
+	private static void combineDfs(String[] rulerKeyArr, int r, int start, List<String> combinTry, List<String[]> res) {
 		if (combinTry.size() == r) {
 			/*
 			 * to avoid operation on the same object. the return should contains
 			 * different
 			 * objects
 			 */
-			Ruler[] combinValid = copyRulerArr(combinTry);
+			String[] combinValid = copyRulerArr(combinTry);
 			res.add(combinValid);
 			return;
 		}
-		int n = rulerArr.length;
+		int n = rulerKeyArr.length;
 		for (int i = start; i < n; i++) {
-			combinTry.add(rulerArr[i]);
-			combineDfs(rulerArr, r, i + 1, combinTry, res);
+			combinTry.add(rulerKeyArr[i]);
+			combineDfs(rulerKeyArr, r, i + 1, combinTry, res);
 			combinTry.remove(combinTry.size() - 1);
 		}
 	}
@@ -322,9 +321,9 @@ public class Util {
 	 * @param rulerList
 	 * @return
 	 */
-	private static Ruler[] copyRulerArr(List<Ruler> rulerList) {
+	private static String[] copyRulerArr(List<String> rulerList) {
 		int itemLen = rulerList.size();
-		Ruler[] newItem = new Ruler[itemLen];
+		String[] newItem = new String[itemLen];
 		for (int i = 0; i < itemLen; i++) {
 			// not necessary deep copy since we just read rather than write to
 			// ruler.
@@ -345,13 +344,12 @@ public class Util {
 	 * one, so far we choose the first one
 	 * @return
 	 */
-	public static int[] convertCombinToIdxSet(Ruler[] combin, Map<String, Set<Integer>> typeDomingMap, int[] d2) {
+	public static int[] convertCombinToIdxSet(String[] combin, Map<String, Set<Integer>> typeDomingMap, int[] d2) {
 		int r = combin.length;
 		int[] rtn = new int[r];
 		int d2Len = d2.length;
 		for (int i = 0; i < r; i++) {
-			Ruler ruler = combin[i];
-			String key = ruler.getKey();
+			String key = combin[i];
 			Set<Integer> vIdxs = typeDomingMap.get(key);
 			boolean findInD2 = false;
 			// we try to find the vertex which has already in the dominating set

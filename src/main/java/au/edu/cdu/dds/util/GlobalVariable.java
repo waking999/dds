@@ -55,7 +55,7 @@ public class GlobalVariable {
 	}
 
 	private boolean[] idxDomed; // if a vertex (in index format) is dominated
-	private int undomCnt; // the count of vertices which are not dominated
+	//private int undomCnt; // the count of vertices which are not dominated
 
 	private boolean[] idxAdded; // if a vertex (in index format) is add to
 								// another graph
@@ -116,13 +116,13 @@ public class GlobalVariable {
 		this.idxDomed = idxDomed;
 	}
 
-	public int getUndomCnt() {
-		return undomCnt;
-	}
-
-	public void setUndomCnt(int undomCnt) {
-		this.undomCnt = undomCnt;
-	}
+//	public int getUndomCnt() {
+//		return undomCnt;
+//	}
+//
+//	public void setUndomCnt(int undomCnt) {
+//		this.undomCnt = undomCnt;
+//	}
 
 	public int[][] getIdxIM() {
 		return idxIM;

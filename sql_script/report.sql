@@ -19,14 +19,14 @@ and i.d_name='KONECT'
 and a1.batch_num='20171107-2110'
 and a2.batch_num='20171107-2111'
 and a3.batch_num='20171107-2121'
-and a4.batch_num='20171107-2130'
+and a4.batch_num='20171108-0853'
 and a4.k=10
 and a4.r=7;
 
 --show different k,r,result size
 select i_id,k,r, a.result_size
 from result_GreedyVoteL2HDDSTest a
-where a.batch_num='20171107-2223';
+where a.batch_num='20171108-0845';
 
 --filter duplicated result size
 select distinct a.result_size

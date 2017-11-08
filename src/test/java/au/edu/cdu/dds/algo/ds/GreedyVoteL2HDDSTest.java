@@ -3,6 +3,7 @@ package au.edu.cdu.dds.algo.ds;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -13,12 +14,14 @@ import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HDDSTest {
-	// private Logger log = LogUtil.getLogger(GreedyVoteL2HDDSTest.class);
-	private static final String CLASS_NAME = GreedyVoteL2HDDSTest.class.getSimpleName();
-
+	
+	private static final String CLASS_NAME = GreedyVoteL2HDDS2Test.class.getSimpleName();
+	private Logger log = LogUtil.getLogger(CLASS_NAME);
+	
 	@Ignore
 	public void testIgnore() {
 
@@ -53,14 +56,14 @@ public class GreedyVoteL2HDDSTest {
 		int r = 7;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 
-		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r);
+		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, log);
 	}
 
 	@Ignore
 	@Test
 	public void testKONECT_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
 
-		int k = 20;
+		int k = 10;
 		int r = 7;
 		String id = "3_03";
 		String instanceCode = "Dolphins";
@@ -73,7 +76,27 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,log);
+	}
+	
+	//@Ignore
+	@Test
+	public void testKONECT_LoopKR_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 3;
+		int kUpper = 50;
+		String id = "3_03";
+		String instanceCode = "Dolphins";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/000062_dolphins.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
 	}
 
 	@Ignore
@@ -93,8 +116,9 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r);
+		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,log);
 	}
+
 
 	@Ignore
 	@Test
@@ -113,10 +137,10 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
 	}
 
-	// run
+
 	@Ignore
 	@Test
 	public void testKONECT_LoopKR_HamsterFul() throws InterruptedException, IOException, FileNotFoundException {
@@ -134,7 +158,7 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
 	}
 
 	@Ignore
@@ -154,10 +178,10 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
 	}
 
-	// run
+	
 	@Ignore
 	@Test
 	public void testKONECT_LoopKR_Powergrid() throws InterruptedException, IOException, FileNotFoundException {
@@ -175,7 +199,28 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+	}
+
+
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_Pretty() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 3;
+		int kUpper = 50;
+		String id = "3_16";
+		String instanceCode = "PrettyGoodPrivacy";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/010680_Pretty_Good_Privacy.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
 	}
 
 	@Ignore
@@ -188,10 +233,11 @@ public class GreedyVoteL2HDDSTest {
 
 	@Ignore
 	@Test
-	public void testBHOSLIB_verify() throws InterruptedException, IOException, FileNotFoundException {
-		int kLower = 10;
-		int kUpper = 10;
+	public void testBHOSLIB_LoopIns() throws InterruptedException, IOException, FileNotFoundException {
+		int k = 10;
+		int r = 7;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
-		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, kLower, kUpper);
+
+		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, k, r,log);
 	}
 }
