@@ -257,7 +257,7 @@ public class TestUtil {
 
 		// write to console
 		StringBuffer sb = new StringBuffer();
-		sb.append(instanceCode).append(":").append(g.getIdxSolSize()).append(":")
+		sb.append(instanceCode).append(":").append(k).append(",").append(r).append(":").append(g.getIdxSolSize()).append(":")
 				.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
 		log.debug(sb.toString());
 	}
