@@ -49,7 +49,7 @@ public class GreedyVoteL2HDDS2Test {
 
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testKONECT_LoopIns() throws InterruptedException, IOException, FileNotFoundException {
 		int k = 10;
@@ -77,6 +77,27 @@ public class GreedyVoteL2HDDS2Test {
 		String batchNum = Util.getBatchNum();
 
 		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
+	}
+	
+	//@Ignore
+	@Test
+	public void testKONECT_LoopKR_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 3;
+		int kUpper = 50;
+		String id = "3_03";
+		String instanceCode = "Dolphins";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/000062_dolphins.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS2();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
 
 	@Ignore

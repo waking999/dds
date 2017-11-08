@@ -2,7 +2,6 @@ package au.edu.cdu.dds.algo.ds;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -80,9 +79,9 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 		 */
 		int[] giStepU = new int[k];
 		Arrays.fill(giStepU, ConstantValue.IMPOSSIBLE_VALUE);
-		@SuppressWarnings("unchecked")
-		Set<Integer>[] giStepV = new HashSet[k];
-		Arrays.fill(giStepV, null);
+//		@SuppressWarnings("unchecked")
+//		Set<Integer>[] giStepV = new HashSet[k];
+//		Arrays.fill(giStepV, null);
 
 		float[][] gStepWeight = new float[k][];
 
@@ -98,7 +97,7 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 
 				AlgoUtil.addVerToGI(g, gi, vIdx);
 			}
-			int giVIdx = AlgoUtil.getIdxByLab(gi, vIdx);
+			//int giVIdx = AlgoUtil.getIdxByLab(gi, vIdx);
 
 			if (vIdx != ConstantValue.IMPOSSIBLE_VALUE) {
 				if (!idxDomed[vIdx]) {
@@ -130,14 +129,14 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 						 * the index of them and put
 						 * it in the step
 						 */
-						Set<Integer> giStepVSet = new HashSet<>();
+						//Set<Integer> giStepVSet = new HashSet<>();
 						// Set<Integer> gvStepVSet = new HashSet<>();
 
-						giStepVSet.add(giVIdx);
+						//giStepVSet.add(giVIdx);
 						// gvStepVSet.add(vIdx);
 
 						giStepU[p] = giUIdx;
-						giStepV[p] = giStepVSet;
+						//giStepV[p] = giStepVSet;
 
 						// gStepU[p] = uIdx;
 						// gStepV[p] = vIdx;
@@ -147,14 +146,14 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 							p = p % k;
 						}
 
-						if (isMomentOfRegret(p, giStepV)) {
+						if (isMomentOfRegret(p, giStepU)) {
 
 							// 1.copy gi -> gi*
 							GlobalVariable giS = AlgoUtil.copyGloablVariable(gi);
 
 							int[] giD2;
 							int giD2Len;
-							if (giStepV[p] == null) {
+							if (giStepU[p] == ConstantValue.IMPOSSIBLE_VALUE) {
 								giD2Len = r + 1;
 								giD2 = Arrays.copyOfRange(giStepU, p - r - 1, p);
 
@@ -355,7 +354,7 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 									p = 0;
 									// stepU clean, stepV clean
 									Arrays.fill(giStepU, ConstantValue.IMPOSSIBLE_VALUE);
-									Arrays.fill(giStepV, ConstantValue.IMPOSSIBLE_VALUE);
+									//Arrays.fill(giStepV, null);
 									 
 									gStepWeight = new float[k][];
 								 
@@ -380,16 +379,17 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 
 					}
 
-				} else {
-					// add vIdx to step[p]
-					int preP = p - 1;
-					if (p == 0) {
-						preP = k - 1;
-					}
-					Set<Integer> giStepVSet = giStepV[preP];
-					giStepVSet.add(giVIdx);
-
-				}
+				} 
+//				else {
+//					// add vIdx to step[p]
+//					int preP = p - 1;
+//					if (p == 0) {
+//						preP = k - 1;
+//					}
+//					Set<Integer> giStepVSet = giStepV[preP];
+//					giStepVSet.add(giVIdx);
+//
+//				}
 
 			}
 
@@ -406,14 +406,14 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 	
 	
 
-	private boolean isMomentOfRegret(int p, Set<Integer>[] stepV) {
+	private boolean isMomentOfRegret(int p, int[] stepV) {
 		// we can go back at least r+1 step and choose r out of r+1
 		if (p > r + 1) {
 			return true;
 		}
 
 		// we can go back k step and choose r out of k
-		if ((p <= r + 1) && (stepV[p] != null)) {
+		if ((p <= r + 1) && (stepV[p] != ConstantValue.IMPOSSIBLE_VALUE)) {
 			return true;
 		}
 
