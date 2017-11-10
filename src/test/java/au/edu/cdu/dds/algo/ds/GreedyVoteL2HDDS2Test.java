@@ -17,6 +17,7 @@ import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
+@Deprecated
 public class GreedyVoteL2HDDS2Test {
 	
 	private static final String CLASS_NAME = GreedyVoteL2HDDS2Test.class.getSimpleName();
@@ -34,7 +35,7 @@ public class GreedyVoteL2HDDS2Test {
 		int[] expect = new int[] { 1, 5 };
 
 		GlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
-
+ 
 		IAlgorithm algo = new GreedyVoteL2HDDS2();
 		algo.setGlobalVariable(gv);
 		int k = 3;
