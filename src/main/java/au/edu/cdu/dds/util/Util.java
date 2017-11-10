@@ -268,6 +268,61 @@ public class Util {
 
 	}
 
+	public static List<int[]> getAllRoutOfNCombines(int[] array, int r) {
+		List<int[]> result = new ArrayList<>();
+		int n = array.length;
+		if (n <= 0 || n < r)
+			return result;
+
+		List<Integer> combinTry = new ArrayList<>(r);
+		combineDfs(array, r, 0, combinTry, result); // because it need to
+															// begin from 1
+
+		return result;
+	}
+	/**
+	 * a dfs helper for get the combinations.
+	 * @param combinTry
+	 * @return
+	 */
+	private static void combineDfs(int[] array, int r, int start, List<Integer> combinTry, List<int[]> res) {
+		if (combinTry.size() == r) {
+			/*
+			 * to avoid operation on the same object. the return should contains
+			 * different
+			 * objects
+			 */
+			int[] combinValid = copyIntArr(combinTry);
+			res.add(combinValid);
+			return;
+		}
+		int n = array.length;
+		for (int i = start; i < n; i++) {
+			combinTry.add(array[i]);
+			combineDfs(array, r, i + 1, combinTry, res);
+			combinTry.remove(combinTry.size() - 1);
+		}
+	}
+	
+	/**
+	 * copy a ruler list in the middle step into an array as another object so
+	 * that
+	 * the modification on the ruler list in the middle step will not affect the
+	 * array
+	 * @param arrayList
+	 * @return
+	 */
+	private static int[] copyIntArr(List<Integer> arrayList) {
+		int itemLen = arrayList.size();
+		int[] newItem = new int[itemLen];
+		for (int i = 0; i < itemLen; i++) {
+			// not necessary deep copy since we just read rather than write to
+			// ruler.
+			newItem[i] = arrayList.get(i).intValue();
+		}
+		return newItem;
+
+	}
 	/**
 	 * get the list of all r out of n combinations for the ruler array
 	 * @param rulerArr,
@@ -301,7 +356,7 @@ public class Util {
 			 * different
 			 * objects
 			 */
-			String[] combinValid = copyRulerArr(combinTry);
+			String[] combinValid = copyStringArr(combinTry);
 			res.add(combinValid);
 			return;
 		}
@@ -321,7 +376,7 @@ public class Util {
 	 * @param rulerList
 	 * @return
 	 */
-	private static String[] copyRulerArr(List<String> rulerList) {
+	private static String[] copyStringArr(List<String> rulerList) {
 		int itemLen = rulerList.size();
 		String[] newItem = new String[itemLen];
 		for (int i = 0; i < itemLen; i++) {

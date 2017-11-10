@@ -161,7 +161,7 @@ public class GreedyVoteL2HDDSTest {
 		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void testKONECT_LoopKR_DavidCopperfield() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -182,7 +182,7 @@ public class GreedyVoteL2HDDSTest {
 	}
 
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void testKONECT_LoopKR_Powergrid() throws InterruptedException, IOException, FileNotFoundException {
 

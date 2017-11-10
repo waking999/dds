@@ -343,9 +343,15 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 			}
 
 		} while (!AlgoUtil.isAllDominated(g));
-
+		
 		g.setIdxSol(idxSol);
 		g.setIdxSolSize(idxSolSize);
+		
+		//try to get a smaller solution (1 smaller)
+		int[] tmpIdxSol=AlgoUtil.minimal(g, 1);
+		
+		g.setIdxSol(tmpIdxSol);
+		g.setIdxSolSize(tmpIdxSol.length);
 	}
 
 	private boolean isMomentOfRegret(int p, int[] stepV) {
