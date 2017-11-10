@@ -20,21 +20,12 @@ public class AlgoUtilTest {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 
 		GlobalVariable g = new FileOperation().readGraphByEdgePair(filePath);
-		GlobalVariable gNew = AlgoUtil.copyGloablVariable(g);
+		GlobalVariable gNew = AlgoUtil.copyGraphInGloablVariable(g);
 
 		TestUtil.verifyUnsort(g.getIdxDegree(), gNew.getIdxDegree());
 		TestUtil.verifyUnsort(g.getIdxLst(), gNew.getIdxLst());
-		TestUtil.verifyUnsort(g.getIdxSol(), gNew.getIdxSol());
-		TestUtil.verifyUnsort(g.getIdxVote(), gNew.getIdxVote());
-		TestUtil.verifyUnsort(g.getIdxWeight(), gNew.getIdxWeight());
-		TestUtil.verifyUnsort(g.getLabLst(), gNew.getLabLst());
-		TestUtil.verifyUnsort(g.getIdxAdded(), gNew.getIdxAdded());
-		TestUtil.verifyUnsort(g.getIdxDomed(), gNew.getIdxDomed());
-
-		Assert.assertEquals(g.getActVerCnt(), gNew.getActVerCnt());
-		Assert.assertEquals(g.getIdxSolSize(), gNew.getIdxSolSize());
+		TestUtil.verifyUnsort(g.getLabLst(), gNew.getLabLst());	
 		Assert.assertEquals(g.getVerCnt(), gNew.getVerCnt());
-
 		TestUtil.verifyUnsort(g.getIdxAL(), gNew.getIdxAL());
 		TestUtil.verifyUnsort(g.getIdxIM(), gNew.getIdxIM());
 	}
@@ -73,5 +64,31 @@ public class AlgoUtilTest {
 		outputArr = Util.convertSetToArray(output);
 		TestUtil.verifySort(expect, outputArr);
 
+	}
+	
+	@Test
+	public void testIsValidSolution() throws IOException {
+		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
+		int[] expect;
+		GlobalVariable g;
+		
+		
+		expect= new int[] { 0, 4 };
+		g = new FileOperation().readGraphByEdgePair(filePath);
+		g.setIdxSol(expect);
+		g.setIdxSolSize(expect.length);
+		Assert.assertTrue(AlgoUtil.isValidSolution(g));
+
+		expect= new int[] { 3, 4, 1 };
+		g = new FileOperation().readGraphByEdgePair(filePath);
+		g.setIdxSol(expect);
+		g.setIdxSolSize(expect.length);
+		Assert.assertTrue(AlgoUtil.isValidSolution(g));
+		
+		expect= new int[] { 2,3};
+		g = new FileOperation().readGraphByEdgePair(filePath);
+		g.setIdxSol(expect);
+		g.setIdxSolSize(expect.length);
+		Assert.assertTrue(!AlgoUtil.isValidSolution(g));
 	}
 }

@@ -155,7 +155,7 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 						if (isMomentOfRegret(p, giStepU)) {
 
 							// 1.copy gi -> gi*
-							GlobalVariable giS = AlgoUtil.copyGloablVariable(gi);
+							GlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
 
 							int[] giD2;
 							int giD2Len;

@@ -24,7 +24,7 @@ public class GreedyVoteH2LTest {
 	public void testIgnore() {
 	}
 
-	@Ignore
+	//@Ignore
 	@Test
 	public void test0() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
@@ -42,6 +42,7 @@ public class GreedyVoteH2LTest {
 		TestUtil.verifySort(expect, sol);
 	}
 	
+	@Ignore
 	@Test
 	public void testKONECT_verify() throws InterruptedException, IOException, FileNotFoundException {
 		IAlgorithm algo = new GreedyVoteH2L();

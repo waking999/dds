@@ -19,7 +19,7 @@ import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HDDSTest {
 	
-	private static final String CLASS_NAME = GreedyVoteL2HDDS2Test.class.getSimpleName();
+	private static final String CLASS_NAME = GreedyVoteL2HDDSTest.class.getSimpleName();
 	private Logger log = LogUtil.getLogger(CLASS_NAME);
 	
 	@Ignore
@@ -79,7 +79,7 @@ public class GreedyVoteL2HDDSTest {
 		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,log);
 	}
 	
-	//@Ignore
+	@Ignore
 	@Test
 	public void testKONECT_LoopKR_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -165,7 +165,7 @@ public class GreedyVoteL2HDDSTest {
 	@Test
 	public void testKONECT_LoopKR_DavidCopperfield() throws InterruptedException, IOException, FileNotFoundException {
 
-		int kLower = 2;
+		int kLower = 3;
 		int kUpper = 20;
 		String id = "3_04";
 		String instanceCode = "DavidCopperfield";
@@ -182,7 +182,7 @@ public class GreedyVoteL2HDDSTest {
 	}
 
 	
-	@Ignore
+	//@Ignore
 	@Test
 	public void testKONECT_LoopKR_Powergrid() throws InterruptedException, IOException, FileNotFoundException {
 

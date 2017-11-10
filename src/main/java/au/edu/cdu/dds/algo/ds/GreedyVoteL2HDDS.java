@@ -90,8 +90,8 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 					int uIdx = AlgoUtil.getHighestWeightNeighIdx(g, vIdx);
 					if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
-						//if this vertex is not in the list, add it to vertex list
-						 
+						// if this vertex is not in the list, add it to vertex list
+
 						// add uIdx to gi;
 						if (Util.findPos(giIdxLst, currentVCount, uIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
 							AlgoUtil.addVerToGI(g, gi, uIdx);
@@ -118,7 +118,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 						if (isMomentOfRegret(p, giStepV)) {
 
 							// 1.copy gi -> gi*
-							GlobalVariable giS = AlgoUtil.copyGloablVariable(gi);
+							GlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
 							// 2.get d2 from stepU (since some positions of stepU could be null)
 							int[] giSD2 = new int[k];
 							Arrays.fill(giSD2, ConstantValue.IMPOSSIBLE_VALUE);
@@ -215,7 +215,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									 * for N[d2Rm]\ N[g.sol\d2Rm ] in g:
 									 * domed=false;
 									 * added=false;
-									 */				 
+									 */
 									int[] idxSolToKeep = Util.set1Minus2(idxSol, idxSolSize, d2Rm, d2Rm.length);
 									Set<Integer> idxSolToKeepNeigs = AlgoUtil.getCloseNeigs(g, idxSolToKeep);
 									Set<Integer> d2RmNeigs = AlgoUtil.getCloseNeigs(g, d2Rm);
@@ -224,7 +224,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 										idxDomed[vIdxF] = false;
 										idxAdded[vIdxF] = false;
 									}
-									
+
 									/*
 									 * for d2Rm in g:
 									 * remove from g.sol；
@@ -237,18 +237,17 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 										idxSol[idxSolSize - 1] = tmp;
 										idxSolSize--;
 									}
-									
 
 									// recover weight
 									if (p >= k) {
 										p = p % k;
 									}
-									g.setIdxWeight(gStepWeight[p]);									
+									g.setIdxWeight(gStepWeight[p]);
 
 									/*
 									 * N[d2ToRemove]\N[gi.sol\d2ToRemove]\giD2Add in gi:
 									 * delete from gi
-									 */					
+									 */
 									int[] giIdxSolToKeep = Util.set1Minus2(giIdxSol, giIdxSolSize, giD2Rm,
 											giD2Rm.length);
 									Set<Integer> giIdxSolToKeepNeigs = AlgoUtil.getCloseNeigs(gi, giIdxSolToKeep);
@@ -258,7 +257,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									for (int vIdxD : giIdxSetD) {
 										AlgoUtil.deleteVertex(gi, vIdxD);
 									}
-								
+
 									/*
 									 * for giD2Rm in gi:
 									 * remove from gi.sol
@@ -271,19 +270,19 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 										giIdxSol[giIdxSolSize - 1] = tmp;
 										giIdxSolSize--;
 									}
-									
+
 									// the vertices to be added:
 									/*
 									 * for N[d2ToAdd] in g:
 									 * domed=true;
 									 * not necessary to process specially since they will change in adjustWeight;
-									 */								 
+									 */
 									/*
 									 * for d2ToAdd in g:
 									 * added=true;
 									 * add to sol;
 									 * adjustWeight;
-									 */									
+									 */
 									for (int uIdxT : d2Add) {
 										idxAdded[uIdxT] = true;
 										AlgoUtil.adjustWeight(g, uIdxT);
@@ -291,7 +290,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									}
 									g.setIdxSol(idxSol);
 									g.setIdxSolSize(idxSolSize);
-									 
+
 									/*
 									 * for giD2ToAdd in gi:
 									 * add to gisol
@@ -305,9 +304,8 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									p = 0;
 									// stepU clean, stepV clean
 									Arrays.fill(giStepU, ConstantValue.IMPOSSIBLE_VALUE);
-									Arrays.fill(giStepV, ConstantValue.IMPOSSIBLE_VALUE);								 
+									Arrays.fill(giStepV, ConstantValue.IMPOSSIBLE_VALUE);
 									gStepWeight = new float[k][];
-									 
 
 									giD2P = null;
 									giD2Rm = null;
@@ -349,8 +347,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		g.setIdxSol(idxSol);
 		g.setIdxSolSize(idxSolSize);
 	}
-
-	 
 
 	private boolean isMomentOfRegret(int p, int[] stepV) {
 		/*

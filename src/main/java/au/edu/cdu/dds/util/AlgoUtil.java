@@ -2,9 +2,7 @@ package au.edu.cdu.dds.util;
 
 import java.util.Arrays;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * this is a util class for algorithm relevant methods
@@ -34,10 +32,9 @@ public class AlgoUtil {
 
 		return neigs;
 	}
-	
-	
+
 	/**
-	 * convert a giIdx array to gIdx array 
+	 * convert a giIdx array to gIdx array
 	 * @param giIdxSet
 	 * @param giLabLst
 	 * @return
@@ -49,7 +46,7 @@ public class AlgoUtil {
 		}
 		return gIdxSet;
 	}
-	
+
 	private static int getFirstUnusedIdx(GlobalVariable g) {
 		int[] idxLst = g.getIdxLst();
 		int actVerCnt = g.getActVerCnt();
@@ -71,7 +68,7 @@ public class AlgoUtil {
 	 * the index of v in gv
 	 */
 	public static void addVerToGI(GlobalVariable g, GlobalVariable gi, int vIdx) {
-		//TestUtil.printGlobalVariableStatus(gi);
+		// TestUtil.printGlobalVariableStatus(gi);
 		boolean[] idxAdded = g.getIdxAdded();
 		if (idxAdded[vIdx]) {
 			return;
@@ -123,7 +120,7 @@ public class AlgoUtil {
 		// get the neighbours of v in g
 		int[] vGNeighs = idxAL[vIdx];
 
-//		int giVerCnt = gi.getVerCnt();
+		// int giVerCnt = gi.getVerCnt();
 		for (int uIdx : vGNeighs) {
 			// for any neighbour u of v in g
 			int uIdxPos = Util.findPos(giLabLst, gi.getActVerCnt(), uIdx);
@@ -244,15 +241,15 @@ public class AlgoUtil {
 	/**
 	 * need a new copy of a graph so that the changes on the new copy will not
 	 * affect the original graph
+	 * It is not necessary to copy all fields in global variable since not all
+	 * information is needed in the new copy. just the part relevant to graph.
 	 * @param g
 	 * @return
 	 */
-	public static GlobalVariable copyGloablVariable(GlobalVariable g) {
+	public static GlobalVariable copyGraphInGloablVariable(GlobalVariable g) {
 		GlobalVariable gNew = new GlobalVariable();
 
-		gNew.setActVerCnt(g.getActVerCnt());
 		gNew.setVerCnt(g.getVerCnt());
-		//gNew.setUndomCnt(g.getUndomCnt());
 		// labLst
 		int[] labLst = g.getLabLst();
 		gNew.setLabLst(Arrays.copyOf(labLst, labLst.length));
@@ -262,23 +259,6 @@ public class AlgoUtil {
 		// degree
 		int[] idxDegree = g.getIdxDegree();
 		gNew.setIdxDegree(Arrays.copyOf(idxDegree, idxDegree.length));
-
-		// domed
-//		boolean[] idxDomed = g.getIdxDomed();
-//		gNew.setIdxDomed(Arrays.copyOf(idxDomed, idxDomed.length));
-//		// added
-//		boolean[] idxAdded = g.getIdxAdded();
-//		gNew.setIdxAdded(Arrays.copyOf(idxAdded, idxAdded.length));
-		// sol, solsize
-//		int[] idxSol = g.getIdxSol();
-//		gNew.setIdxSol(Arrays.copyOf(idxSol, idxSol.length));
-//		gNew.setIdxSolSize(g.getIdxSolSize());
-		// vote
-//		float[] idxVote = g.getIdxVote();
-//		gNew.setIdxVote(Arrays.copyOf(idxVote, idxVote.length));
-//		// weight
-//		float[] idxWeight = g.getIdxWeight();
-//		gNew.setIdxWeight(Arrays.copyOf(idxWeight, idxWeight.length));
 		// IM
 		int[][] idxIM = g.getIdxIM();
 		int idxIMLen = idxIM.length;
@@ -288,7 +268,6 @@ public class AlgoUtil {
 			gvStarIdxIM[i] = Arrays.copyOf(idxIMRow, idxIMRow.length);
 		}
 		gNew.setIdxIM(gvStarIdxIM);
-
 		// AL
 		int[][] idxAL = g.getIdxAL();
 		int idxALLen = idxAL.length;
@@ -314,7 +293,7 @@ public class AlgoUtil {
 	 */
 	public static int getIdxByLab(GlobalVariable g, int lab) {
 		int actVerCnt = g.getActVerCnt();
-		//int verCnt = g.getVerCnt();
+		// int verCnt = g.getVerCnt();
 		int[] labLst = g.getLabLst();
 		int[] idxLst = g.getIdxLst();
 
@@ -356,7 +335,7 @@ public class AlgoUtil {
 		// the dominated status of each vertex is false initially
 		boolean[] idxDomed = new boolean[vCount];
 		Arrays.fill(idxDomed, false);
-		//int undomCnt = vCount;
+		// int undomCnt = vCount;
 
 		// the added status of each vertex is false initially
 		boolean[] idxAdded = new boolean[vCount];
@@ -390,7 +369,7 @@ public class AlgoUtil {
 		g.setIdxDegree(idxDegree);
 		g.setIdxLst(idxLst);
 		g.setLabLst(labLst);
-		//g.setUndomCnt(undomCnt);
+		// g.setUndomCnt(undomCnt);
 		g.setIdxVote(idxVote);
 		g.setIdxWeight(idxWeight);
 	}
@@ -649,7 +628,7 @@ public class AlgoUtil {
 	public static boolean isValidSolution(GlobalVariable g) {
 
 		int[] idxLst = g.getIdxLst();
-		List<Integer> idxLstList = Arrays.stream(idxLst).boxed().collect(Collectors.toList());
+		Set<Integer> idxLstList = new HashSet<>();
 
 		int[] idxSol = g.getIdxSol();
 		int idxSolSize = g.getIdxSolSize();
@@ -659,16 +638,12 @@ public class AlgoUtil {
 			int vIdx = idxSol[i];
 			int[] vNeigs = idxAL[vIdx];
 			for (int uIdx : vNeigs) {
-				idxLstList.remove(Integer.valueOf(uIdx));
+				idxLstList.add(uIdx);
 			}
-			idxLstList.remove(Integer.valueOf(vIdx));
+			idxLstList.add(vIdx);
 		}
 
-		return (idxLstList.size() == 0);
+		return (idxLstList.size() == idxLst.length);
 	}
-	
-	
-	
-
 
 }
