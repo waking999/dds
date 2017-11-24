@@ -1,4 +1,4 @@
-package au.edu.cdu.dds.util;
+ package au.edu.cdu.dds.util;
 
 /**
  * a java bean to store graph representations
@@ -187,4 +187,4 @@ class Graph {
 	public void setIdxAL(int[][] idxAL) {
 		this.idxAL = idxAL;
 	}
-}
+ }

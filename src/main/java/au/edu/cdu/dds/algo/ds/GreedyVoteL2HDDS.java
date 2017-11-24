@@ -119,8 +119,9 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 						if (isMomentOfRegret(p, giStepV)) {
 
 							// 1.copy gi -> gi*
+ 
 							ISGlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
-							// 2.get d2 from stepU (since some positions of stepU could be null)
+ 							// 2.get d2 from stepU (since some positions of stepU could be null)
 							int[] giSD2 = new int[k];
 							Arrays.fill(giSD2, ConstantValue.IMPOSSIBLE_VALUE);
 							int giD2Len = 0;
@@ -130,10 +131,12 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 								}
 							}
 
+ 
 							if (giD2Len <= r) {
 								continue;
 							}
 							// r = Math.min(r, giD2Len - 1);
+ 
 
 							// 3.d1 = giSol\gi.stepU (d1=d\d2) in gi*
 							int[] giSD1 = Util.set1Minus2(giIdxSol, giIdxSolSize, giSD2, giD2Len);
@@ -344,9 +347,10 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 			}
 
 		} while (!AlgoUtil.isAllDominated(g));
-
+		
 		g.setIdxSol(idxSol);
 		g.setIdxSolSize(idxSolSize);
+ 
 
 		// //try to get a smaller solution (1 smaller)
 		// int[] tmpIdxSol=AlgoUtil.minimal(g, 1);
@@ -355,6 +359,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		// g.setIdxSolSize(tmpIdxSol.length);
 	}
 
+ 
 	private boolean isMomentOfRegret(int p, int[] stepV) {
 		/*
 		 * 1.p==k:p previously points to the last element of step; 2.p>1:p

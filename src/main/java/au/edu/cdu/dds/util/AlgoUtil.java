@@ -48,7 +48,9 @@ public class AlgoUtil {
 		return gIdxSet;
 	}
 
+ 
 	private static int getFirstUnusedIdx(ISGlobalVariable g) {
+ 
 		int[] idxLst = g.getIdxLst();
 		int actVerCnt = g.getActVerCnt();
 		int verCnt = g.getVerCnt();
@@ -68,7 +70,9 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * the index of v in gv
 	 */
+ 
 	public static void addVerToGI(ISGlobalVariable g, ISGlobalVariable gi, int vIdx) {
+ 
 		boolean[] idxAdded = g.getIdxAdded();
 		if (idxAdded[vIdx]) {
 			return;
@@ -237,9 +241,10 @@ public class AlgoUtil {
 	 * @param g
 	 * @return
 	 */
+ 
 	public static ISGlobalVariable copyGraphInGloablVariable(ISGlobalVariable g) {
 		ISGlobalVariable gNew = new ISGlobalVariable();
-
+ 
 		gNew.setVerCnt(g.getVerCnt());
 		// labLst
 		int[] labLst = g.getLabLst();
@@ -641,7 +646,9 @@ public class AlgoUtil {
 	 * global variables
 	 * @return true if it is valid, otherwise false
 	 */
+ 
 	public static boolean isValidSolution(ISGlobalVariable g, int[] solTry) {
+ 
 
 		int[] idxLst = g.getIdxLst();
 		Set<Integer> idxLstList = new HashSet<>();
@@ -668,7 +675,9 @@ public class AlgoUtil {
 	 * @param distance
 	 * @return
 	 */
+ 
 	public static int[] minimal(ISGlobalVariable g, int distance) {
+ 
 
 		int[] idxSol = g.getIdxSol();
 		int idxSolSize = g.getIdxSolSize();
