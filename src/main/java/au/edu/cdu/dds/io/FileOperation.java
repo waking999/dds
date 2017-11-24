@@ -10,7 +10,7 @@ import java.util.List;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 
 /**
  * implement operation system file operations
@@ -27,7 +27,7 @@ public class FileOperation {
 	 * @return
 	 * @throws IOException
 	 */
-	public GlobalVariable readGraphByEdgePair(String filePath) throws IOException {
+	public ISGlobalVariable readGraphByEdgePair(String filePath) throws IOException {
 		// access the input file
 		Path path = Paths.get(filePath);
 		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
@@ -45,7 +45,7 @@ public class FileOperation {
 		int eCount = Integer.parseInt(eCountStr);
 
 		// initialize the global variables
-		GlobalVariable gv = new GlobalVariable();
+		ISGlobalVariable gv = new ISGlobalVariable();
 
 		AlgoUtil.initGlobalVariable(gv, vCount);
 

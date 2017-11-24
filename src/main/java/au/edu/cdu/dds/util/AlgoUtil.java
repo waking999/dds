@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * this is a util class for algorithm relevant methods
@@ -17,7 +16,7 @@ public class AlgoUtil {
 	 * @param idxSet
 	 * @return
 	 */
-	public static Set<Integer> getCloseNeigs(GlobalVariable g, int[] idxSet) {
+	public static Set<Integer> getCloseNeigs(ISGlobalVariable g, int[] idxSet) {
 		Set<Integer> neigs = new HashSet<Integer>();
 		int[][] idxAL = g.getIdxAL();
 		int[] idxDegree = g.getIdxDegree();
@@ -34,10 +33,9 @@ public class AlgoUtil {
 
 		return neigs;
 	}
-	
-	
+
 	/**
-	 * convert a giIdx array to gIdx array 
+	 * convert a giIdx array to gIdx array
 	 * @param giIdxSet
 	 * @param giLabLst
 	 * @return
@@ -49,8 +47,8 @@ public class AlgoUtil {
 		}
 		return gIdxSet;
 	}
-	
-	private static int getFirstUnusedIdx(GlobalVariable g) {
+
+	private static int getFirstUnusedIdx(ISGlobalVariable g) {
 		int[] idxLst = g.getIdxLst();
 		int actVerCnt = g.getActVerCnt();
 		int verCnt = g.getVerCnt();
@@ -70,8 +68,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * the index of v in gv
 	 */
-	public static void addVerToGI(GlobalVariable g, GlobalVariable gi, int vIdx) {
-		//TestUtil.printGlobalVariableStatus(gi);
+	public static void addVerToGI(ISGlobalVariable g, ISGlobalVariable gi, int vIdx) {
 		boolean[] idxAdded = g.getIdxAdded();
 		if (idxAdded[vIdx]) {
 			return;
@@ -92,7 +89,6 @@ public class AlgoUtil {
 		 * position
 		 * index for the new vertex;
 		 */
-		// int giCurrVerCnt = gi.getVerCnt();
 		int giCurrVerCnt = gi.getActVerCnt();
 
 		/*
@@ -123,14 +119,11 @@ public class AlgoUtil {
 		// get the neighbours of v in g
 		int[] vGNeighs = idxAL[vIdx];
 
-//		int giVerCnt = gi.getVerCnt();
 		for (int uIdx : vGNeighs) {
 			// for any neighbour u of v in g
 			int uIdxPos = Util.findPos(giLabLst, gi.getActVerCnt(), uIdx);
 			if (uIdxPos != ConstantValue.IMPOSSIBLE_VALUE) {
-				// if u in gvi
-				// get the index of u in gi
-				// int giUIdx = AlgoUtil.getIdxByLab(gi, uIdx);
+				// if u in gi, get the index of u in gi
 				int giUIdx = giIdxLst[uIdxPos];
 
 				// set the AL of giUIdx, giVIdx
@@ -150,7 +143,6 @@ public class AlgoUtil {
 			}
 		}
 
-		// TestUtil.printGlobalVariableStatus(gvi);
 	}
 
 	/**
@@ -159,7 +151,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * index of a vertex
 	 */
-	public static void deleteVertex(GlobalVariable g, int vIdx) {
+	public static void deleteVertex(ISGlobalVariable g, int vIdx) {
 		int actVerCnt = g.getActVerCnt();
 		int[] labLst = g.getLabLst();
 		int[] idxLst = g.getIdxLst();
@@ -192,8 +184,6 @@ public class AlgoUtil {
 
 		g.setActVerCnt(actVerCnt - 1);
 
-		// TestUtil.printGlobalVariableStatus(gv);
-
 	}
 
 	/**
@@ -205,11 +195,9 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * index of another end vertex
 	 */
-	public static void deleteEdge(GlobalVariable g, int uIdx, int vIdx) {
+	public static void deleteEdge(ISGlobalVariable g, int uIdx, int vIdx) {
 		deleteVFromU(g, uIdx, vIdx);
 		deleteVFromU(g, vIdx, uIdx);
-
-		// TestUtil.printGlobalVariableStatus(gv);
 	}
 
 	/**
@@ -221,7 +209,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * index of another end vertex
 	 */
-	private static void deleteVFromU(GlobalVariable g, int uIdx, int vIdx) {
+	private static void deleteVFromU(ISGlobalVariable g, int uIdx, int vIdx) {
 
 		int[] gvIdxDegree = g.getIdxDegree();
 		int[][] gvIdxIM = g.getIdxIM();
@@ -244,15 +232,15 @@ public class AlgoUtil {
 	/**
 	 * need a new copy of a graph so that the changes on the new copy will not
 	 * affect the original graph
+	 * It is not necessary to copy all fields in global variable since not all
+	 * information is needed in the new copy. just the part relevant to graph.
 	 * @param g
 	 * @return
 	 */
-	public static GlobalVariable copyGloablVariable(GlobalVariable g) {
-		GlobalVariable gNew = new GlobalVariable();
+	public static ISGlobalVariable copyGraphInGloablVariable(ISGlobalVariable g) {
+		ISGlobalVariable gNew = new ISGlobalVariable();
 
-		gNew.setActVerCnt(g.getActVerCnt());
 		gNew.setVerCnt(g.getVerCnt());
-		//gNew.setUndomCnt(g.getUndomCnt());
 		// labLst
 		int[] labLst = g.getLabLst();
 		gNew.setLabLst(Arrays.copyOf(labLst, labLst.length));
@@ -262,23 +250,6 @@ public class AlgoUtil {
 		// degree
 		int[] idxDegree = g.getIdxDegree();
 		gNew.setIdxDegree(Arrays.copyOf(idxDegree, idxDegree.length));
-
-		// domed
-//		boolean[] idxDomed = g.getIdxDomed();
-//		gNew.setIdxDomed(Arrays.copyOf(idxDomed, idxDomed.length));
-//		// added
-//		boolean[] idxAdded = g.getIdxAdded();
-//		gNew.setIdxAdded(Arrays.copyOf(idxAdded, idxAdded.length));
-		// sol, solsize
-//		int[] idxSol = g.getIdxSol();
-//		gNew.setIdxSol(Arrays.copyOf(idxSol, idxSol.length));
-//		gNew.setIdxSolSize(g.getIdxSolSize());
-		// vote
-//		float[] idxVote = g.getIdxVote();
-//		gNew.setIdxVote(Arrays.copyOf(idxVote, idxVote.length));
-//		// weight
-//		float[] idxWeight = g.getIdxWeight();
-//		gNew.setIdxWeight(Arrays.copyOf(idxWeight, idxWeight.length));
 		// IM
 		int[][] idxIM = g.getIdxIM();
 		int idxIMLen = idxIM.length;
@@ -288,7 +259,6 @@ public class AlgoUtil {
 			gvStarIdxIM[i] = Arrays.copyOf(idxIMRow, idxIMRow.length);
 		}
 		gNew.setIdxIM(gvStarIdxIM);
-
 		// AL
 		int[][] idxAL = g.getIdxAL();
 		int idxALLen = idxAL.length;
@@ -312,9 +282,8 @@ public class AlgoUtil {
 	 * @param lab
 	 * @return
 	 */
-	public static int getIdxByLab(GlobalVariable g, int lab) {
+	public static int getIdxByLab(ISGlobalVariable g, int lab) {
 		int actVerCnt = g.getActVerCnt();
-		//int verCnt = g.getVerCnt();
 		int[] labLst = g.getLabLst();
 		int[] idxLst = g.getIdxLst();
 
@@ -331,7 +300,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @param vCount
 	 */
-	public static void initGlobalVariable(GlobalVariable g, int vCount) {
+	public static void initGlobalVariable(ISGlobalVariable g, int vCount) {
 		// labLst does not have valid value
 		int[] labLst = new int[vCount];
 		Arrays.fill(labLst, ConstantValue.IMPOSSIBLE_VALUE);
@@ -356,7 +325,7 @@ public class AlgoUtil {
 		// the dominated status of each vertex is false initially
 		boolean[] idxDomed = new boolean[vCount];
 		Arrays.fill(idxDomed, false);
-		//int undomCnt = vCount;
+		// int undomCnt = vCount;
 
 		// the added status of each vertex is false initially
 		boolean[] idxAdded = new boolean[vCount];
@@ -390,7 +359,6 @@ public class AlgoUtil {
 		g.setIdxDegree(idxDegree);
 		g.setIdxLst(idxLst);
 		g.setLabLst(labLst);
-		//g.setUndomCnt(undomCnt);
 		g.setIdxVote(idxVote);
 		g.setIdxWeight(idxWeight);
 	}
@@ -398,7 +366,7 @@ public class AlgoUtil {
 	/**
 	 * adjust values of gi's own variables at initialization
 	 */
-	public static void adjustGIInitStatus(GlobalVariable g, GlobalVariable gi) {
+	public static void adjustGIInitStatus(ISGlobalVariable g, ISGlobalVariable gi) {
 		// active vertext count and vertex count should be 0
 		gi.setActVerCnt(0);
 		gi.setVerCnt(0);
@@ -414,7 +382,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @return
 	 */
-	public static int[] getLabSolution(GlobalVariable g) {
+	public static int[] getLabSolution(ISGlobalVariable g) {
 		int idxSolSize = g.getIdxSolSize();
 		int[] sol = new int[idxSolSize];
 		for (int i = 0; i < idxSolSize; i++) {
@@ -427,7 +395,7 @@ public class AlgoUtil {
 	 * initialize the vote and weight after a graph loaded
 	 * @param g
 	 */
-	public static void initWeight(GlobalVariable g) {
+	public static void initWeight(ISGlobalVariable g) {
 		int actVerCnt = g.getActVerCnt();
 		int[] idxDegree = g.getIdxDegree();
 		float[] idxVote = g.getIdxVote();
@@ -463,7 +431,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @param uIdx
 	 */
-	public static void adjustWeight(GlobalVariable g, int uIdx) {
+	public static void adjustWeight(ISGlobalVariable g, int uIdx) {
 		int[][] idxAL = g.getIdxAL();
 		int[] idxDegree = g.getIdxDegree();
 		int uDegree = idxDegree[uIdx];
@@ -509,7 +477,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @return
 	 */
-	public static boolean isAllDominated(GlobalVariable g) {
+	public static boolean isAllDominated(ISGlobalVariable g) {
 		int verCnt = g.getVerCnt();
 		for (int i = 0; i < verCnt; i++) {
 			if (!g.getIdxDomed()[i]) {
@@ -524,7 +492,7 @@ public class AlgoUtil {
 	 * @param gv
 	 * @return
 	 */
-	public static int getHighestWeightVertexIdx(GlobalVariable gv) {
+	public static int getHighestWeightVertexIdx(ISGlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 
@@ -555,7 +523,7 @@ public class AlgoUtil {
 	 * @param gv
 	 * @return
 	 */
-	public static int getUnaddedLowestWeightVertexIdx(GlobalVariable gv) {
+	public static int getUnaddedLowestWeightVertexIdx(ISGlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 		boolean[] idxAdded = gv.getIdxAdded();
@@ -583,7 +551,7 @@ public class AlgoUtil {
 	 * @param gv
 	 * @return
 	 */
-	public static int getUndomedLowestWeightVertexIdx(GlobalVariable gv) {
+	public static int getUndomedLowestWeightVertexIdx(ISGlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 		boolean[] idxDomed = gv.getIdxDomed();
@@ -616,7 +584,7 @@ public class AlgoUtil {
 	 * @param vIdx
 	 * @return
 	 */
-	public static int getHighestWeightNeighIdx(GlobalVariable g, int vIdx) {
+	public static int getHighestWeightNeighIdx(ISGlobalVariable g, int vIdx) {
 		int[][] idxAL = g.getIdxAL();
 
 		int[] idxDegree = g.getIdxDegree();
@@ -646,10 +614,10 @@ public class AlgoUtil {
 	 * global variables
 	 * @return true if it is valid, otherwise false
 	 */
-	public static boolean isValidSolution(GlobalVariable g) {
+	public static boolean isValidSolution(ISGlobalVariable g) {
 
 		int[] idxLst = g.getIdxLst();
-		List<Integer> idxLstList = Arrays.stream(idxLst).boxed().collect(Collectors.toList());
+		Set<Integer> idxLstList = new HashSet<>();
 
 		int[] idxSol = g.getIdxSol();
 		int idxSolSize = g.getIdxSolSize();
@@ -659,16 +627,64 @@ public class AlgoUtil {
 			int vIdx = idxSol[i];
 			int[] vNeigs = idxAL[vIdx];
 			for (int uIdx : vNeigs) {
-				idxLstList.remove(Integer.valueOf(uIdx));
+				idxLstList.add(uIdx);
 			}
-			idxLstList.remove(Integer.valueOf(vIdx));
+			idxLstList.add(vIdx);
 		}
 
-		return (idxLstList.size() == 0);
+		return (idxLstList.size() == idxLst.length);
 	}
-	
-	
-	
 
+	/**
+	 * to check if a solution is valid
+	 * @param gv,
+	 * global variables
+	 * @return true if it is valid, otherwise false
+	 */
+	public static boolean isValidSolution(ISGlobalVariable g, int[] solTry) {
 
+		int[] idxLst = g.getIdxLst();
+		Set<Integer> idxLstList = new HashSet<>();
+
+		int solTrySize = solTry.length;
+		int[][] idxAL = g.getIdxAL();
+
+		for (int i = 0; i < solTrySize; i++) {
+			int vIdx = solTry[i];
+			int[] vNeigs = idxAL[vIdx];
+			for (int uIdx : vNeigs) {
+				idxLstList.add(uIdx);
+			}
+			idxLstList.add(vIdx);
+		}
+
+		return (idxLstList.size() == idxLst.length);
+	}
+
+	/**
+	 * try to remove distance to 1 vertices from the solution to see if we can get
+	 * smaller result
+	 * @param g
+	 * @param distance
+	 * @return
+	 */
+	public static int[] minimal(ISGlobalVariable g, int distance) {
+
+		int[] idxSol = g.getIdxSol();
+		int idxSolSize = g.getIdxSolSize();
+		int[] ds = Arrays.copyOf(idxSol, idxSolSize);
+
+		for (int d = distance; d >= 1; d--) {
+			List<int[]> combins = Util.getAllRoutOfNCombines(ds, idxSolSize - d);
+
+			for (int[] com : combins) {
+				boolean flag = AlgoUtil.isValidSolution(g, com);
+				if (flag) {
+					return com;
+				}
+			}
+		}
+
+		return ds;
+	}
 }

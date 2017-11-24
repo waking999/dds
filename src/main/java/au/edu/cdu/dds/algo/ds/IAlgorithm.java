@@ -1,6 +1,6 @@
 package au.edu.cdu.dds.algo.ds;
 
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 
 public interface IAlgorithm {
 
@@ -22,7 +22,7 @@ public interface IAlgorithm {
 	 * @param g,
 	 *            representing a graph
 	 */
-	public void setGlobalVariable(GlobalVariable g);
+	public void setGlobalVariable(ISGlobalVariable g);
 
 	/**
 	 * the major entrance of each algorithm

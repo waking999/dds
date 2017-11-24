@@ -20,7 +20,7 @@ import au.edu.cdu.dds.io.DBParameter;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -76,7 +76,7 @@ public class TestUtil {
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
 				// read file
-				GlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
+				ISGlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
 				algo.setGlobalVariable(g);
 
 				long start = System.nanoTime();
@@ -237,7 +237,7 @@ public class TestUtil {
 			String algTableName, String inputFile, int k, int r, Logger log) throws IOException {
 		DBParameter dbpOut;
 		// read file
-		GlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
+		ISGlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
 		algo.setGlobalVariable(g);
 		algo.setKR(k, r);
 		long start = System.nanoTime();
@@ -274,7 +274,7 @@ public class TestUtil {
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, GlobalVariable gv,
+	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, ISGlobalVariable gv,
 			long start, long end, String algoName) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
@@ -300,7 +300,7 @@ public class TestUtil {
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, GlobalVariable gv,
+	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, ISGlobalVariable gv,
 			long start, long end, int k, int r) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
@@ -321,7 +321,7 @@ public class TestUtil {
 	 * @param gv,
 	 *            global variables
 	 */
-	public static void printGlobalVariableStatus(GlobalVariable gv) {
+	public static void printGlobalVariableStatus(ISGlobalVariable gv) {
 		String styleStr = "%-6s %-6s %-6s %-6s %-15s %-6s %-15s %-40s %-40s";
 
 		int[] idxLst = gv.getIdxLst();

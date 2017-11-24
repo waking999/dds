@@ -2,14 +2,12 @@ package au.edu.cdu.dds.algo.ds;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -17,11 +15,12 @@ import au.edu.cdu.dds.util.Util;
  * order of weight is listed from lowest to highest. during the period, a new
  * graph starting from empty to the final graph step by step of adding vertices.
  * In addition, a dds fpt subroutine will be invoked.
+ * 
  * @author kwang
  */
 public class GreedyVoteL2HDDS implements IAlgorithm {
-	GlobalVariable g; // to represent the original graph
-	GlobalVariable gi; // to represent the graph at each round
+	ISGlobalVariable g; // to represent the original graph
+	ISGlobalVariable gi; // to represent the graph at each round
 
 	// parameters for fpt subroutine
 	int k;
@@ -37,18 +36,17 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 	}
 
 	@Override
-	public void setGlobalVariable(GlobalVariable gv) {
+	public void setGlobalVariable(ISGlobalVariable gv) {
 		this.g = gv;
 
 		// initialize the graph representing at each round
-		this.gi = new GlobalVariable();
+		this.gi = new ISGlobalVariable();
 		int verCnt = gv.getVerCnt();
 		AlgoUtil.initGlobalVariable(gi, verCnt);
 
 		/*
 		 * although most internal variables of gi are of the same value as g,
-		 * some of gi
-		 * is of own values
+		 * some of gi is of own values
 		 */
 		AlgoUtil.adjustGIInitStatus(g, gi);
 	}
@@ -64,11 +62,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		int giIdxSolSize = gi.getIdxSolSize();
 
 		/*
-		 * the reason to use dual arrays in both gi and g is because there is a
-		 * mapping between idx of gi and g (that is gi.lab pointing to g.idx).
-		 * use such storage to save time to convert lab and idx forth and back
-		 */
-		/*
 		 * the array to store dominating vertex and dominated vertices of each
 		 * step in gi
 		 */
@@ -77,14 +70,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		int[] giStepV = new int[k];
 		Arrays.fill(giStepV, ConstantValue.IMPOSSIBLE_VALUE);
 
-		// /*
-		// * the array to store dominating vertex and dominated vertices of each
-		// * step in g
-		// */
-		// int[] gStepU = new int[k];
-		// Arrays.fill(gStepU, ConstantValue.IMPOSSIBLE_VALUE);
-		// int[] gStepV = new int[k];
-		// Arrays.fill(gStepV, ConstantValue.IMPOSSIBLE_VALUE);
 		float[][] gStepWeight = new float[k][];
 
 		int currentVCount = 0;
@@ -96,9 +81,9 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 			int vIdx = AlgoUtil.getUnaddedLowestWeightVertexIdx(g);
 			// add vIdx to gi;
 			if (Util.findPos(giIdxLst, currentVCount, vIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
-
 				AlgoUtil.addVerToGI(g, gi, vIdx);
 			}
+			// gi.lab pointing to g.idx
 			int giVIdx = AlgoUtil.getIdxByLab(gi, vIdx);
 
 			if (vIdx != ConstantValue.IMPOSSIBLE_VALUE) {
@@ -106,10 +91,8 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 					int uIdx = AlgoUtil.getHighestWeightNeighIdx(g, vIdx);
 					if (uIdx != ConstantValue.IMPOSSIBLE_VALUE) {
-						/*
-						 * if this vertex is not in the list, add it to vertex
-						 * list
-						 */
+						// if this vertex is not in the list, add it to vertex list
+
 						// add uIdx to gi;
 						if (Util.findPos(giIdxLst, currentVCount, uIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
 							AlgoUtil.addVerToGI(g, gi, uIdx);
@@ -128,40 +111,16 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 						gStepWeight[p] = Arrays.copyOf(g.getIdxWeight(), g.getVerCnt());
 						// adjust weight;
 						AlgoUtil.adjustWeight(g, uIdx);
-						// store uIdx, vIdx to step[p+1];
-						/*
-						 * since uIdx, vIdx are stored gvi.verLst, we need get
-						 * the index of them and put
-						 * it in the step
-						 */
-						// Set<Integer> gviStepVSet = new HashSet<>();
-						// Set<Integer> gvStepVSet = new HashSet<>();
-
-						// gviStepVSet.add(AlgoUtil.getIdxByLab(gi, vIdx));
-						// gvStepVSet.add(vIdx);
 
 						giStepU[p] = giUIdx;
 						giStepV[p] = giVIdx;
-
-						// gStepU[p] = uIdx;
-						// gStepV[p] = vIdx;
-						// gStepWeight[p] = Arrays.copyOf(g.getIdxWeight(), g.getVerCnt());
 						p++;
 
 						if (isMomentOfRegret(p, giStepV)) {
 
 							// 1.copy gi -> gi*
-							GlobalVariable giS = AlgoUtil.copyGloablVariable(gi);
-							// 2. d=gi*.sol <- gv.sol, idx->getIndexBy(idx)
-//							int[] giSIdxSol = giS.getIdxSol();
-//							Arrays.fill(giSIdxSol, ConstantValue.IMPOSSIBLE_VALUE);
-
-//							for (int i = 0; i < idxSolSize; i++) {
-//								giSIdxSol[i] = AlgoUtil.getIdxByLab(gi, idxSol[i]);
-//							}
-//							int giSIdxSolSize = g.getIdxSolSize();
-//							giS.setIdxSolSize(giSIdxSolSize);
-
+							ISGlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
+							// 2.get d2 from stepU (since some positions of stepU could be null)
 							int[] giSD2 = new int[k];
 							Arrays.fill(giSD2, ConstantValue.IMPOSSIBLE_VALUE);
 							int giD2Len = 0;
@@ -174,6 +133,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 							if (giD2Len <= r) {
 								continue;
 							}
+							// r = Math.min(r, giD2Len - 1);
 
 							// 3.d1 = giSol\gi.stepU (d1=d\d2) in gi*
 							int[] giSD1 = Util.set1Minus2(giIdxSol, giIdxSolSize, giSD2, giD2Len);
@@ -189,7 +149,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 							int[] b = Util.set1Minus2(d1GIStarNeigs, giSD1, giSD1Len);
 
 							// 7. r1: delete d1 from gi*
-
 							DomAVC.ddsR1(giS, giSD1);
 							/*
 							 * 8. r2: if v in b and N(v) not intersect c, delete
@@ -258,7 +217,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									 * domed=false;
 									 * added=false;
 									 */
-									// TestUtil.printGlobalVariableStatus(g);
 									int[] idxSolToKeep = Util.set1Minus2(idxSol, idxSolSize, d2Rm, d2Rm.length);
 									Set<Integer> idxSolToKeepNeigs = AlgoUtil.getCloseNeigs(g, idxSolToKeep);
 									Set<Integer> d2RmNeigs = AlgoUtil.getCloseNeigs(g, d2Rm);
@@ -267,7 +225,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 										idxDomed[vIdxF] = false;
 										idxAdded[vIdxF] = false;
 									}
-									// TestUtil.printGlobalVariableStatus(g);
+
 									/*
 									 * for d2Rm in g:
 									 * remove from g.sol；
@@ -281,20 +239,16 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 										idxSolSize--;
 									}
 
-									// TestUtil.printGlobalVariableStatus(g);
-
 									// recover weight
 									if (p >= k) {
 										p = p % k;
 									}
 									g.setIdxWeight(gStepWeight[p]);
-									// TestUtil.printGlobalVariableStatus(g);
 
 									/*
 									 * N[d2ToRemove]\N[gi.sol\d2ToRemove]\giD2Add in gi:
 									 * delete from gi
 									 */
-									// TestUtil.printGlobalVariableStatus(gi);
 									int[] giIdxSolToKeep = Util.set1Minus2(giIdxSol, giIdxSolSize, giD2Rm,
 											giD2Rm.length);
 									Set<Integer> giIdxSolToKeepNeigs = AlgoUtil.getCloseNeigs(gi, giIdxSolToKeep);
@@ -304,7 +258,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									for (int vIdxD : giIdxSetD) {
 										AlgoUtil.deleteVertex(gi, vIdxD);
 									}
-									// TestUtil.printGlobalVariableStatus(gi);
 
 									/*
 									 * for giD2Rm in gi:
@@ -318,25 +271,19 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 										giIdxSol[giIdxSolSize - 1] = tmp;
 										giIdxSolSize--;
 									}
-									// TestUtil.printGlobalVariableStatus(gi);
 
 									// the vertices to be added:
 									/*
 									 * for N[d2ToAdd] in g:
 									 * domed=true;
+									 * not necessary to process specially since they will change in adjustWeight;
 									 */
-									// TestUtil.printGlobalVariableStatus(g);
-									// Set<Integer> d2AddNeigs = AlgoUtil.getCloseNeigs(g, d2Add);
-									// for (int vIdxT : d2AddNeigs) {
-									// idxDomed[vIdxT] = true;
-									// }
 									/*
 									 * for d2ToAdd in g:
 									 * added=true;
 									 * add to sol;
 									 * adjustWeight;
 									 */
-									// TestUtil.printGlobalVariableStatus(g);
 									for (int uIdxT : d2Add) {
 										idxAdded[uIdxT] = true;
 										AlgoUtil.adjustWeight(g, uIdxT);
@@ -344,7 +291,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									}
 									g.setIdxSol(idxSol);
 									g.setIdxSolSize(idxSolSize);
-									// TestUtil.printGlobalVariableStatus(g);
+
 									/*
 									 * for giD2ToAdd in gi:
 									 * add to gisol
@@ -354,26 +301,12 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 									}
 									gi.setIdxSol(giIdxSol);
 									gi.setIdxSolSize(giIdxSolSize);
-
-									// 13.e gi.add N[d2ToAdd]
-									// 13.d g.sol U N[d2ToAdd]
-									// 13.e g.domed=true for
-									// N[d2ToAdd->gi.getverbyidx] in g
-									// 13.f g.added=true for
-									// N[d2ToAdd->gi.getverbyidx] in g
-
-									// 13.c.1 recover the weight for g
-									// g.setIdxWeight(gStepWeight[p]);
-
 									// reset moment of regret
 									p = 0;
 									// stepU clean, stepV clean
 									Arrays.fill(giStepU, ConstantValue.IMPOSSIBLE_VALUE);
 									Arrays.fill(giStepV, ConstantValue.IMPOSSIBLE_VALUE);
-									// Arrays.fill(gStepU, ConstantValue.IMPOSSIBLE_VALUE);
-									// Arrays.fill(gStepV, ConstantValue.IMPOSSIBLE_VALUE);
 									gStepWeight = new float[k][];
-									// TestUtil.printGlobalVariableStatus(g);
 
 									giD2P = null;
 									giD2Rm = null;
@@ -403,8 +336,6 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 					// add vIdx to step[p]
 					giStepV[p] = giVIdx;
 					giStepU[p] = ConstantValue.IMPOSSIBLE_VALUE;
-					// gStepV[p] = vIdx;
-					// gStepU[p] = ConstantValue.IMPOSSIBLE_VALUE;
 					gStepWeight[p] = Arrays.copyOf(g.getIdxWeight(), g.getVerCnt());
 					p++;
 
@@ -416,159 +347,13 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 		g.setIdxSol(idxSol);
 		g.setIdxSolSize(idxSolSize);
+
+		// //try to get a smaller solution (1 smaller)
+		// int[] tmpIdxSol=AlgoUtil.minimal(g, 1);
+		//
+		// g.setIdxSol(tmpIdxSol);
+		// g.setIdxSolSize(tmpIdxSol.length);
 	}
-
-	// private int[] convertGIIdxToGIdx(int[] giIdxSet, int[] giLabLst) {
-	// int[] gIdxSet = new int[giIdxSet.length];
-	// for (int i = 0; i < giIdxSet.length; i++) {
-	// gIdxSet[i] = giLabLst[giIdxSet[i]];
-	// }
-	// return gIdxSet;
-	// }
-
-	// private Set<Integer> getD1Neigs(GlobalVariable giStar, int[] d1) {
-	// int[][] giStarIdxAL = giStar.getIdxAL();
-	// int[] giStaIdxDegree = giStar.getIdxDegree();
-	// Set<Integer> d1GIStarNeigs = new HashSet<>();
-	//
-	// for (int d1VIdx : d1) {
-	// int[] d1VNeigs = giStarIdxAL[d1VIdx];
-	// d1GIStarNeigs.add(d1VIdx);
-	// for (int j = 0; j < giStaIdxDegree[d1VIdx]; j++) {
-	// int d1UIdx = d1VNeigs[j];
-	// d1GIStarNeigs.add(d1UIdx);
-	// }
-	// }
-	// return d1GIStarNeigs;
-	//
-	// }
-	//
-	// private int[] ddsR2(GlobalVariable giStar, int[] c, int[] b) {
-	// int[][] giStarIdxAL = giStar.getIdxAL();
-	// int[] gviStarIdxDegree = giStar.getIdxDegree();
-	//
-	// int cLen = c.length;
-	// int bLen = b.length;
-	//
-	// int[] bRem = new int[bLen];
-	// Arrays.fill(bRem, ConstantValue.IMPOSSIBLE_VALUE);
-	// int bRemLen = 0;
-	// for (int i = 0; i < bLen; i++) {
-	// int bVIdx = b[i];
-	// int[] bVNeigs = giStarIdxAL[bVIdx];
-	// int bVIdxDegree = gviStarIdxDegree[bVIdx];
-	// boolean isIntersected = Util.setsIntersect(bVNeigs, bVIdxDegree, c, cLen);
-	// if (!isIntersected) {
-	// bRem[bRemLen++] = bVIdx;
-	// AlgoUtil.deleteVertex(giStar, bVIdx);
-	// }
-	//
-	// }
-	// // remove the deleted vertices from b
-	// b = Util.set1Minus2(b, bLen, bRem, bRemLen);
-	// return b;
-	// }
-	//
-	// private void ddsR3(GlobalVariable giStar, int[] b) {
-	// int[][] giStarIdxAL = giStar.getIdxAL();
-	// int[] gviStarIdxDegree = giStar.getIdxDegree();
-	// int bLen = b.length;
-	//
-	// for (int i = 0; i < bLen; i++) {
-	// int bVIdx = b[i];
-	// int bVIdxDegree = gviStarIdxDegree[bVIdx];
-	// int[] bVNeigs = giStarIdxAL[bVIdx];
-	// for (int j = bVIdxDegree - 1; j >= 0; j--) {
-	// int bVNeigIdx = bVNeigs[j];
-	// AlgoUtil.deleteEdge(giStar, bVIdx, bVNeigIdx);
-	// }
-	//
-	// }
-	// }
-
-	// private void getNeighType(int[][] giStarIdxAL, int[] c, int[] b, Map<String,
-	// boolean[]> neigTypeDomedMap,
-	// Map<String, Set<Integer>> neigTypeDomingMap) {
-	// int cLen = c.length;
-	// /*
-	// * because the vertices in the vertex cover can
-	// * dominate other vertices in the
-	// * vertex cover,they are considered
-	// */
-	// for (int cVIdx : c) {
-	//
-	// int[] cVNeigs = giStarIdxAL[cVIdx];
-	//
-	// boolean ruler[] = new boolean[cLen];
-	// Arrays.fill(ruler, ConstantValue.UNMARKED);
-	//
-	// // the vertex can dominated by itself
-	// int pos = Util.findPos(c, cLen, cVIdx);
-	// ruler[pos] = ConstantValue.MARKED;
-	// for (int cVNeigIdx : cVNeigs) {
-	// /*
-	// * the position of the dominated vertex in
-	// * the vertex cover will set 1
-	// * a neighbour of the vertex is likely not
-	// * to be in the vertex cover
-	// */
-	// pos = Util.findPos(c, cLen, cVNeigIdx);
-	// if (pos != ConstantValue.IMPOSSIBLE_VALUE) {
-	// ruler[pos] = ConstantValue.MARKED;
-	// }
-	// }
-	//
-	// String rulerStr = Util.arrayToString(ruler);
-	// if (!neigTypeDomedMap.containsKey(rulerStr)) {
-	//
-	// neigTypeDomedMap.put(rulerStr, ruler);
-	// Set<Integer> domingVerSet = new HashSet<>();
-	// domingVerSet.add(cVIdx);
-	// neigTypeDomingMap.put(rulerStr, domingVerSet);
-	// } else {
-	// Set<Integer> domingVerSet = neigTypeDomingMap.get(rulerStr);
-	// domingVerSet.add(cVIdx);
-	// neigTypeDomingMap.put(rulerStr, domingVerSet);
-	// }
-	// }
-	//
-	// /*
-	// * because the vertices in the independent set can
-	// * dominate vertices in the
-	// * vertex cover,they are considered
-	// */
-	// for (int bVIdx : b) {
-	// int[] bVNeigs = giStarIdxAL[bVIdx];
-	//
-	// boolean ruler[] = new boolean[cLen];
-	// Arrays.fill(ruler, ConstantValue.UNMARKED);
-	//
-	// for (int bVNeigIdx : bVNeigs) {
-	// /*
-	// * the position of the dominate vertex in
-	// * the vertex cover will set 1
-	// */
-	// int pos = Util.findPos(c, cLen, bVNeigIdx);
-	// if (pos != ConstantValue.IMPOSSIBLE_VALUE) {
-	// ruler[pos] = ConstantValue.MARKED;
-	// }
-	// }
-	//
-	// String rulerStr = Util.arrayToString(ruler);
-	// if (!neigTypeDomedMap.containsKey(rulerStr)) {
-	//
-	// neigTypeDomedMap.put(rulerStr, ruler);
-	// Set<Integer> domingVerSet = new HashSet<>();
-	// domingVerSet.add(bVIdx);
-	// neigTypeDomingMap.put(rulerStr, domingVerSet);
-	// } else {
-	// Set<Integer> domingVerSet = neigTypeDomingMap.get(rulerStr);
-	// domingVerSet.add(bVIdx);
-	// neigTypeDomingMap.put(rulerStr, domingVerSet);
-	// }
-	//
-	// }
-	// }
 
 	private boolean isMomentOfRegret(int p, int[] stepV) {
 		/*

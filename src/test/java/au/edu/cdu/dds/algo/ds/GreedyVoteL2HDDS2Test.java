@@ -13,10 +13,11 @@ import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
+@Deprecated
 public class GreedyVoteL2HDDS2Test {
 	
 	private static final String CLASS_NAME = GreedyVoteL2HDDS2Test.class.getSimpleName();
@@ -33,8 +34,8 @@ public class GreedyVoteL2HDDS2Test {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] expect = new int[] { 1, 5 };
 
-		GlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
-
+		ISGlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
+ 
 		IAlgorithm algo = new GreedyVoteL2HDDS2();
 		algo.setGlobalVariable(gv);
 		int k = 3;
@@ -49,7 +50,7 @@ public class GreedyVoteL2HDDS2Test {
 
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testKONECT_LoopIns() throws InterruptedException, IOException, FileNotFoundException {
 		int k = 10;
@@ -77,6 +78,27 @@ public class GreedyVoteL2HDDS2Test {
 		String batchNum = Util.getBatchNum();
 
 		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
+	}
+	
+	//@Ignore
+	@Test
+	public void testKONECT_LoopKR_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 3;
+		int kUpper = 50;
+		String id = "3_03";
+		String instanceCode = "Dolphins";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/KONECT";
+		String pathName = "/000062_dolphins.konect";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS2();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
 
 	@Ignore

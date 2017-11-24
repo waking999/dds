@@ -2,7 +2,7 @@ package au.edu.cdu.dds.algo.ds;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 
 /**
  * this class implements the greedy vote algorithm for dominating set, where the
@@ -11,7 +11,7 @@ import au.edu.cdu.dds.util.GlobalVariable;
  * @author kwang
  */
 public class GreedyVoteL2H implements IAlgorithm {
-	GlobalVariable g; // representing the graph
+	ISGlobalVariable g; // representing the graph
 
 	public GreedyVoteL2H() {
 	}
@@ -22,7 +22,7 @@ public class GreedyVoteL2H implements IAlgorithm {
 	}
 
 	@Override
-	public void setGlobalVariable(GlobalVariable g) {
+	public void setGlobalVariable(ISGlobalVariable g) {
 		this.g = g;
 	}
 

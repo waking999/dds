@@ -7,7 +7,7 @@ import org.junit.Test;
 
 import au.edu.cdu.dds.TestUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.GlobalVariable;
+import au.edu.cdu.dds.util.ISGlobalVariable;
 
 /**
  * a test class for file operation class
@@ -33,7 +33,7 @@ public class FileOperationTest {
 
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 
-		GlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
+		ISGlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
 		TestUtil.printGlobalVariableStatus(gv);
 		/*
 		 * <p>
