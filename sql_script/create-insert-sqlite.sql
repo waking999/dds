@@ -1,21 +1,3 @@
-Skip to content
-This repository
-Search
-Pull requests
-Issues
-Marketplace
-Explore
- @waking999
- Sign out
- Unwatch 1
-  Star 0  Fork 0 waking999/dds
- Code  Issues 0  Pull requests 0  Projects 0  Wiki  Insights  Settings
-Branch: master Find file Copy pathdds/sql_script/create-insert-sqlite.sql
-9bebe4e  20 hours ago
- waking999 add ads steps
-0 contributors
-RawBlameHistory     
-Executable File  151 lines (125 sloc)  13 KB
 
 drop table IF EXISTS "dataset";
 CREATE TABLE "dataset" (
