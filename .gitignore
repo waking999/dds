@@ -39,3 +39,6 @@ Thumbs.db
 /target/
 /src/test/resources/
 /result/
+*.db
+
+result/db/result.db
