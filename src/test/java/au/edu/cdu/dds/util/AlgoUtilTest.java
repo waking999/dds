@@ -1,4 +1,3 @@
-
 package au.edu.cdu.dds.util;
 
 import java.io.IOException;
@@ -20,8 +19,8 @@ public class AlgoUtilTest {
 	public void testCopyGloablVariable() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 
-		ISGlobalVariable g = new FileOperation().readGraphByEdgePair(filePath);
-		ISGlobalVariable gNew = AlgoUtil.copyGraphInGloablVariable(g);
+		GlobalVariable g =FileOperation.readGraphByEdgePair(filePath);
+		GlobalVariable gNew = AlgoUtil.copyGraphInGloablVariable(g);
 
 		TestUtil.verifyUnsort(g.getIdxDegree(), gNew.getIdxDegree());
 		TestUtil.verifyUnsort(g.getIdxLst(), gNew.getIdxLst());
@@ -35,7 +34,7 @@ public class AlgoUtilTest {
 	public void testGetCloseNeigs() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 
-		ISGlobalVariable g = new FileOperation().readGraphByEdgePair(filePath);
+		GlobalVariable g =FileOperation.readGraphByEdgePair(filePath);
 		int[] idxSet;
 		int[] expect;
 		Set<Integer> output;
@@ -71,22 +70,22 @@ public class AlgoUtilTest {
 	public void testIsValidSolution0() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] sol;
-		ISGlobalVariable g;
+		GlobalVariable g;
 
 		sol = new int[] { 0, 4 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		g.setIdxSol(sol);
 		g.setIdxSolSize(sol.length);
 		Assert.assertTrue(AlgoUtil.isValidSolution(g));
 
 		sol = new int[] { 3, 4, 1 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		g.setIdxSol(sol);
 		g.setIdxSolSize(sol.length);
 		Assert.assertTrue(AlgoUtil.isValidSolution(g));
 
 		sol = new int[] { 2, 3 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		g.setIdxSol(sol);
 		g.setIdxSolSize(sol.length);
 		Assert.assertTrue(!AlgoUtil.isValidSolution(g));
@@ -96,18 +95,18 @@ public class AlgoUtilTest {
 	public void testIsValidSolution1() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] sol;
-		ISGlobalVariable g;
+		GlobalVariable g;
 
 		sol = new int[] { 0, 4 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		Assert.assertTrue(AlgoUtil.isValidSolution(g, sol));
 
 		sol = new int[] { 3, 4, 1 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		Assert.assertTrue(AlgoUtil.isValidSolution(g, sol));
 
 		sol = new int[] { 2, 3 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		Assert.assertTrue(!AlgoUtil.isValidSolution(g, sol));
 	}
 
@@ -115,13 +114,13 @@ public class AlgoUtilTest {
 	public void testMinimal() throws IOException {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] sol;
-		ISGlobalVariable g;
+		GlobalVariable g;
 		int[] expect;
 		int[] output;
 
 		expect = new int[] { 0, 4 };
 		sol = new int[] { 0, 4, 5, 2 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g =FileOperation.readGraphByEdgePair(filePath);
 		g.setIdxSol(sol);
 		g.setIdxSolSize(sol.length);
 		output = AlgoUtil.minimal(g, 2);
@@ -129,7 +128,7 @@ public class AlgoUtilTest {
 
 		expect = new int[] { 3, 4, 1 };
 		sol = new int[] { 3, 4, 1, 5 };
-		g = new FileOperation().readGraphByEdgePair(filePath);
+		g = FileOperation.readGraphByEdgePair(filePath);
 		g.setIdxSol(sol);
 		g.setIdxSolSize(sol.length);
 		output = AlgoUtil.minimal(g, 2);
@@ -137,5 +136,3 @@ public class AlgoUtilTest {
 
 	}
 }
-
- 

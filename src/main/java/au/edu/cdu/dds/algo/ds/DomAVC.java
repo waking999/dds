@@ -8,7 +8,7 @@ import java.util.Set;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 public class DomAVC {
@@ -19,7 +19,7 @@ public class DomAVC {
 	 * @param gS, graph g*
 	 * @param d1
 	 */
-	public static void ddsR1(ISGlobalVariable gS, int[] d1) {
+	public static void ddsR1(GlobalVariable gS, int[] d1) {
 		for (int d1VIdx : d1) {
 			AlgoUtil.deleteVertex(gS, d1VIdx);
 		}
@@ -34,7 +34,7 @@ public class DomAVC {
 	 * @param b
 	 * @return
 	 */
-	public static int[] ddsR2(ISGlobalVariable gS, int[] c, int[] b) {
+	public static int[] ddsR2(GlobalVariable gS, int[] c, int[] b) {
 		int[][] gSIdxAL = gS.getIdxAL();
 		int[] gSIdxDegree = gS.getIdxDegree();
 
@@ -67,7 +67,7 @@ public class DomAVC {
 	 * @param gS, graph g*
 	 * @param b
 	 */
-	public static void ddsR3(ISGlobalVariable gS, int[] b) {
+	public static void ddsR3(GlobalVariable gS, int[] b) {
 		int[][] gSIdxAL = gS.getIdxAL();
 		int[] gSIdxDegree = gS.getIdxDegree();
 		int bLen = b.length;

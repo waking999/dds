@@ -5,7 +5,7 @@ import java.util.Set;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -18,8 +18,8 @@ import au.edu.cdu.dds.util.Util;
  * @author kwang
  */
 public class GreedyVoteL2HAdd implements IAlgorithm {
-	ISGlobalVariable g; // representing the original graph
-	ISGlobalVariable gi;
+	GlobalVariable g; // representing the original graph
+	GlobalVariable gi;
 	int k;
 	int r;
 
@@ -31,11 +31,11 @@ public class GreedyVoteL2HAdd implements IAlgorithm {
 	}
 
 	@Override
-	public void setGlobalVariable(ISGlobalVariable gv) {
+	public void setGlobalVariable(GlobalVariable gv) {
 		this.g = gv;
 
 		// initialize the graph representing at each round
-		this.gi = new ISGlobalVariable();
+		this.gi = new GlobalVariable();
 		int verCnt = gv.getVerCnt();
 		AlgoUtil.initGlobalVariable(gi, verCnt);
 

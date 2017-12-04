@@ -16,7 +16,7 @@ public class AlgoUtil {
 	 * @param idxSet
 	 * @return
 	 */
-	public static Set<Integer> getCloseNeigs(ISGlobalVariable g, int[] idxSet) {
+	public static Set<Integer> getCloseNeigs(GlobalVariable g, int[] idxSet) {
 		Set<Integer> neigs = new HashSet<Integer>();
 		int[][] idxAL = g.getIdxAL();
 		int[] idxDegree = g.getIdxDegree();
@@ -48,9 +48,7 @@ public class AlgoUtil {
 		return gIdxSet;
 	}
 
- 
-	private static int getFirstUnusedIdx(ISGlobalVariable g) {
- 
+	private static int getFirstUnusedIdx(GlobalVariable g) {
 		int[] idxLst = g.getIdxLst();
 		int actVerCnt = g.getActVerCnt();
 		int verCnt = g.getVerCnt();
@@ -70,9 +68,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * the index of v in gv
 	 */
- 
-	public static void addVerToGI(ISGlobalVariable g, ISGlobalVariable gi, int vIdx) {
- 
+	public static void addVerToGI(GlobalVariable g, GlobalVariable gi, int vIdx) {
 		boolean[] idxAdded = g.getIdxAdded();
 		if (idxAdded[vIdx]) {
 			return;
@@ -155,7 +151,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * index of a vertex
 	 */
-	public static void deleteVertex(ISGlobalVariable g, int vIdx) {
+	public static void deleteVertex(GlobalVariable g, int vIdx) {
 		int actVerCnt = g.getActVerCnt();
 		int[] labLst = g.getLabLst();
 		int[] idxLst = g.getIdxLst();
@@ -199,7 +195,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * index of another end vertex
 	 */
-	public static void deleteEdge(ISGlobalVariable g, int uIdx, int vIdx) {
+	public static void deleteEdge(GlobalVariable g, int uIdx, int vIdx) {
 		deleteVFromU(g, uIdx, vIdx);
 		deleteVFromU(g, vIdx, uIdx);
 	}
@@ -213,7 +209,7 @@ public class AlgoUtil {
 	 * @param vIdx,
 	 * index of another end vertex
 	 */
-	private static void deleteVFromU(ISGlobalVariable g, int uIdx, int vIdx) {
+	private static void deleteVFromU(GlobalVariable g, int uIdx, int vIdx) {
 
 		int[] gvIdxDegree = g.getIdxDegree();
 		int[][] gvIdxIM = g.getIdxIM();
@@ -241,10 +237,9 @@ public class AlgoUtil {
 	 * @param g
 	 * @return
 	 */
- 
-	public static ISGlobalVariable copyGraphInGloablVariable(ISGlobalVariable g) {
-		ISGlobalVariable gNew = new ISGlobalVariable();
- 
+	public static GlobalVariable copyGraphInGloablVariable(GlobalVariable g) {
+		GlobalVariable gNew = new GlobalVariable();
+
 		gNew.setVerCnt(g.getVerCnt());
 		// labLst
 		int[] labLst = g.getLabLst();
@@ -287,7 +282,7 @@ public class AlgoUtil {
 	 * @param lab
 	 * @return
 	 */
-	public static int getIdxByLab(ISGlobalVariable g, int lab) {
+	public static int getIdxByLab(GlobalVariable g, int lab) {
 		int actVerCnt = g.getActVerCnt();
 		int[] labLst = g.getLabLst();
 		int[] idxLst = g.getIdxLst();
@@ -305,7 +300,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @param vCount
 	 */
-	public static void initGlobalVariable(ISGlobalVariable g, int vCount) {
+	public static void initGlobalVariable(GlobalVariable g, int vCount) {
 		// labLst does not have valid value
 		int[] labLst = new int[vCount];
 		Arrays.fill(labLst, ConstantValue.IMPOSSIBLE_VALUE);
@@ -330,7 +325,7 @@ public class AlgoUtil {
 		// the dominated status of each vertex is false initially
 		boolean[] idxDomed = new boolean[vCount];
 		Arrays.fill(idxDomed, false);
-		// int undomCnt = vCount;
+	 
 
 		// the added status of each vertex is false initially
 		boolean[] idxAdded = new boolean[vCount];
@@ -371,7 +366,7 @@ public class AlgoUtil {
 	/**
 	 * adjust values of gi's own variables at initialization
 	 */
-	public static void adjustGIInitStatus(ISGlobalVariable g, ISGlobalVariable gi) {
+	public static void adjustGIInitStatus(GlobalVariable g, GlobalVariable gi) {
 		// active vertext count and vertex count should be 0
 		gi.setActVerCnt(0);
 		gi.setVerCnt(0);
@@ -387,20 +382,32 @@ public class AlgoUtil {
 	 * @param g
 	 * @return
 	 */
-	public static int[] getLabSolution(ISGlobalVariable g) {
+	public static int[] getLabSolution(GlobalVariable g) {
 		int idxSolSize = g.getIdxSolSize();
+		int[] idxSol=g.getIdxSol();
+		int[] labLst=g.getLabLst();
 		int[] sol = new int[idxSolSize];
 		for (int i = 0; i < idxSolSize; i++) {
-			sol[i] = g.getLabLst()[g.getIdxSol()[i]];
+			sol[i] = labLst[idxSol[i]];
 		}
 		return sol;
+	}
+	
+	public static String getLabSolutionStr(GlobalVariable g) {
+		StringBuffer sb=new StringBuffer();
+		int[] sol = AlgoUtil.getLabSolution(g);
+		int solSize = sol.length;
+		for (int i = 0; i < solSize; i++) {
+			sb.append(sol[i]).append(",");
+		}
+		return sb.substring(0,sb.length()-1);
 	}
 
 	/**
 	 * initialize the vote and weight after a graph loaded
 	 * @param g
 	 */
-	public static void initWeight(ISGlobalVariable g) {
+	public static void initWeight(GlobalVariable g) {
 		int actVerCnt = g.getActVerCnt();
 		int[] idxDegree = g.getIdxDegree();
 		float[] idxVote = g.getIdxVote();
@@ -436,7 +443,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @param uIdx
 	 */
-	public static void adjustWeight(ISGlobalVariable g, int uIdx) {
+	public static void adjustWeight(GlobalVariable g, int uIdx) {
 		int[][] idxAL = g.getIdxAL();
 		int[] idxDegree = g.getIdxDegree();
 		int uDegree = idxDegree[uIdx];
@@ -482,7 +489,7 @@ public class AlgoUtil {
 	 * @param g
 	 * @return
 	 */
-	public static boolean isAllDominated(ISGlobalVariable g) {
+	public static boolean isAllDominated(GlobalVariable g) {
 		int verCnt = g.getVerCnt();
 		for (int i = 0; i < verCnt; i++) {
 			if (!g.getIdxDomed()[i]) {
@@ -497,7 +504,7 @@ public class AlgoUtil {
 	 * @param gv
 	 * @return
 	 */
-	public static int getHighestWeightVertexIdx(ISGlobalVariable gv) {
+	public static int getHighestWeightVertexIdx(GlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 
@@ -528,7 +535,7 @@ public class AlgoUtil {
 	 * @param gv
 	 * @return
 	 */
-	public static int getUnaddedLowestWeightVertexIdx(ISGlobalVariable gv) {
+	public static int getUnaddedLowestWeightVertexIdx(GlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 		boolean[] idxAdded = gv.getIdxAdded();
@@ -556,7 +563,7 @@ public class AlgoUtil {
 	 * @param gv
 	 * @return
 	 */
-	public static int getUndomedLowestWeightVertexIdx(ISGlobalVariable gv) {
+	public static int getUndomedLowestWeightVertexIdx(GlobalVariable gv) {
 		int actVerCount = gv.getActVerCnt();
 		int[] idxLst = gv.getIdxLst();
 		boolean[] idxDomed = gv.getIdxDomed();
@@ -589,7 +596,7 @@ public class AlgoUtil {
 	 * @param vIdx
 	 * @return
 	 */
-	public static int getHighestWeightNeighIdx(ISGlobalVariable g, int vIdx) {
+	public static int getHighestWeightNeighIdx(GlobalVariable g, int vIdx) {
 		int[][] idxAL = g.getIdxAL();
 
 		int[] idxDegree = g.getIdxDegree();
@@ -619,7 +626,7 @@ public class AlgoUtil {
 	 * global variables
 	 * @return true if it is valid, otherwise false
 	 */
-	public static boolean isValidSolution(ISGlobalVariable g) {
+	public static boolean isValidSolution(GlobalVariable g) {
 
 		int[] idxLst = g.getIdxLst();
 		Set<Integer> idxLstList = new HashSet<>();
@@ -639,6 +646,32 @@ public class AlgoUtil {
 
 		return (idxLstList.size() == idxLst.length);
 	}
+	
+	
+	public static boolean isValidSolution(GlobalVariable g,int[][] sols) {
+
+		int[] idxLst = g.getIdxLst();
+		Set<Integer> idxLstList = new HashSet<>();
+
+		int[][] idxAL = g.getIdxAL();
+		
+		int solsSize=sols.length;
+		
+		for(int i=0;i<solsSize;i++) {
+			int[] sol=sols[i];
+			int solSize=sol.length;
+			for(int j=0;j<solSize;j++) {
+				int vIdx=sol[j];
+				int[] vNeigs = idxAL[vIdx];
+				for (int uIdx : vNeigs) {
+					idxLstList.add(uIdx);
+				}
+				idxLstList.add(vIdx);
+			}
+		} 
+
+		return (idxLstList.size() == idxLst.length);
+	}
 
 	/**
 	 * to check if a solution is valid
@@ -646,9 +679,7 @@ public class AlgoUtil {
 	 * global variables
 	 * @return true if it is valid, otherwise false
 	 */
- 
-	public static boolean isValidSolution(ISGlobalVariable g, int[] solTry) {
- 
+	public static boolean isValidSolution(GlobalVariable g, int[] solTry) {
 
 		int[] idxLst = g.getIdxLst();
 		Set<Integer> idxLstList = new HashSet<>();
@@ -675,9 +706,7 @@ public class AlgoUtil {
 	 * @param distance
 	 * @return
 	 */
- 
-	public static int[] minimal(ISGlobalVariable g, int distance) {
- 
+	public static int[] minimal(GlobalVariable g, int distance) {
 
 		int[] idxSol = g.getIdxSol();
 		int idxSolSize = g.getIdxSolSize();

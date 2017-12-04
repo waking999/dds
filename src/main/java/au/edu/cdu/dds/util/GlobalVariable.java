@@ -1,15 +1,15 @@
- package au.edu.cdu.dds.util;
+package au.edu.cdu.dds.util;
 
 /**
  * a java bean to store graph representations
  * @param <VT>
  * vertex type
  */
-public class ISGlobalVariable {
+public class GlobalVariable {
 
 	private Graph graph;
 
-	public ISGlobalVariable() {
+	public GlobalVariable() {
 		this.graph = new Graph();
 	}
 
@@ -187,4 +187,4 @@ class Graph {
 	public void setIdxAL(int[][] idxAL) {
 		this.idxAL = idxAL;
 	}
- }
+}

@@ -13,15 +13,15 @@ import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HDDSTest {
-	
+
 	private static final String CLASS_NAME = GreedyVoteL2HDDSTest.class.getSimpleName();
 	private Logger log = LogUtil.getLogger(CLASS_NAME);
-	
+
 	@Ignore
 	public void testIgnore() {
 
@@ -33,7 +33,7 @@ public class GreedyVoteL2HDDSTest {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] expect = new int[] { 1, 5 };
 
-		ISGlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
+		GlobalVariable gv = FileOperation.readGraphByEdgePair(filePath);
 
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		algo.setGlobalVariable(gv);
@@ -59,6 +59,8 @@ public class GreedyVoteL2HDDSTest {
 		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, log);
 	}
 
+	
+
 	@Ignore
 	@Test
 	public void testKONECT_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
@@ -76,9 +78,9 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,log);
+		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
 	}
-	
+
 	@Ignore
 	@Test
 	public void testKONECT_LoopKR_Dolphins() throws InterruptedException, IOException, FileNotFoundException {
@@ -96,7 +98,8 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
 
 	@Ignore
@@ -116,9 +119,8 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,log);
+		TestUtil.basicFunc(CLASS_NAME, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
 	}
-
 
 	@Ignore
 	@Test
@@ -137,9 +139,9 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
-
 
 	@Ignore
 	@Test
@@ -158,10 +160,11 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
 
-	//@Ignore
+	@Ignore
 	@Test
 	public void testKONECT_LoopKR_DavidCopperfield() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -178,11 +181,11 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
 
-	
-	//@Ignore
+	@Ignore
 	@Test
 	public void testKONECT_LoopKR_Powergrid() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -199,9 +202,9 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
-
 
 	@Ignore
 	@Test
@@ -220,7 +223,8 @@ public class GreedyVoteL2HDDSTest {
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 		String batchNum = Util.getBatchNum();
 
-		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
 	}
 
 	@Ignore
@@ -238,6 +242,6 @@ public class GreedyVoteL2HDDSTest {
 		int r = 7;
 		IAlgorithm algo = new GreedyVoteL2HDDS();
 
-		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, k, r,log);
+		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, k, r, log);
 	}
 }

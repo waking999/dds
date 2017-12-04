@@ -381,14 +381,14 @@ public class DBOperation {
 			sb.setLength(0);
 
 			sb.append("CREATE TABLE IF NOT EXISTS ").append(tableName).append("(\n");
-			sb.append(" id INTEGER PRIMARY KEY AUTOINCREMENT, \n");
-			sb.append(" i_id varchar2(10),\n");
-			sb.append(" k INTEGER,\n");
-			sb.append(" r INTEGER,\n");
-			sb.append(" result_size INTEGER,\n");
-			sb.append(" running_nano_sec INTEGER,\n");
-			sb.append(" batch_num varchar2(30),\n");
-			sb.append(" FOREIGN KEY(i_id) REFERENCES \"v_instance\"(i_id)\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_ID).append(ConstantValue.BLANK).append("INTEGER PRIMARY KEY AUTOINCREMENT, \n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_INS_ID).append(ConstantValue.BLANK).append("varchar2(10),\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_K).append(ConstantValue.BLANK).append("INTEGER,\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_R).append(ConstantValue.BLANK).append("INTEGER,\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_RESULT_SIZE).append(ConstantValue.BLANK).append("INTEGER,\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_RUNNING_TIME).append(ConstantValue.BLANK).append("INTEGER,\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_BATCH_NUM).append(ConstantValue.BLANK).append("varchar2(30),\n");
+			sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_RESULTS).append(ConstantValue.BLANK).append("text \n");
 			sb.append(");");
 
 			stmt.execute(sb.toString());

@@ -1,4 +1,3 @@
-
 package au.edu.cdu.dds;
 
 import org.junit.runner.RunWith;
@@ -18,4 +17,3 @@ import au.edu.cdu.dds.algo.ds.GreedyVoteL2HTest;
 public class AlgoTests {
 
 }
- 

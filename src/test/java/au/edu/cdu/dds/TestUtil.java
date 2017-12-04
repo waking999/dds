@@ -1,5 +1,6 @@
 package au.edu.cdu.dds;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -20,7 +21,7 @@ import au.edu.cdu.dds.io.DBParameter;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -76,7 +77,7 @@ public class TestUtil {
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
 				// read file
-				ISGlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
+				GlobalVariable g = FileOperation.readGraphByEdgePair(inputFile);
 				algo.setGlobalVariable(g);
 
 				long start = System.nanoTime();
@@ -142,7 +143,8 @@ public class TestUtil {
 
 			String inputFile = resourcePath + dataSetPath + pathName;
 			try {
-				basicFuncLoopKR(className, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,log);
+				basicFuncLoopKR(className, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+						log);
 			} catch (Exception e) {
 
 				continue;
@@ -187,7 +189,8 @@ public class TestUtil {
 	 * @param k
 	 * @param r
 	 */
-	public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, int k, int r,Logger log) {
+	public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, int k, int r,
+			Logger log) {
 		/*
 		 * get the info of the instances of a certain dataset such as id, code,
 		 * path
@@ -210,7 +213,7 @@ public class TestUtil {
 			try {
 				basicFunc(className, algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
 			} catch (Exception e) {
-
+				e.printStackTrace();
 				continue;
 			}
 		}
@@ -237,7 +240,7 @@ public class TestUtil {
 			String algTableName, String inputFile, int k, int r, Logger log) throws IOException {
 		DBParameter dbpOut;
 		// read file
-		ISGlobalVariable g = new FileOperation().readGraphByEdgePair(inputFile);
+		GlobalVariable g = FileOperation.readGraphByEdgePair(inputFile);
 		algo.setGlobalVariable(g);
 		algo.setKR(k, r);
 		long start = System.nanoTime();
@@ -250,16 +253,40 @@ public class TestUtil {
 
 		// write to db
 		DBOperation.createTable(algTableName);
-		dbpOut = getDBParamOutput(algTableName, batchNum, id, g, start, end, k, r);
+		dbpOut = getDBParamOutput(g, algTableName, batchNum, id, start, end, k, r);
 		DBOperation.executeInsert(dbpOut);
 
 		dbpOut = null;
 
 		// write to console
 		StringBuffer sb = new StringBuffer();
-		sb.append(instanceCode).append(":").append(k).append(",").append(r).append(":").append(g.getIdxSolSize()).append(":")
-				.append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
+		sb.append(instanceCode).append(":").append(k).append(",").append(r).append(":").append(g.getIdxSolSize())
+				.append(":").append(String.format("%.3f", ((end - start) / 1000000000.0))).append(" s.");
 		log.debug(sb.toString());
+
+		// write to file
+		StringBuffer outputStrBuff = new StringBuffer();
+		int[] sol = AlgoUtil.getLabSolution(g);
+		int solSize = sol.length;
+		outputStrBuff.append(solSize);
+		outputStrBuff.append("\r\n");
+		for (int i = 0; i < solSize; i++) {
+			outputStrBuff.append(sol[i]).append(",");
+		}
+
+		File f = new File(inputFile);
+		String fileName = f.getName();
+
+		String outputFilePath = TestUtil.getBasePath() + "/result/output/";
+		 
+
+		String outputFileName = outputFilePath + fileName + ".out";
+		try {
+			FileOperation.saveFile(outputFileName, outputStrBuff.substring(0, outputStrBuff.length() - 1));
+		} catch (IOException e) {
+			System.out.println("Can not find such file.");
+			return;
+		}
 	}
 
 	/**
@@ -274,7 +301,7 @@ public class TestUtil {
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, ISGlobalVariable gv,
+	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, GlobalVariable gv,
 			long start, long end, String algoName) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
@@ -292,24 +319,25 @@ public class TestUtil {
 	 * generate the database parameters for being written to db
 	 * used for greedy dds
 	 * 
+	 * @param g
 	 * @param algTableName
 	 * @param batchNum
 	 * @param id
-	 * @param gv
 	 * @param start
 	 * @param end
 	 * @return
 	 */
-	private static DBParameter getDBParamOutput(String algTableName, String batchNum, String id, ISGlobalVariable gv,
+	private static DBParameter getDBParamOutput(GlobalVariable g, String algTableName, String batchNum, String id,
 			long start, long end, int k, int r) {
 		DBParameter dbpOut;
 		dbpOut = new DBParameter();
 		dbpOut.setTableName(algTableName);
 		String[] colPairNamesOut = { ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
 				ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_K,
-				ConstantValue.DB_COL_R };
-		String[] colPairValuesOut = { id, batchNum, Integer.toString(gv.getIdxSolSize()), String.valueOf(end - start),
-				String.valueOf(k), String.valueOf(r) };
+				ConstantValue.DB_COL_R, ConstantValue.DB_COL_RESULTS };
+		String[] colPairValuesOut = { id, batchNum, Integer.toString(g.getIdxSolSize()), String.valueOf(end - start),
+				String.valueOf(k), String.valueOf(r), AlgoUtil.getLabSolutionStr(g) };
+
 		dbpOut.setColPairNames(colPairNamesOut);
 		dbpOut.setColPairValues(colPairValuesOut);
 		return dbpOut;
@@ -321,7 +349,7 @@ public class TestUtil {
 	 * @param gv,
 	 *            global variables
 	 */
-	public static void printGlobalVariableStatus(ISGlobalVariable gv) {
+	public static void printGlobalVariableStatus(GlobalVariable gv) {
 		String styleStr = "%-6s %-6s %-6s %-6s %-15s %-6s %-15s %-40s %-40s";
 
 		int[] idxLst = gv.getIdxLst();

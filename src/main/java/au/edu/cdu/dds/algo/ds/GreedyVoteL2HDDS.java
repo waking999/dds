@@ -7,7 +7,7 @@ import java.util.Set;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -15,12 +15,11 @@ import au.edu.cdu.dds.util.Util;
  * order of weight is listed from lowest to highest. during the period, a new
  * graph starting from empty to the final graph step by step of adding vertices.
  * In addition, a dds fpt subroutine will be invoked.
- * 
  * @author kwang
  */
 public class GreedyVoteL2HDDS implements IAlgorithm {
-	ISGlobalVariable g; // to represent the original graph
-	ISGlobalVariable gi; // to represent the graph at each round
+	GlobalVariable g; // to represent the original graph
+	GlobalVariable gi; // to represent the graph at each round
 
 	// parameters for fpt subroutine
 	int k;
@@ -36,11 +35,11 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 	}
 
 	@Override
-	public void setGlobalVariable(ISGlobalVariable gv) {
+	public void setGlobalVariable(GlobalVariable gv) {
 		this.g = gv;
 
 		// initialize the graph representing at each round
-		this.gi = new ISGlobalVariable();
+		this.gi = new GlobalVariable();
 		int verCnt = gv.getVerCnt();
 		AlgoUtil.initGlobalVariable(gi, verCnt);
 
@@ -119,9 +118,8 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 						if (isMomentOfRegret(p, giStepV)) {
 
 							// 1.copy gi -> gi*
- 
-							ISGlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
- 							// 2.get d2 from stepU (since some positions of stepU could be null)
+							GlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
+							// 2.get d2 from stepU (since some positions of stepU could be null)
 							int[] giSD2 = new int[k];
 							Arrays.fill(giSD2, ConstantValue.IMPOSSIBLE_VALUE);
 							int giD2Len = 0;
@@ -131,12 +129,10 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 								}
 							}
 
- 
-							if (giD2Len <= r) {
-								continue;
-							}
-							// r = Math.min(r, giD2Len - 1);
- 
+							// if (giD2Len <= r) {
+							// continue;
+							// }
+							r = Math.min(r, giD2Len - 1);
 
 							// 3.d1 = giSol\gi.stepU (d1=d\d2) in gi*
 							int[] giSD1 = Util.set1Minus2(giIdxSol, giIdxSolSize, giSD2, giD2Len);
@@ -350,16 +346,14 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		
 		g.setIdxSol(idxSol);
 		g.setIdxSolSize(idxSolSize);
- 
-
-		// //try to get a smaller solution (1 smaller)
-		// int[] tmpIdxSol=AlgoUtil.minimal(g, 1);
-		//
-		// g.setIdxSol(tmpIdxSol);
-		// g.setIdxSolSize(tmpIdxSol.length);
+		
+		//try to get a smaller solution (1 smaller)
+		//int[] tmpIdxSol=AlgoUtil.minimal(g, 1);
+		
+		//g.setIdxSol(tmpIdxSol);
+		//g.setIdxSolSize(tmpIdxSol.length);
 	}
 
- 
 	private boolean isMomentOfRegret(int p, int[] stepV) {
 		/*
 		 * 1.p==k:p previously points to the last element of step; 2.p>1:p

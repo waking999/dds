@@ -44,7 +44,8 @@ public class ConstantValue {
 	public static final String DB_COL_BATCH_NUM = "batch_num";
 	public static final String DB_COL_RESULT_SIZE = "result_size";
 	public static final String DB_COL_RUNNING_TIME = "running_nano_sec";
-
+	public static final String DB_COL_RESULTS = "results";
+	
 	public static final String DB_COL_ALGORITHM = "algorithm";
 
 	public static final String DB_COL_K = "k";

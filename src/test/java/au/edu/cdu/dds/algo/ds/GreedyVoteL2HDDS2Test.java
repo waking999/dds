@@ -13,7 +13,7 @@ import au.edu.cdu.dds.io.DBOperation;
 import au.edu.cdu.dds.io.FileOperation;
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
 import au.edu.cdu.dds.util.Util;
 
@@ -34,7 +34,7 @@ public class GreedyVoteL2HDDS2Test {
 		String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
 		int[] expect = new int[] { 1, 5 };
 
-		ISGlobalVariable gv = new FileOperation().readGraphByEdgePair(filePath);
+		GlobalVariable gv = FileOperation.readGraphByEdgePair(filePath);
  
 		IAlgorithm algo = new GreedyVoteL2HDDS2();
 		algo.setGlobalVariable(gv);

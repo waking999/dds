@@ -1,5 +1,8 @@
 package au.edu.cdu.dds.io;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
@@ -10,7 +13,7 @@ import java.util.List;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 
 /**
  * implement operation system file operations
@@ -27,7 +30,7 @@ public class FileOperation {
 	 * @return
 	 * @throws IOException
 	 */
-	public ISGlobalVariable readGraphByEdgePair(String filePath) throws IOException {
+	public static GlobalVariable readGraphByEdgePair(String filePath) throws IOException {
 		// access the input file
 		Path path = Paths.get(filePath);
 		List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
@@ -45,7 +48,7 @@ public class FileOperation {
 		int eCount = Integer.parseInt(eCountStr);
 
 		// initialize the global variables
-		ISGlobalVariable gv = new ISGlobalVariable();
+		GlobalVariable gv = new GlobalVariable();
 
 		AlgoUtil.initGlobalVariable(gv, vCount);
 
@@ -57,6 +60,9 @@ public class FileOperation {
 		// read each line of the input file
 		String tmpLine = null;
 		int currentVCount = 0;
+//		int min = Integer.MAX_VALUE;
+//		int max = Integer.MIN_VALUE;
+
 		for (int i = 1; i <= eCount; i++) {
 			tmpLine = lines.get(i);
 			// the edge pair is presented by two vertex labels separated by a
@@ -65,24 +71,39 @@ public class FileOperation {
 			String uStr = tmpLineArray[0];
 			String vStr = tmpLineArray[1];
 
-			if (!uStr.equals(vStr)) {
-				// we don't allow self circle of each vertex
+			int uLab = Integer.parseInt(uStr);
+//			if (uLab > max) {
+//				max = uLab;
+//			}
+//			if (uLab < min) {
+//				min = uLab;
+//			}
+			int vLab = Integer.parseInt(vStr);
+//			if (vLab > max) {
+//				max = vLab;
+//			}
+//			if (vLab < min) {
+//				min = vLab;
+//			}
+			// we get the index of the vertices
+			int uIdx = AlgoUtil.getIdxByLab(gv, uLab); 
+			// if this vertex is not in the list, add it to vertex list
+			if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {
+				verLst[currentVCount] = Integer.parseInt(uStr);
+				uIdx = currentVCount;
 
-				// we get the index of the vertices
-				int uIdx = AlgoUtil.getIdxByLab(gv, Integer.parseInt(uStr));
-				int vIdx = AlgoUtil.getIdxByLab(gv, Integer.parseInt(vStr));
-
-				// if this vertex is not in the list, add it to vertex list
-				if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {
-					verLst[currentVCount] = Integer.parseInt(uStr);
-					uIdx = currentVCount;
-					currentVCount++;
-				}
-				if (vIdx == ConstantValue.IMPOSSIBLE_VALUE) {
-					verLst[currentVCount] = Integer.parseInt(vStr);
-					vIdx = currentVCount;
-					currentVCount++;
-				}
+				currentVCount++;
+			}
+			
+			int vIdx = AlgoUtil.getIdxByLab(gv, vLab);
+			if (vIdx == ConstantValue.IMPOSSIBLE_VALUE) {
+				verLst[currentVCount] = Integer.parseInt(vStr);
+				vIdx = currentVCount; 
+				currentVCount++;
+			}
+			
+			if (uIdx!=vIdx) {
+				// we don't allow self circle of each vertex 
 
 				// we set the incident matrix cells of the two vertices are set
 				// to not null
@@ -119,6 +140,26 @@ public class FileOperation {
 		AlgoUtil.initWeight(gv);
 
 		return gv;
+	}
+
+	public static void saveFile(String destFile, String outputStr) throws FileNotFoundException, IOException {
+		BufferedWriter bw = null;
+
+		try {
+			bw = new BufferedWriter(new FileWriter(destFile, false));
+			bw.write(outputStr);
+			bw.newLine();
+			bw.flush();
+		} catch (IOException ioe) {
+			ioe.printStackTrace();
+		} finally { // always close the file
+			if (bw != null)
+				try {
+					bw.close();
+				} catch (IOException ioe2) {
+					// just ignore it
+				}
+		}
 	}
 
 }

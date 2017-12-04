@@ -7,7 +7,7 @@ import java.util.Set;
 
 import au.edu.cdu.dds.util.AlgoUtil;
 import au.edu.cdu.dds.util.ConstantValue;
-import au.edu.cdu.dds.util.ISGlobalVariable;
+import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.Util;
 
 /**
@@ -31,8 +31,8 @@ import au.edu.cdu.dds.util.Util;
  */
 @Deprecated
 public class GreedyVoteL2HDDS2 implements IAlgorithm {
-	ISGlobalVariable g; // to represent the original graph
-	ISGlobalVariable gi; // to represent the graph at each round
+	GlobalVariable g; // to represent the original graph
+	GlobalVariable gi; // to represent the graph at each round
 
 	// parameters for fpt subroutine
 	int k;
@@ -48,11 +48,11 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 	}
 
 	@Override
-	public void setGlobalVariable(ISGlobalVariable gv) {
+	public void setGlobalVariable(GlobalVariable gv) {
 		this.g = gv;
 
 		// initialize the graph representing at each round
-		this.gi = new ISGlobalVariable();
+		this.gi = new GlobalVariable();
 		int verCnt = gv.getVerCnt();
 		AlgoUtil.initGlobalVariable(gi, verCnt);
 
@@ -155,7 +155,7 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 						if (isMomentOfRegret(p, giStepU)) {
 
 							// 1.copy gi -> gi*
-							ISGlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
+							GlobalVariable giS = AlgoUtil.copyGraphInGloablVariable(gi);
 
 							int[] giD2;
 							int giD2Len;

@@ -7,13 +7,15 @@ import org.junit.runners.Suite.SuiteClasses;
 import au.edu.cdu.dds.io.DBOperationTest;
 import au.edu.cdu.dds.io.FileOperationTest;
 import au.edu.cdu.dds.util.AlgoUtilTest;
+import au.edu.cdu.dds.util.ConnectComponentsTest;
+import au.edu.cdu.dds.util.QueueTest;
 import au.edu.cdu.dds.util.UtilTest;
 
 /**
  * a test suit for utilities classes
  */
 @RunWith(Suite.class)
-@SuiteClasses({ UtilTest.class, FileOperationTest.class, DBOperationTest.class, AlgoUtilTest.class })
+@SuiteClasses({ UtilTest.class, FileOperationTest.class, DBOperationTest.class, AlgoUtilTest.class, QueueTest.class, ConnectComponentsTest.class})
 public class UtilTests {
 
 }
