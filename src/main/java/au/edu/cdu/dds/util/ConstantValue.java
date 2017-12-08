@@ -21,7 +21,7 @@ public class ConstantValue {
 	public static final String DATASET_DIMACS = "DIMACS";
 	public static final String DATASET_KONECT = "KONECT";
 	public static final String DATASET_BHOSLIB = "BHOSLIB";
-
+	public static final String DATASET_DIMACS_MIS = "DIMACS-MIS";
 	// database table/view names
 	public static final String DB_TBNAME_DATASET = "dataset";
 	public static final String DB_TBNAME_INS = "instance";

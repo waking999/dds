@@ -170,7 +170,7 @@ public class TestUtil {
 	 * @throws IOException
 	 */
 	public static void basicFuncLoopKR(String className, IAlgorithm algo, int kLower, int kUpper, String batchNum,
-			String id, String instanceCode, String algTableName, String inputFile, Logger log) throws IOException {
+			String id, String instanceCode, String algTableName, String inputFile, Logger log) throws IOException,NumberFormatException {
 		for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
 			for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
 				basicFunc(className, algo, batchNum, id, instanceCode, algTableName, inputFile, tmpK, tmpR, log);
@@ -237,7 +237,7 @@ public class TestUtil {
 	 * @throws IOException
 	 */
 	public static void basicFunc(String className, IAlgorithm algo, String batchNum, String id, String instanceCode,
-			String algTableName, String inputFile, int k, int r, Logger log) throws IOException {
+			String algTableName, String inputFile, int k, int r, Logger log) throws IOException,NumberFormatException {
 		DBParameter dbpOut;
 		// read file
 		GlobalVariable g = FileOperation.readGraphByEdgePair(inputFile);

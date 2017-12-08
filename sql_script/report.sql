@@ -32,3 +32,27 @@ where a.batch_num='20171108-0845';
 select distinct a.result_size
 from result_GreedyVoteL2HDDSTest a
 where a.batch_num='20171107-2223';
+
+select r.i_id, r.result_size, r.results
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='DIMACS-MIS'
+and i.i_name='gen400_p0.9_75';
+
+
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='BHOSLIB' 
+group by r.i_id, i.i_name
+;
+ 
+
+
+
+
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='BHOSLIB'
+group by r.i_id, i.i_name;

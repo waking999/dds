@@ -25,7 +25,6 @@ public class FileOperation {
 	 * read data file to initialize the global variables for the data structure
 	 * and
 	 * algorithms
-	 * 
 	 * @param filePath
 	 * @return
 	 * @throws IOException
@@ -41,8 +40,8 @@ public class FileOperation {
 		 * by a
 		 * blank
 		 */
-		String vCountStr = line0Array[0];
-		String eCountStr = line0Array[1];
+		String vCountStr = line0Array[0].trim();
+		String eCountStr = line0Array[1].trim();
 
 		int vCount = Integer.parseInt(vCountStr);
 		int eCount = Integer.parseInt(eCountStr);
@@ -60,65 +59,68 @@ public class FileOperation {
 		// read each line of the input file
 		String tmpLine = null;
 		int currentVCount = 0;
-//		int min = Integer.MAX_VALUE;
-//		int max = Integer.MIN_VALUE;
+		// int min = Integer.MAX_VALUE;
+		// int max = Integer.MIN_VALUE;
 
-		for (int i = 1; i <= eCount; i++) {
-			tmpLine = lines.get(i);
-			// the edge pair is presented by two vertex labels separated by a
-			// blank
-			String[] tmpLineArray = tmpLine.split(BLANK);
-			String uStr = tmpLineArray[0];
-			String vStr = tmpLineArray[1];
+		try {
+			for (int i = 1; i <= eCount; i++) {
+				tmpLine = lines.get(i);
+				// the edge pair is presented by two vertex labels separated by a
+				// blank
+				String[] tmpLineArray = tmpLine.split(BLANK);
+				String uStr = tmpLineArray[0];
+				String vStr = tmpLineArray[1];
 
-			int uLab = Integer.parseInt(uStr);
-//			if (uLab > max) {
-//				max = uLab;
-//			}
-//			if (uLab < min) {
-//				min = uLab;
-//			}
-			int vLab = Integer.parseInt(vStr);
-//			if (vLab > max) {
-//				max = vLab;
-//			}
-//			if (vLab < min) {
-//				min = vLab;
-//			}
-			// we get the index of the vertices
-			int uIdx = AlgoUtil.getIdxByLab(gv, uLab); 
-			// if this vertex is not in the list, add it to vertex list
-			if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {
-				verLst[currentVCount] = Integer.parseInt(uStr);
-				uIdx = currentVCount;
+				int uLab = Integer.parseInt(uStr);
+				// if (uLab > max) {
+				// max = uLab;
+				// }
+				// if (uLab < min) {
+				// min = uLab;
+				// }
+				int vLab = Integer.parseInt(vStr);
+				// if (vLab > max) {
+				// max = vLab;
+				// }
+				// if (vLab < min) {
+				// min = vLab;
+				// }
+				// we get the index of the vertices
+				int uIdx = AlgoUtil.getIdxByLab(gv, uLab);
+				// if this vertex is not in the list, add it to vertex list
+				if (uIdx == ConstantValue.IMPOSSIBLE_VALUE) {
+					verLst[currentVCount] = Integer.parseInt(uStr);
+					uIdx = currentVCount;
 
-				currentVCount++;
+					currentVCount++;
+				}
+
+				int vIdx = AlgoUtil.getIdxByLab(gv, vLab);
+				if (vIdx == ConstantValue.IMPOSSIBLE_VALUE) {
+					verLst[currentVCount] = Integer.parseInt(vStr);
+					vIdx = currentVCount;
+					currentVCount++;
+				}
+
+				if (uIdx != vIdx) {
+					// we don't allow self circle of each vertex
+
+					// we set the incident matrix cells of the two vertices are set
+					// to not null
+					// first
+					idxIM[uIdx][vIdx] = ConstantValue.NOT_NULL;
+					idxIM[vIdx][uIdx] = ConstantValue.NOT_NULL;
+
+					// the degree of the two vertices will increase
+					idxDegree[uIdx]++;
+					idxDegree[vIdx]++;
+
+				}
+
 			}
-			
-			int vIdx = AlgoUtil.getIdxByLab(gv, vLab);
-			if (vIdx == ConstantValue.IMPOSSIBLE_VALUE) {
-				verLst[currentVCount] = Integer.parseInt(vStr);
-				vIdx = currentVCount; 
-				currentVCount++;
-			}
-			
-			if (uIdx!=vIdx) {
-				// we don't allow self circle of each vertex 
-
-				// we set the incident matrix cells of the two vertices are set
-				// to not null
-				// first
-				idxIM[uIdx][vIdx] = ConstantValue.NOT_NULL;
-				idxIM[vIdx][uIdx] = ConstantValue.NOT_NULL;
-
-				// the degree of the two vertices will increase
-				idxDegree[uIdx]++;
-				idxDegree[vIdx]++;
-
-			}
-
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
-
 		// calculate im and al
 		for (int i = 0; i < vCount; i++) {
 

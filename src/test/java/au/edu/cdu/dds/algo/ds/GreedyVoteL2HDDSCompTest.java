@@ -19,6 +19,7 @@ import au.edu.cdu.dds.util.ConnectComponents;
 import au.edu.cdu.dds.util.ConstantValue;
 import au.edu.cdu.dds.util.GlobalVariable;
 import au.edu.cdu.dds.util.LogUtil;
+import au.edu.cdu.dds.util.Util;
 
 public class GreedyVoteL2HDDSCompTest {
 
@@ -52,7 +53,7 @@ public class GreedyVoteL2HDDSCompTest {
 
 	}
 
-	// @Ignore
+	@Ignore
 	@Test
 	public void testKONECTComponents() throws InterruptedException, IOException, FileNotFoundException {
 
@@ -83,6 +84,78 @@ public class GreedyVoteL2HDDSCompTest {
 		IAlgorithm algo = new GreedyVoteL2HDDSComp();
 
 		TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, log);
+	}
+	
+	@Ignore
+	@Test
+	public void testDIMACS_LoopKR() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower=3;
+		int kUpper=20;
+		IAlgorithm algo = new GreedyVoteL2HDDSComp();
+		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_DIMACS, algo, kLower, kUpper, log);
+	}
+	
+	
+	//@Ignore
+	@Test
+	public void testBHOSlIB_LoopKR() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower=41;
+		int kUpper=60;
+		IAlgorithm algo = new GreedyVoteL2HDDSComp();
+		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, kLower, kUpper, log);
+	}
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_C4000_5() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 51;
+		int kUpper = 60;
+		String id = "1_12";
+		String instanceCode = "C4000.5";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/DIMACS";
+		String pathName = "/C4000.5.clq";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
+	}
+	@Ignore
+	@Test
+	public void testKONECT_LoopKR_p_hat700_1() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower = 71;
+		int kUpper = 90;
+		String id = "1_34";
+		String instanceCode = "p_hat700-1";
+		String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+		String dataSetPath = "/DIMACS";
+		String pathName = "/p_hat700-1.clq";
+		String inputFile = resourcePath + dataSetPath + pathName;
+		String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+		IAlgorithm algo = new GreedyVoteL2HDDS();
+		String batchNum = Util.getBatchNum();
+
+		TestUtil.basicFuncLoopKR(CLASS_NAME, algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+				log);
+	}
+	
+	
+	@Ignore
+	@Test
+	public void testDIMACS_MIS_LoopKR() throws InterruptedException, IOException, FileNotFoundException {
+
+		int kLower=3;
+		int kUpper=20;
+		IAlgorithm algo = new GreedyVoteL2HDDSComp();
+		TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_DIMACS_MIS, algo, kLower, kUpper, log);
 	}
 
 }
