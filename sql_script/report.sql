@@ -46,6 +46,31 @@ where r.i_id=i.i_id
 and i.d_name='BHOSLIB' 
 group by r.i_id, i.i_name
 ;
+
+
+with min_result as (
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='BHOSLIB' 
+group by r.i_id, i.i_name
+)
+, all_result as (
+select r.id,r.i_id,mr.i_name,r.k,r.r, r.result_size, r.results 
+from result_GreedyVoteL2HDDSCompTest r,min_result mr
+where r.i_id=mr.i_id
+and r.result_size=mr.min_result_size
+)
+, only_result as(
+select i_id,result_size,min(id) as id 
+from all_result
+group by i_id, result_size
+)
+select ar.*
+from all_result ar,only_result r
+where ar.id=r.id
+;
+ 
  
 
 
