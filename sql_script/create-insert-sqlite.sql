@@ -118,7 +118,10 @@ INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (15,3,'RouteViews','Route Views','/006474_Route_views.konect',6474,13895,0);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (16,3,'PrettyGoodPrivacy','Pretty Good Privacy','/010680_Pretty_Good_Privacy.konect',10680,24316,0);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (17,3,'arXiv','arXiv','/018771_arXiv.konect',18771,198050,0);
-
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (18,3,'CAIDA','CAIDA','/026475_caida.konect',26475,53381,1);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (19,3,'Brightkite','Brightkite','/058228_brightkite_edges.konect',58228,214078,1);
+INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (20,3,'FacebookFriendships','Facebook friendships','/063731_facebook_wosn_links.konect',63731, 817035 ,1);
+ 
 
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (1,4,'brock200_2','brock200_2','/brock200_2.mis',200,10024,0);
 INSERT INTO "instance" (i_id,d_id,i_code,i_name,path_name,v_count,e_count,to_be_tested) VALUES  (2,4,'brock200_4','brock200_4','/brock200_4.mis',200,6811,0);

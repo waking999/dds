@@ -10,8 +10,28 @@ public class ConstantValue {
 
 	public static final float FLOAT_NO_DIFF = 1E-12f;
 
+	public static final String CONNECTED = "1";
+	//public static final String UNCONNECTED = "0";
+
+	//public static final byte CONNECTED_BYTE = 1;
+	//public static final byte UNCONNECTED_BYTE = 0;
+
+	public static final String UNDERLINE = "_";
+
 	public final static boolean MARKED = true;
 	public final static boolean UNMARKED = false;
+
+    public final static boolean CHOSEN = true;
+    public final static boolean UNCHOSEN = false;
+
+    public final static String RUNNING_TIME_TOTAL = "Total";
+    public final static String RUNNING_TIME_DDS = "DDS";
+    public final static String RUNNING_TIME_MINI = "Minimal";
+    public final static String RUNNING_TIME_LS = "LS";
+    public final static String RUNNING_TIME_POLYRR = "Poly-RR";
+    public final static String RUNNING_TIME_DEGREERR = "Degree-RR";
+    public final static String RUNNING_TIME_GUARANTEE = "Guarantee";
+
 	// the ascii code of 0
 	//public static final byte ASCII_0_SEQ_NO = 48;
 

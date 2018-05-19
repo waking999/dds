@@ -73,7 +73,113 @@ where ar.id=r.id
  
  
 
+ 
+with min_result as (
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='KONECT' 
+group by r.i_id, i.i_name
+)
+, all_result as (
+select r.id,r.i_id,mr.i_name,r.k,r.r, r.result_size, r.results, printf("%.3f",r.running_nano_sec/1000000000.0) as running_sec
+from result_GreedyVoteL2HDDSCompTest r,min_result mr
+where r.i_id=mr.i_id
+and r.result_size=mr.min_result_size
+and r.batch_num='20180515-1146'
+)
+, only_result as(
+select i_id,result_size,min(id) as id 
+from all_result
+group by i_id, result_size
+)
+select ar.*
+from all_result ar,only_result r, v_instance vi
+where ar.id=r.id
+;
 
+
+
+with min_result as (
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='DIMACS-MIS' 
+group by r.i_id, i.i_name
+)
+, all_result as (
+select r.id,r.i_id,mr.i_name,r.k,r.r, r.result_size, r.results, printf("%.3f",r.running_nano_sec/1000000000.0) as running_sec
+from result_GreedyVoteL2HDDSCompTest r,min_result mr
+where r.i_id=mr.i_id
+and r.result_size=mr.min_result_size
+and r.batch_num='20180519-1806'
+)
+, only_result as(
+select i_id,result_size,min(id) as id 
+from all_result
+group by i_id, result_size
+)
+select  ar.*
+from all_result ar,only_result r, v_instance vi
+where ar.id=r.id
+and ar.i_id=vi.i_id
+;
+
+
+
+with min_result as (
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='DIMACS-MIS' 
+group by r.i_id, i.i_name
+)
+, all_result as (
+select r.id,r.i_id,mr.i_name,r.k,r.r, r.result_size, r.results, printf("%.3f",r.running_nano_sec/1000000000.0) as running_sec
+from result_GreedyVoteL2HDDSCompTest r,min_result mr
+where r.i_id=mr.i_id
+and r.result_size=mr.min_result_size
+and r.batch_num='20180519-1806'
+)
+, only_result as(
+select i_id,result_size,min(id) as id 
+from all_result
+group by i_id, result_size
+)
+select vi.i_code,v_count,e_count,ar.result_size, ar.running_sec
+from all_result ar,only_result r, v_instance vi
+where ar.id=r.id
+and ar.i_id=vi.i_id
+;
+
+with min_result as (
+select r.i_id,i.i_name, min(r.result_size) as min_result_size
+from result_GreedyVoteL2HDDSCompTest r, v_instance i
+where r.i_id=i.i_id
+and i.d_name='DIMACS-MIS' 
+group by r.i_id, i.i_name
+)
+, all_result as (
+select r.id,r.i_id,mr.i_name,r.k,r.r, r.result_size, r.results, printf("%.3f",r.running_nano_sec/1000000000.0) as running_sec
+from result_GreedyVoteL2HDDSCompTest r,min_result mr
+where r.i_id=mr.i_id
+and r.result_size=mr.min_result_size
+and r.batch_num='20180519-1806'
+)
+, only_result as(
+select i_id,result_size,min(id) as id 
+from all_result
+group by i_id, result_size
+)
+, turbodds_result as (
+select vi.i_code,v_count,e_count,ar.result_size, ar.running_sec
+from all_result ar,only_result r, v_instance vi
+where ar.id=r.id
+and ar.i_id=vi.i_id
+)
+select  i_code||"&"||v_count||"&"||e_count||"& & & & & & & &"|| result_size||"&"|| running_sec||"\\" as result0
+from turbodds_result tr
+;
 
 
 select r.i_id,i.i_name, min(r.result_size) as min_result_size

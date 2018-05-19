@@ -1,9 +1,12 @@
 package au.edu.cdu.common.util;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import au.edu.cdu.common.exception.ArraysNotSameLengthException;
+import au.edu.cdu.common.order.OrderPackageUtil;
+import edu.uci.ics.jung.graph.SparseMultigraph;
+import edu.uci.ics.jung.graph.Graph;
+import org.apache.commons.collections15.CollectionUtils;
+
+import java.util.*;
 
 /**
  * this is a util class for algorithm relevant methods
@@ -638,7 +641,7 @@ public class AlgoUtil {
     public static boolean isValidSolution(GlobalVariable g) {
 
         int[] idxLst = g.getIdxLst();
-        if(idxLst==null){
+        if (idxLst == null) {
             return false;
         }
         Set<Integer> idxLstList = new HashSet<>();
@@ -725,5 +728,412 @@ public class AlgoUtil {
         }
 
         return ds;
+    }
+
+    /**
+     * get the edge label by the two end points
+     *
+     * @param v1, vertex 1 label
+     * @param v2, vertex 2 label
+     * @return edge label between the two end points
+     */
+    private static String getEdgeLabelBy2VerticesLabel(int v1, int v2) {
+        int min = Math.min(v1, v2);
+        int max = Math.max(v1, v2);
+        return String.valueOf(min) + ConstantValue.UNDERLINE + max;
+    }
+
+    /**
+     * prepare a graph (supporting adding/deleting vertices and edges)
+     *
+     * @param adjacencyMatrix, the adjacency matrix
+     * @return a jung graph
+     */
+    public static edu.uci.ics.jung.graph.Graph<Integer, String> prepareGenericGraph(List<String[]> adjacencyMatrix) {
+
+        int numOfVertices = adjacencyMatrix.size();
+        edu.uci.ics.jung.graph.Graph<Integer, String> g = new SparseMultigraph<>();
+        for (int i = 0; i < numOfVertices; i++) {
+            g.addVertex(i);
+        }
+
+        for (int i = 0; i < numOfVertices; i++) {
+            String[] rowArr = adjacencyMatrix.get(i);
+            for (int j = i + 1; j < numOfVertices; j++) {
+                if (ConstantValue.CONNECTED.equals(rowArr[j].trim())) {
+                    /*
+                     * the label of edge is decided by the label of the two
+                     * endpoints
+                     */
+                    String edge = getEdgeLabelBy2VerticesLabel(i, j);
+                    g.addEdge(edge, i, j);
+
+                }
+            }
+        }
+        return g;
+    }
+
+    /**
+     * decide if the vertices in dominatedMap are all marked as dominated.
+     *
+     * @param dominatedMap
+     * @return true, all vertices are dominated;false,no
+     */
+    public static boolean isAllDominated(Map<Integer, Boolean> dominatedMap) {
+
+        Collection<Boolean> values = dominatedMap.values();
+        for (Boolean b : values) {
+            if (!b) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * get a copy of source graph
+     *
+     * @param src , source graph
+     * @return a copy of source graph
+     */
+    public static <V, E> Graph<V, E> copyGraph(Graph<V, E> src) {
+        Graph<V, E> dest = new SparseMultigraph<V, E>();
+        for (V v : src.getVertices())
+            dest.addVertex(v);
+
+        for (E e : src.getEdges())
+            dest.addEdge(e, src.getIncidentVertices(e));
+
+        return dest;
+    }
+
+    /**
+     * decide if it is a dominating set solution of a graph
+     *
+     * @param g  , graph
+     * @param ds , a potential dominating set
+     * @return true, is dominating set ; no, not
+     */
+    public static <V, E> boolean isDS(Graph<V, E> g, List<V> ds) {
+        Collection<V> vertices = g.getVertices();
+        Collection<V> complementaryDS = CollectionUtils.subtract(vertices, ds);
+
+        for (V v : ds) {
+            // get neighbours of the vertices in dominating set
+            Collection<V> neighborsOfV = g.getNeighbors(v);
+            // remove the neighbours from the complementary set
+            if (neighborsOfV != null) {
+                complementaryDS = CollectionUtils.subtract(complementaryDS, neighborsOfV);
+            }
+        }
+        /*
+         * if the complementary set is not empty, it means there are some
+         * vertices are not dominated and in turn the input set is not a
+         * dominating set for the graph
+         */
+        if (!complementaryDS.isEmpty()) {
+            return false;
+        }
+        return true;
+
+    }
+
+    /**
+     * @param g
+     * @param v
+     * @param dominatedMap
+     * @return
+     */
+    public static <V, E> int getVertexUtility(Graph<V, E> g, V v, Map<V, Boolean> dominatedMap) {
+        Collection<V> vNeigs = g.getNeighbors(v);
+        int unDominatedDegree = 0;
+        for (V u : vNeigs) {
+            if (!dominatedMap.get(u)) {
+                unDominatedDegree++;
+            }
+        }
+        return unDominatedDegree;
+    }
+
+    /**
+     * minimalization to reduce redundant vertices
+     *
+     * @param g
+     * @param ds
+     * @return
+     * @throws ArraysNotSameLengthException
+     */
+    public static <V, E> List<V> minimal(Graph<V, E> g, List<V> ds) throws ArraysNotSameLengthException {
+
+        int distance = 1;
+        int dsSize = ds.size();
+        boolean[] chosen = verifySubDS(ds, dsSize, dsSize - distance, g);
+        if (chosen == null) {
+            return ds;
+        } else {
+            List<V> tempDs = new ArrayList<V>(dsSize - distance);
+
+            for (int i = 0; i < dsSize; i++) {
+                if (chosen[i]) {
+                    tempDs.add(ds.get(i));
+                }
+            }
+            return tempDs;
+        }
+    }
+
+    /**
+     * @param ds, a potential dominating set
+     * @param n,  chose n
+     * @param m,  totally m
+     * @param g,  graph instance
+     * @return a boolean array showing the combination
+     * @throws ArraysNotSameLengthException
+     */
+    public static <V, E> boolean[] verifySubDS(List<V> ds, int n, int m, Graph<V, E> g)
+            throws ArraysNotSameLengthException {
+        if (m > n) {
+            m = n;
+        }
+
+        boolean isSolution = false;
+        boolean isEnd = false;
+
+        boolean[] chosen = new boolean[n];
+        Arrays.fill(chosen, ConstantValue.UNCHOSEN);
+
+        Arrays.fill(chosen, 0, m, ConstantValue.CHOSEN);
+
+        // int count = 0;
+        // count++;
+        isSolution = verifyChosen(ds, chosen, m, n, g);
+
+        if (isSolution) {
+            return chosen;
+        }
+
+        do {
+            int pose = 0;
+            int sum = 0;
+            for (int i = 0; i < (n - 1); i++) {
+                if (chosen[i] == ConstantValue.CHOSEN && chosen[i + 1] == ConstantValue.UNCHOSEN) {
+                    chosen[i] = ConstantValue.UNCHOSEN;
+                    chosen[i + 1] = ConstantValue.CHOSEN;
+                    pose = i;
+                    break;
+                }
+            }
+            // count++;
+
+            isSolution = verifyChosen(ds, chosen, m, n, g);
+
+            if (isSolution) {
+                return chosen;
+            }
+
+            for (int i = 0; i < pose; i++) {
+                if (chosen[i] == ConstantValue.CHOSEN) {
+                    sum++;
+                }
+            }
+
+            boolean[] copyOfChosen = Arrays.copyOf(chosen, chosen.length);
+
+            Arrays.fill(chosen, 0, sum, ConstantValue.CHOSEN);
+            Arrays.fill(chosen, sum, pose, ConstantValue.UNCHOSEN);
+
+            if (!Arrays.equals(copyOfChosen, chosen)) {
+                // count++;
+                isSolution = verifyChosen(ds, chosen, m, n, g);
+
+                if (isSolution) {
+                    return chosen;
+                }
+            }
+
+            isEnd = true;
+            for (int i = n - m; i < n; i++) {
+
+                if (chosen[i] == ConstantValue.UNCHOSEN) {
+                    isEnd = false;
+                    break;
+                }
+
+            }
+
+        } while (!isEnd);
+        if (!isSolution) {
+            return null;
+        } else {
+            return chosen;
+        }
+
+    }
+
+
+    /**
+     * @param ds,     a potential dominating set
+     * @param chosen, a combination
+     * @param m,      totally m
+     * @param n,      chose n
+     * @param g,      graph instance
+     * @return
+     * @throws ArraysNotSameLengthException
+     */
+    private static <V, E> boolean verifyChosen(List<V> ds, boolean[] chosen, int m, int n, Graph<V, E> g)
+            throws ArraysNotSameLengthException {
+        List<V> tempDs = new ArrayList<V>(m);
+
+        for (int i = 0; i < n; i++) {
+            if (chosen[i]) {
+                tempDs.add(ds.get(i));
+            }
+        }
+
+        return isDS(g, tempDs);
+
+    }
+
+    /**
+     * @param g
+     * @param v
+     * @return
+     */
+    public static <V, E> int getVertexDegree(Graph<V, E> g, V v) {
+
+        int unDominatedDegree = g.degree(v);
+        return unDominatedDegree;
+    }
+
+    /**
+     * get the highest utility neighbor of a vertex
+     *
+     * @param v,            the vertex
+     * @param g,            the graph instance
+     * @param dominatedMap, the dominated map (a map keeping pair of <vertex, dominated>)
+     * @return
+     */
+    public static <V, E> V getHighestUtilityNeighborOfAVertex(V v, Graph<V, E> g, Map<V, Boolean> dominatedMap) {
+
+        List<V> vList = OrderPackageUtil.getVertexListUtilityDesc(g, dominatedMap);
+
+        Collection<V> vNeg = g.getNeighbors(v);
+        vNeg.add(v);
+
+        for (V u : vList) {
+            if (vNeg.contains(u)) {
+                return u;
+            }
+        }
+
+        return null;
+
+    }
+
+
+    /**
+     * a GRASP local search
+     *
+     * @param g, the graph
+     * @param d, the dominating set
+     * @return the dominating set after local search
+     */
+    public static <V, E> List<V> grasp(Graph<V, E> g, List<V> d) {
+        Collection<V> vertices = g.getVertices();
+        int numOfVertices = vertices.size();
+        Map<V, Integer> coveredbyMap = new HashMap<V, Integer>(numOfVertices);
+
+        for (V v : vertices) {
+            coveredbyMap.put(v, 0);
+        }
+
+        for (V w : d) {
+
+            coveredbyMap.put(w, coveredbyMap.get(w).intValue() + 1);
+            Collection<V> wNeig = g.getNeighbors(w);
+            for (V v : wNeig) {
+                coveredbyMap.put(v, coveredbyMap.get(v).intValue() + 1);
+            }
+        }
+        int dSize = d.size();
+        for (int i = 0; i < dSize - 1; i++) {
+            V vi = d.get(i);
+            for (int j = i + 1; j < dSize; j++) {
+                V vj = d.get(j);
+                if (!vi.equals(vj)) {
+                    List<V> U = new ArrayList<V>();
+                    for (V vk : vertices) {
+                        int covby = coveredbyMap.get(vk);
+                        if (isAVertexDominateAVertex(vi, vk, g)) {
+                            covby--;
+                        }
+                        if (isAVertexDominateAVertex(vj, vk, g)) {
+                            covby--;
+                        }
+                        if (covby == 0) {
+                            Util.addElementToList(U, vk);
+                        }
+                    }
+                    if (U.isEmpty()) {
+                        d.remove(vi);
+                        d.remove(vj);
+                        // log.debug("ds changed here.");
+                        return grasp(g, d);
+                    } else {
+                        for (V vk : vertices) {
+                            if (isAVertexDominateASet(vk, U, g)) {
+                                d.remove(vi);
+                                d.remove(vj);
+                                d.add(vk);
+                                // log.debug("ds changed here.");
+                                return grasp(g, d);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return d;
+    }
+
+    /**
+     * if a vertex set(vList) is dominated by another vertex (v)
+     *
+     * @param v,     the dominating vertex
+     * @param vList, the dominated vertex set
+     * @param g,     the graph instance
+     * @return true: vList is dominated by v;false, no
+     */
+    public static <V, E> boolean isAVertexDominateASet(V v, Collection<V> vList, Graph<V, E> g) {
+        Collection<V> vNeig = g.getNeighbors(v);
+        if (CollectionUtils.subtract(vList, vNeig).isEmpty()) {
+            return true;
+        }
+        return false;
+
+    }
+
+    /**
+     * if a vertex (u) is dominated by another vertex (v)
+     *
+     * @param v, the dominating vertex
+     * @param u, the dominated vertex
+     * @param g, the graph instance
+     * @return true: u is dominated by v;false, no
+     */
+    public static <V, E> boolean isAVertexDominateAVertex(V v, V u, Graph<V, E> g) {
+        if (u.equals(v)) {
+            // a vertex always dominates itself
+            return true;
+        }
+        Collection<V> vNeig = g.getNeighbors(v);
+        if (vNeig.contains(u)) {
+            return true;
+        }
+        return false;
+
     }
 }

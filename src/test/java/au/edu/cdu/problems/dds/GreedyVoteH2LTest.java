@@ -17,7 +17,7 @@ import java.io.IOException;
 
 public class GreedyVoteH2LTest {
     private static final String CLASS_NAME = GreedyVoteH2LTest.class.getSimpleName();
-    private Logger log = LogUtil.getLogger(GreedyVoteH2LTest.class.getSimpleName());
+    private Logger log = LogUtil.getLogger(CLASS_NAME);
 
     @Ignore
     public void testIgnore() {

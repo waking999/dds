@@ -1,12 +1,28 @@
 package au.edu.cdu.common.util;
 
+import au.edu.cdu.common.order.OrderPackageUtil;
+
 import java.util.*;
 
 /**
  * this is an util class for common functions
  */
 public class Util {
-
+    /**
+     * avoid adding duplicated elements into a list
+     *
+     * @param list
+     *            , the list receiving elements
+     * @param e
+     *            , an element
+     * @return the list
+     */
+    public static <E> Collection<E> addElementToList(Collection<E> list, E e) {
+        if (!list.contains(e)) {
+            list.add(e);
+        }
+        return list;
+    }
     /**
      * find the position of a value in a range of an array
      *
@@ -435,4 +451,26 @@ public class Util {
 
         return expectStr.equals(outputStr);
     }
+
+    /**
+     *
+     * @param n
+     * @param s
+     * @return
+     */
+    public static <T> List<T> getFirstNItemsInCollection(int n, Collection<T> s) {
+        List<T> rtn = new ArrayList<T>();
+        int count = 0;
+        for (T t : s) {
+            rtn.add(t);
+            count++;
+            if (count == n) {
+                break;
+            }
+        }
+
+        return rtn;
+    }
+
+
 }

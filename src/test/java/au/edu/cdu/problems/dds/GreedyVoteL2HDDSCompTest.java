@@ -74,14 +74,24 @@ public class GreedyVoteL2HDDSCompTest {
         }
     }
 
-    //@Ignore
+    @Ignore
     @Test
     public void testKONECT_LoopIns() {
         int k = 10;
-        int r = 7;
+        int r = 9;
         IAlgorithm algo = new GreedyVoteL2HDDSComp();
 
         TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, log);
+    }
+
+    //@Ignore
+    @Test
+    public void testDIMACSMIS_LoopIns() {
+        int k = 10;
+        int r = 9;
+        IAlgorithm algo = new GreedyVoteL2HDDSComp();
+
+        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_DIMACS_MIS, algo, k, r, log);
     }
 
     @Ignore
@@ -105,7 +115,7 @@ public class GreedyVoteL2HDDSCompTest {
         TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, kLower, kUpper, log);
     }
 
-
+    @Ignore
     @Test
     public void testNetrepo_LoopKR()  {
 
@@ -118,7 +128,7 @@ public class GreedyVoteL2HDDSCompTest {
 
     @Ignore
     @Test
-    public void testKONECT_LoopKR_C4000_5() throws IOException {
+    public void testDIMACS_LoopKR_C4000_5() throws IOException {
 
         int kLower = 51;
         int kUpper = 60;

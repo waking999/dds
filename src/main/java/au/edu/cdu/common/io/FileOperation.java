@@ -30,9 +30,9 @@ public class FileOperation {
         GlobalVariable gv = null;
 
         fis = new BufferedInputStream(new FileInputStream(filePath));
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(fis))) {
+        try  {
 
-
+            BufferedReader reader = new BufferedReader(new InputStreamReader(fis));
             String line;
             line = reader.readLine();
 
