@@ -14,9 +14,9 @@ import java.util.Set;
 public class GreedyVoteL2HDDSComp implements IAlgorithm {
     private final ThreadLocal<GlobalVariable> wholeG; // to represent the original graph
     // parameters for fpt subroutine
-    int k;
+    private int k;
     int r;
-    int momentRegretThreshold;
+    private int momentRegretThreshold;
 
     private GlobalVariable[] compGs;
 
@@ -41,6 +41,10 @@ public class GreedyVoteL2HDDSComp implements IAlgorithm {
         int componentsSize = components.size();
         compGs = new GlobalVariable[componentsSize];
         processComponents(components);
+    }
+    @Override
+    public GlobalVariable getGlobalVariable( ){
+        return this.wholeG.get() ;
     }
 
     private void processComponents(List<Set<Integer>> components) {

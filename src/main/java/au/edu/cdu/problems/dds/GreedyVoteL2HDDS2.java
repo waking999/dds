@@ -36,9 +36,9 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
     private GlobalVariable gi; // to represent the graph at each round
 
 	// parameters for fpt subroutine
-	int k;
+	private int k;
 	int r;
-	int momentRegretThreshold;
+	private int momentRegretThreshold;
 
 	GreedyVoteL2HDDS2() {
 	}
@@ -66,7 +66,10 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 		 */
 		AlgoUtil.adjustGIInitStatus(gi);
 	}
-
+	@Override
+	public GlobalVariable getGlobalVariable( ){
+		return this.g ;
+	}
 	@Override
 	public void compute() {
 		int[] idxSol = g.getIdxSol();

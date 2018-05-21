@@ -79,21 +79,21 @@ public class OrderPackageUtil {
         return pocb.getOrderedVertexList(gv);
     }
 
-//    /**
-//     * @return a list of vertices ordered by weight descending
-//     */
-//    public static int[] getVertexListWeightDesc(GlobalVariable gv) {
-//        IOrderedList pocb = new OrderedListWeightDesc();
-//        return pocb.getOrderedVertexList(gv);
-//    }
+    /**
+     * @return a list of vertices ordered by weight descending
+     */
+    public static int[] getVertexListWeightDesc(GlobalVariable gv) {
+        IOrderedList pocb = new OrderedListWeightDesc();
+        return pocb.getOrderedVertexList(gv);
+    }
 
-//    /**
-//     * @return a list of vertices ordered by weight ascending
-//     */
-//    public static int[] getVertexListWeightAsc(GlobalVariable gv) {
-//        IOrderedList pocb = new OrderedListWeightAsc();
-//        return pocb.getOrderedVertexList(gv);
-//    }
+    /**
+     * @return a list of vertices ordered by weight ascending
+     */
+    public static int[] getVertexListWeightAsc(GlobalVariable gv) {
+        IOrderedList pocb = new OrderedListWeightAsc();
+        return pocb.getOrderedVertexList(gv);
+    }
 
 
     /**
@@ -105,8 +105,8 @@ public class OrderPackageUtil {
      * @param ocb, order call back (decide what order to follow: asc, desc, ...)
      * @return a list of vertices order by their priorities
      */
-    public static int[] getOrderedVertexList(GlobalVariable gv, IPriority pcb,
-                                             IOrder ocb) {
+    static int[] getOrderedVertexList(GlobalVariable gv, IPriority pcb,
+                                      IOrder ocb) {
         Queue<VertexPriorityBean> q = getOrderedVertexPriorityQueue(gv, pcb, ocb);
         return getOrderedVertexList(q);
     }

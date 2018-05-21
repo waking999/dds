@@ -21,7 +21,7 @@ import au.edu.cdu.problems.IAlgorithm;
 public class GreedyVoteL2HAdd implements IAlgorithm {
 	private GlobalVariable g; // representing the original graph
 	private GlobalVariable gi;
-	int k;
+	private int k;
 	int r;
 
 	GreedyVoteL2HAdd() {
@@ -47,7 +47,10 @@ public class GreedyVoteL2HAdd implements IAlgorithm {
 
 		k = 5;
 	}
-
+	@Override
+	public GlobalVariable getGlobalVariable( ){
+		return this.g ;
+	}
 	@Override
 	public void compute() {
 		int[] idxSol = g.getIdxSol();

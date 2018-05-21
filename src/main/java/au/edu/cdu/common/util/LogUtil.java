@@ -11,17 +11,7 @@ import org.apache.log4j.Logger;
  */
 public class LogUtil {
 
-    /**
-     * get log according to class
-     *
-     * @param clazz , class
-     * @return logger
-     */
-    public static Logger getLogger(Class clazz) {
-        Logger log = Logger.getLogger(clazz);
-        log = setLog(log);
-        return log;
-    }
+
     /**
      * get log according to class
      *
@@ -30,16 +20,6 @@ public class LogUtil {
      */
     public static Logger getLogger(String clazzName) {
         Logger log = Logger.getLogger(clazzName);
-        log = setLog(log);
-        return log;
-    }
-    /**
-     * set log
-     *
-     * @param log
-     */
-    private static Logger setLog(Logger log) {
-
         return log;
     }
 
@@ -50,7 +30,6 @@ public class LogUtil {
      */
     public static Logger getLogger() {
         Logger log = Logger.getRootLogger();
-        log = setLog(log);
         return log;
     }
 

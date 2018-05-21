@@ -26,7 +26,10 @@ class GreedyVoteH2L implements IAlgorithm {
 	public void setGlobalVariable(GlobalVariable g) {
 		this.g = g;
 	}
-
+	@Override
+	public GlobalVariable getGlobalVariable( ){
+		return this.g ;
+	}
 	@Override
 	public void compute() {
 		int[] idxSol = g.getIdxSol();

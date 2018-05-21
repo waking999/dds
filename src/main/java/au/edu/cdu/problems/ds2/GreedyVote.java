@@ -1,15 +1,14 @@
 package au.edu.cdu.problems.ds2;
 
-
 import au.edu.cdu.common.order2.OrderPackageUtil;
 import au.edu.cdu.common.util.AlgoUtil;
 import au.edu.cdu.common.util.GlobalVariable;
 import au.edu.cdu.problems.IAlgorithm;
 
-public class GreedyNaive implements IAlgorithm {
+public class GreedyVote implements IAlgorithm {
     private GlobalVariable g; // representing the graph
 
-    GreedyNaive(){
+    GreedyVote(){
 
     }
 
@@ -27,6 +26,7 @@ public class GreedyNaive implements IAlgorithm {
     public GlobalVariable getGlobalVariable( ){
         return this.g ;
     }
+
     /**
      * the major entrance of each algorithm
      */
@@ -37,20 +37,16 @@ public class GreedyNaive implements IAlgorithm {
         int[][] idxAL=g.getIdxAL();
 
         do{
-            int[] vList = OrderPackageUtil.getVertexListUtilityDesc(g);
+            int[] vList = OrderPackageUtil.getVertexListWeightDesc(g);
+
             int vIdx=vList[0];
 
             idxSol[idxSolSize]=vIdx;
             idxSolSize++;
 
-            idxDomed[vIdx]=true;
-
-            int[] vNeigs=idxAL[vIdx];
-            for(int uIdx:vNeigs){
-                idxDomed[uIdx]=true;
-            }
-        }
-        while (!AlgoUtil.isAllDominated(g));
+            // adjust weight;
+            AlgoUtil.adjustWeight(g, vIdx);
+        } while (!AlgoUtil.isAllDominated(g));
 
         g.setIdxSolSize(idxSolSize);
     }

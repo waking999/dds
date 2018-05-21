@@ -23,6 +23,8 @@ public interface IAlgorithm {
      */
     void setGlobalVariable(GlobalVariable g);
 
+    GlobalVariable getGlobalVariable();
+
     /**
      * the major entrance of each algorithm
      */

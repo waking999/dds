@@ -618,37 +618,37 @@ public class TestUtil {
         return set;
     }
 
-    public static List<String[]> simpleAM0() {
-        List<String[]> am = new ArrayList<String[]>();
-        Util.addElementToList(am,
-                new String[] { "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "1", "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "1", "0", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "1", "0", "0", "1", "1", "1", "0", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "1", "0", "0", "0", "1", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "1", "0", "0", "0", "1", "0", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "0", "0", "1", "1", "0", "1", "0", "0", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1", "1", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1", "0", "0" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "1", "0", "1", "1" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1" });
-        Util.addElementToList(am,
-                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "1", "0" });
-        return am;
-    }
+//    public static List<String[]> simpleAM0() {
+//        List<String[]> am = new ArrayList<String[]>();
+//        Util.addElementToList(am,
+//                new String[] { "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "1", "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "1", "0", "1", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "1", "0", "0", "1", "1", "1", "0", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "1", "0", "0", "0", "0", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "1", "0", "0", "0", "1", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "1", "0", "0", "0", "1", "0", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "0", "0", "1", "1", "0", "1", "0", "0", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1", "1", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1", "0", "0" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "1", "0", "1", "1" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "0", "1" });
+//        Util.addElementToList(am,
+//                new String[] { "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "0", "1", "1", "0" });
+//        return am;
+//    }
 
 }

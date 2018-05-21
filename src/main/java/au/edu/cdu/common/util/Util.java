@@ -1,6 +1,5 @@
 package au.edu.cdu.common.util;
 
-import au.edu.cdu.common.order.OrderPackageUtil;
 
 import java.util.*;
 
@@ -11,18 +10,16 @@ public class Util {
     /**
      * avoid adding duplicated elements into a list
      *
-     * @param list
-     *            , the list receiving elements
-     * @param e
-     *            , an element
-     * @return the list
+     * @param list , the list receiving elements
+     * @param e    , an element
      */
-    public static <E> Collection<E> addElementToList(Collection<E> list, E e) {
+    public static <E> void addElementToList(Collection<E> list, E e) {
         if (!list.contains(e)) {
             list.add(e);
         }
-        return list;
+
     }
+
     /**
      * find the position of a value in a range of an array
      *
@@ -205,7 +202,7 @@ public class Util {
      * @return true if set1 intersection s2 not null, false otherwise
      */
     public static boolean setsIntersect(int[] s1, int s1Len, int[] s2, int s2Len) {
-        if((s1==null)||(s2==null)){
+        if ((s1 == null) || (s2 == null)) {
             return false;
         }
         for (int i = 0; i < s1Len; i++) {
@@ -295,11 +292,11 @@ public class Util {
     /**
      * a dfs helper for get the combinations.
      *
-     * @param array, any array as the choice base
-     * @param r, how many elements in the combinations
-     * @param start, start point from the array
+     * @param array,     any array as the choice base
+     * @param r,         how many elements in the combinations
+     * @param start,     start point from the array
      * @param combinTry, the combination of elements in half way
-     * @param res, the container of formed combinations of r elements
+     * @param res,       the container of formed combinations of r elements
      */
     private static void combineDfs(int[] array, int r, int start, List<Integer> combinTry, List<int[]> res) {
         if (combinTry.size() == r) {
@@ -362,11 +359,10 @@ public class Util {
      * a dfs helper for get the combinations.
      *
      * @param rulerKeyArr, any array as the choice base
-     * @param r, how many elements in the combinations
-     * @param start, start point from the array
-     * @param combinTry, the combination of elements in half way
-     * @param res, the container of formed combinations of r elements
-     *
+     * @param r,           how many elements in the combinations
+     * @param start,       start point from the array
+     * @param combinTry,   the combination of elements in half way
+     * @param res,         the container of formed combinations of r elements
      */
     private static void combineDfs(String[] rulerKeyArr, int r, int start, List<String> combinTry, List<String[]> res) {
         if (combinTry.size() == r) {
@@ -445,7 +441,7 @@ public class Util {
      * (unsorted)
      *
      * @param expect, expect value
-     * @param real, real value
+     * @param real,   real value
      * @return true if real value equals expect value respectively, false otherwise
      */
     public static boolean verifyUnsort(boolean[] expect, boolean[] real) {
@@ -455,35 +451,49 @@ public class Util {
         return expectStr.equals(outputStr);
     }
 
-    /**
-     *
-     * @param n
-     * @param s
-     * @return
-     */
-    public static <T> List<T> getFirstNItemsInCollection(int n, Collection<T> s) {
-        List<T> rtn = new ArrayList<T>();
-        int count = 0;
-        for (T t : s) {
-            rtn.add(t);
-            count++;
-            if (count == n) {
-                break;
-            }
+//    /**
+//     *
+//     * @param n
+//     * @param s
+//     * @return
+//     */
+//    public static <T> List<T> getFirstNItemsInCollection(int n, Collection<T> s) {
+//        List<T> rtn = new ArrayList<T>();
+//        int count = 0;
+//        for (T t : s) {
+//            rtn.add(t);
+//            count++;
+//            if (count == n) {
+//                break;
+//            }
+//        }
+//
+//        return rtn;
+//    }
+
+//    public static byte[] convertStringArrayToByteArray(String[] stringArray){
+//
+//        int stringArraySize=stringArray.length;
+//
+//        byte[] rtn=new byte[stringArraySize];
+//
+//        for(int i=0;i<stringArraySize;i++){
+//            rtn[i]= Byte.parseByte(stringArray[i]);
+//        }
+//        return rtn;
+//    }
+
+    static int deleteElement(int[] elements, int elementsLen, int element) {
+        int pos = findPos(elements, elementsLen, element);
+        if (pos == ConstantValue.IMPOSSIBLE_VALUE) {
+            return elementsLen;
         }
+        elementsLen--;
+        int tmp = elements[elementsLen];
+        elements[elementsLen] = element;
+        elements[pos] = tmp;
 
-        return rtn;
-    }
+        return elementsLen;
 
-    public static byte[] convertStringArrayToByteArray(String[] stringArray){
-
-        int stringArraySize=stringArray.length;
-
-        byte[] rtn=new byte[stringArraySize];
-
-        for(int i=0;i<stringArraySize;i++){
-            rtn[i]= Byte.parseByte(stringArray[i]);
-        }
-        return rtn;
     }
 }
