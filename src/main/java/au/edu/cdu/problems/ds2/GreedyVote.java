@@ -31,6 +31,9 @@ public class GreedyVote implements IAlgorithm {
      * the major entrance of each algorithm
      */
     public void compute(){
+        AlgoUtil.degree0RRInVote(g);
+        AlgoUtil.degree1RRInVote(g);
+
         boolean[] idxDomed=g.getIdxDomed();
         int[] idxSol=g.getIdxSol();
         int idxSolSize=0;

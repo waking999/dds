@@ -89,17 +89,18 @@ public class GreedyVoteL2HDDS3 implements IAlgorithm {
 
         float[][] gStepWeight = new float[k][];
 
-        int currentVCount = 0;
+
         int[] giIdxLst = gi.getIdxLst();
 
         int p = 0;
 
         do {
-
+            int currentVCount = gi.getActVerCnt();
             int vIdx = AlgoUtil.getUnaddedLowestWeightVertexIdx(g);
             // add vIdx to gi;
             if (Util.findPos(giIdxLst, currentVCount, vIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
                 AlgoUtil.addVerToGI(g, gi, vIdx);
+                currentVCount = gi.getActVerCnt();
             }
             // gi.lab pointing to g.idx
             int giVIdx = AlgoUtil.getIdxByLab(gi, vIdx);
@@ -114,6 +115,7 @@ public class GreedyVoteL2HDDS3 implements IAlgorithm {
                         // add uIdx to gi;
                         if (Util.findPos(giIdxLst, currentVCount, uIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
                             AlgoUtil.addVerToGI(g, gi, uIdx);
+                            currentVCount = gi.getActVerCnt();
                         }
 
                         int giUIdx = AlgoUtil.getIdxByLab(gi, uIdx);

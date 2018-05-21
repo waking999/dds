@@ -28,13 +28,17 @@ public class GreedyNaive implements IAlgorithm {
     public GlobalVariable getGlobalVariable( ){
         return this.g ;
     }
+
+
     /**
      * the major entrance of each algorithm
      */
     public void compute(){
+        AlgoUtil.degree0RRInNaive(g);
+        AlgoUtil.degree1RRInNaive(g);
         boolean[] idxDomed=g.getIdxDomed();
         int[] idxSol=g.getIdxSol();
-        int idxSolSize=0;
+        int idxSolSize=g.getIdxSolSize();
         int[][] idxAL=g.getIdxAL();
 
         do{

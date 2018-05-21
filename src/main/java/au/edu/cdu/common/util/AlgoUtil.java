@@ -894,20 +894,20 @@ public class AlgoUtil {
      * @return the utility (the number of undominated neighbors) of a vertex
      */
     public static int getVertexUtility(GlobalVariable gv, int vIdx) {
-        if(vIdx==ConstantValue.IMPOSSIBLE_VALUE){
+        if (vIdx == ConstantValue.IMPOSSIBLE_VALUE) {
             return ConstantValue.IMPOSSIBLE_VALUE;
         }
         int[][] idxAL = gv.getIdxAL();
         boolean[] idxDomed = gv.getIdxDomed();
         int[] vNeigs = idxAL[vIdx];
-        int[] idxDegree=gv.getIdxDegree();
-        int vDegree=idxDegree[vIdx];
+        int[] idxDegree = gv.getIdxDegree();
+        int vDegree = idxDegree[vIdx];
 
         int unDominatedDegree = 0;
-        for (int i=0;i<vDegree;i++){
+        for (int i = 0; i < vDegree; i++) {
             int uIdx = vNeigs[i];
 
-            if (uIdx!=ConstantValue.IMPOSSIBLE_VALUE&&!idxDomed[uIdx]) {
+            if (uIdx != ConstantValue.IMPOSSIBLE_VALUE && !idxDomed[uIdx]) {
                 unDominatedDegree++;
             }
         }
@@ -1295,7 +1295,7 @@ public class AlgoUtil {
                                 idxSolSize = Util.deleteElement(idxSol, idxSolSize, viIdx);
                                 idxSolSize = Util.deleteElement(idxSol, idxSolSize, vjIdx);
 
-                                idxSol[idxSolSize]=vkIdx;
+                                idxSol[idxSolSize] = vkIdx;
                                 idxSolSize++;
 
                                 gv.setIdxSolSize(idxSolSize);
@@ -1348,5 +1348,98 @@ public class AlgoUtil {
         // initialize weight
         AlgoUtil.initWeight(gCopy);
         return gCopy;
+    }
+
+    public static void degree0RRInNaive(GlobalVariable g) {
+        int[] idxLst = g.getIdxLst();
+        int[] idxDegree = g.getIdxDegree();
+        int[] idxSol = g.getIdxSol();
+        int idxSolSize = g.getIdxSolSize();
+        boolean[] idxDomed = g.getIdxDomed();
+        int actVerCnt = g.getActVerCnt();
+
+        for (int i = 0; i < actVerCnt; i++) {
+            int vIdx = idxLst[i];
+            if (idxDegree[vIdx] == 0) {
+                idxSol[idxSolSize] = vIdx;
+                idxSolSize++;
+                idxDomed[vIdx] = true;
+
+            }
+        }
+        g.setIdxSolSize(idxSolSize);
+    }
+
+    public static void degree1RRInNaive(GlobalVariable g) {
+        int[] idxLst = g.getIdxLst();
+        int[] idxDegree = g.getIdxDegree();
+        int[] idxSol = g.getIdxSol();
+        int idxSolSize = g.getIdxSolSize();
+        boolean[] idxDomed = g.getIdxDomed();
+        int[][] idxAL = g.getIdxAL();
+
+        int actVerCnt = g.getActVerCnt();
+
+        for (int i = 0; i < actVerCnt; i++) {
+            int vIdx = idxLst[i];
+            if (idxDegree[vIdx] == 1) {
+                int[] vNeigs = idxAL[vIdx];
+                int uIdx = vNeigs[0];
+
+                idxSol[idxSolSize] = uIdx;
+                idxSolSize++;
+
+                idxDomed[uIdx] = true;
+                int[] uNeigs = idxAL[uIdx];
+                int uDegree = idxDegree[uIdx];
+                for (int j = 0; j < uDegree; j++) {
+                    int wIdx = uNeigs[j];
+                    idxDomed[wIdx] = true;
+                }
+
+            }
+        }
+        g.setIdxSolSize(idxSolSize);
+    }
+
+    public static void degree0RRInVote(GlobalVariable g) {
+        int[] idxLst = g.getIdxLst();
+        int[] idxDegree = g.getIdxDegree();
+        int[] idxSol = g.getIdxSol();
+        int idxSolSize = g.getIdxSolSize();
+        boolean[] idxDomed = g.getIdxDomed();
+
+        for (int vIdx : idxLst) {
+            if (idxDegree[vIdx] == 0) {
+                idxSol[idxSolSize] = vIdx;
+                idxSolSize++;
+                AlgoUtil.adjustWeight(g, vIdx);
+
+            }
+        }
+        g.setIdxSolSize(idxSolSize);
+    }
+
+    public static void degree1RRInVote(GlobalVariable g) {
+        int[] idxLst = g.getIdxLst();
+        int[] idxDegree = g.getIdxDegree();
+        int[] idxSol = g.getIdxSol();
+        int idxSolSize = g.getIdxSolSize();
+        boolean[] idxDomed = g.getIdxDomed();
+        int[][] idxAL = g.getIdxAL();
+
+        for (int vIdx : idxLst) {
+            if (idxDegree[vIdx] == 1) {
+                int[] vNeigs = idxAL[vIdx];
+                int uIdx = vNeigs[0];
+
+                idxSol[idxSolSize] = uIdx;
+                idxSolSize++;
+
+                AlgoUtil.adjustWeight(g, uIdx);
+
+            }
+        }
+        g.setIdxSolSize(idxSolSize);
     }
 }
