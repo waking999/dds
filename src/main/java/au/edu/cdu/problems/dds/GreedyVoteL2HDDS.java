@@ -25,14 +25,23 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 	int k;
 	int r;
 
+	int momentRegretThreshold;
+
 	GreedyVoteL2HDDS() {
 	}
 
-	@Override
-	public void setKR(int k, int r) {
-		this.k = k;
-		this.r = r;
-	}
+//	@Override
+//	public void setKR(int k, int r) {
+//		this.k = k;
+//		this.r = r;
+//	}
+
+    @Override
+    public void setKRM(int k, int r, int momentRegretThreshold) {
+        this.k = k;
+        this.r = r;
+        this.momentRegretThreshold=momentRegretThreshold;
+    }
 
 	@Override
 	public void setGlobalVariable(GlobalVariable gv) {
@@ -348,7 +357,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 		 * current
 		 * graph and graph we will go back;
 		 */
-		if ((p == k) && (p > 1)) return true;
+		if ((p == k) && (p >=momentRegretThreshold)) return true;
 
 		/*
 		 * 1.p<k: p previously pointing a middle element of step;
@@ -377,7 +386,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
          */
         if ((stepV[p] != ConstantValue.IMPOSSIBLE_VALUE)) {
-            return (p < k) && (p > 1);
+            return (p < k) && (p >=momentRegretThreshold);
         }
 
 		return false;

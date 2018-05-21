@@ -27,7 +27,7 @@ public class GreedyVoteL2HAdd implements IAlgorithm {
 	}
 
 	@Override
-	public void setKR(int k, int r) {
+	public void setKRM(int k, int r,int momentRegretThreshold) {
 	}
 
 	@Override

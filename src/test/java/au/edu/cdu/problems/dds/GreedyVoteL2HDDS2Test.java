@@ -34,7 +34,8 @@ public class GreedyVoteL2HDDS2Test {
         algo.setGlobalVariable(gv);
         int k = 3;
         int r = 2;
-        algo.setKR(k, r);
+        int momentRegretThreshold=2;
+        algo.setKRM(k, r,momentRegretThreshold);
         algo.compute();
         Assert.assertTrue(AlgoUtil.isValidSolution(gv));
 
@@ -49,9 +50,10 @@ public class GreedyVoteL2HDDS2Test {
     public void testKONECT_LoopIns() {
         int k = 10;
         int r = 7;
+        int momentRegretThreshold=2;
         IAlgorithm algo = new GreedyVoteL2HDDS2();
 
-        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, log);
+        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, momentRegretThreshold,log);
     }
 
     @Ignore
@@ -60,6 +62,7 @@ public class GreedyVoteL2HDDS2Test {
 
         int k = 20;
         int r = 7;
+        int momentRegretThreshold=2;
         String id = "3_03";
         String instanceCode = "Dolphins";
         String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
@@ -71,7 +74,7 @@ public class GreedyVoteL2HDDS2Test {
         IAlgorithm algo = new GreedyVoteL2HDDS2();
         String batchNum = Util.getBatchNum();
 
-        TestUtil.basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
+        TestUtil.basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,momentRegretThreshold, log);
     }
 
     //@Ignore
@@ -101,6 +104,7 @@ public class GreedyVoteL2HDDS2Test {
 
         int k = 20;
         int r = 7;
+        int momentRegretThreshold=2;
         String id = "3_07";
         String instanceCode = "Rovira";
         String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
@@ -112,7 +116,7 @@ public class GreedyVoteL2HDDS2Test {
         IAlgorithm algo = new GreedyVoteL2HDDS2();
         String batchNum = Util.getBatchNum();
 
-        TestUtil.basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
+        TestUtil.basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,momentRegretThreshold, log);
     }
 
     // run
@@ -237,8 +241,10 @@ public class GreedyVoteL2HDDS2Test {
     public void testBHOSLIB_LoopIns() {
         int k = 10;
         int r = 7;
+        int momentRegretThreshold=2;
+
         IAlgorithm algo = new GreedyVoteL2HDDS2();
 
-        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, k, r, log);
+        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, k, r,momentRegretThreshold,  log);
     }
 }

@@ -1,7 +1,6 @@
 package au.edu.cdu.problems.ds;
 
 import au.edu.cdu.common.control.Result;
-import au.edu.cdu.problems.IAlgorithm;
 
 import java.util.List;
 import java.util.Map;

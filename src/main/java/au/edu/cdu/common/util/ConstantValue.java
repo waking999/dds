@@ -13,8 +13,8 @@ public class ConstantValue {
 	public static final String CONNECTED = "1";
 	//public static final String UNCONNECTED = "0";
 
-	//public static final byte CONNECTED_BYTE = 1;
-	//public static final byte UNCONNECTED_BYTE = 0;
+	public static final byte CONNECTED_BYTE = 1;
+	public static final byte UNCONNECTED_BYTE = 0;
 
 	public static final String UNDERLINE = "_";
 
@@ -72,6 +72,7 @@ public class ConstantValue {
 
 	public static final String DB_COL_K = "k";
 	public static final String DB_COL_R = "r";
+	public static final String DB_COL_M= "m";
 
 	public static final String TBL_ALG_PREFIX = "result_";
 

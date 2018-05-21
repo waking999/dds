@@ -15,6 +15,8 @@ public class GreedyVoteL2HDDSComp implements IAlgorithm {
     // parameters for fpt subroutine
     int k;
     int r;
+    int momentRegretThreshold;
+
     private GlobalVariable[] compGs;
 
     GreedyVoteL2HDDSComp() {
@@ -22,9 +24,10 @@ public class GreedyVoteL2HDDSComp implements IAlgorithm {
     }
 
     @Override
-    public void setKR(int k, int r) {
+    public void setKRM(int k, int r,int momentRegretThreshold) {
         this.k = k;
         this.r = r;
+        this.momentRegretThreshold=momentRegretThreshold;
     }
 
 
@@ -130,7 +133,7 @@ public class GreedyVoteL2HDDSComp implements IAlgorithm {
         int wholeSolSize = 0;
 
         IAlgorithm algo = new GreedyVoteL2HDDS();
-        algo.setKR(k, r);
+        algo.setKRM(k, r,momentRegretThreshold);
         for (int i = 0; i < compGsSize; i++) {
             algo.setGlobalVariable(compGs[i]);
             algo.compute();

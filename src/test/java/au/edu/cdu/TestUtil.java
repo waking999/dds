@@ -156,7 +156,9 @@ public class TestUtil {
                                        String id, String instanceCode, String algTableName, String inputFile, Logger log) throws IOException, NumberFormatException {
         for (int tmpK = kLower; tmpK <= kUpper; tmpK++) {
             for (int tmpR = 1; tmpR <= tmpK - 1; tmpR++) {
-                basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, tmpK, tmpR, log);
+                for(int tmpM=2; tmpM<= tmpK-1; tmpM++) {
+                    basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, tmpK, tmpR, tmpM, log);
+                }
             }
         }
     }
@@ -172,7 +174,7 @@ public class TestUtil {
      * @param k,           algorithm parameter k
      * @param r,           algorithm parameter r
      */
-    public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, int k, int r,
+    public static void basicFuncLoopIns(String className, String dataSetName, IAlgorithm algo, int k, int r,int momentRegretThreshold,
                                         Logger log) {
         /*
          * get the info of the instances of a certain dataset such as id, code,
@@ -194,7 +196,7 @@ public class TestUtil {
 
             String inputFile = resourcePath + dataSetPath + pathName;
             try {
-                basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, k, r, log);
+                basicFunc(algo, batchNum, id, instanceCode, algTableName, inputFile, k, r,momentRegretThreshold, log);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -219,12 +221,12 @@ public class TestUtil {
      * @throws NumberFormatException, NumberFormatException
      */
     public static void basicFunc(IAlgorithm algo, String batchNum, String id, String instanceCode,
-                                 String algTableName, String inputFile, int k, int r, Logger log) throws IOException, NumberFormatException {
+                                 String algTableName, String inputFile, int k, int r, int momentRegretThreshold, Logger log) throws IOException, NumberFormatException {
         DBParameter dbpOut;
         // read file
         GlobalVariable g = FileOperation.readGraphByEdgePair(inputFile);
         algo.setGlobalVariable(g);
-        algo.setKR(k, r);
+        algo.setKRM(k,r,momentRegretThreshold);
         long start = System.nanoTime();
         // run algorithm
         algo.compute();
@@ -235,7 +237,7 @@ public class TestUtil {
 
         // write to db
         DBOperation.createTable(algTableName);
-        dbpOut = getDBParamOutput(g, algTableName, batchNum, id, start, end, k, r);
+        dbpOut = getDBParamOutput(g, algTableName, batchNum, id, start, end, k, r,momentRegretThreshold);
         DBOperation.executeInsert(dbpOut);
 
         // write to console
@@ -306,15 +308,15 @@ public class TestUtil {
      * @return a database parameter object
      */
     private static DBParameter getDBParamOutput(GlobalVariable g, String algTableName, String batchNum, String id,
-                                                long start, long end, int k, int r) {
+                                                long start, long end, int k, int r,int momentRegretThreshold) {
         DBParameter dbpOut;
         dbpOut = new DBParameter();
         dbpOut.setTableName(algTableName);
         String[] colPairNamesOut = {ConstantValue.DB_COL_INS_ID, ConstantValue.DB_COL_BATCH_NUM,
                 ConstantValue.DB_COL_RESULT_SIZE, ConstantValue.DB_COL_RUNNING_TIME, ConstantValue.DB_COL_K,
-                ConstantValue.DB_COL_R, ConstantValue.DB_COL_RESULTS};
+                ConstantValue.DB_COL_R,ConstantValue.DB_COL_M, ConstantValue.DB_COL_RESULTS};
         String[] colPairValuesOut = {id, batchNum, Integer.toString(g.getIdxSolSize()), String.valueOf(end - start),
-                String.valueOf(k), String.valueOf(r), AlgoUtil.getLabSolutionStr(g)};
+                String.valueOf(k), String.valueOf(r), String.valueOf(momentRegretThreshold), AlgoUtil.getLabSolutionStr(g)};
 
         dbpOut.setColPairNames(colPairNamesOut);
         dbpOut.setColPairValues(colPairValuesOut);

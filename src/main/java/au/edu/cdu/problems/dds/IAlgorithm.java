@@ -11,7 +11,9 @@ public interface IAlgorithm {
      * @param r, is there a subroutine solution whose size is less then or eques to
      *           r;
      */
-    void setKR(int k, int r);
+    //void setKR(int k, int r);
+
+    void setKRM(int k, int r, int momentRegretThreshold);
 
     /**
      * set the global variable for a algorithm for it to start run, necessary for

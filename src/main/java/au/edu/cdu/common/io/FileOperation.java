@@ -3,9 +3,15 @@ package au.edu.cdu.common.io;
 import au.edu.cdu.common.util.AlgoUtil;
 import au.edu.cdu.common.util.ConstantValue;
 import au.edu.cdu.common.util.GlobalVariable;
+import au.edu.cdu.common.util.Util;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * implement operation system file operations
@@ -163,6 +169,90 @@ public class FileOperation {
                     // just ignore it
                 }
         }
+    }
+
+    /**
+     * the input file path and name
+     */
+    private FileInfo fileInfo;
+
+    /**
+     * the adjacency matrix shown in the input file
+     */
+    private byte[][] adjacencyMatrix;
+
+
+    public byte[][] getAdjacencyMatrix() {
+        return adjacencyMatrix;
+    }
+    void setFileInfo(FileInfo fileInfo) {
+        this.fileInfo = fileInfo;
+    }
+
+    /**
+     * number of vertices
+     */
+    private int numOfVertices;
+
+    /**
+     * retrive graph info in adjacent matrix format
+     */
+    void retriveProblemInfo() throws IOException {
+        Path path = Paths.get(this.fileInfo.getInputFile());
+        List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
+
+        String[] firstLine = lines.get(0).split(ConstantValue.COMMA);
+        int firstLineLen = firstLine.length;
+        if (firstLineLen > 0 && firstLine[0] != null) {
+            numOfVertices = Integer.parseInt(firstLine[0]);
+        }
+
+//        if (firstLineLen > 1 && firstLine[1] != null) {
+//            int k = Integer.parseInt(firstLine[1]);
+//        }
+
+        // the following lines from the 2nd line are adjacency matrix
+        adjacencyMatrix = new byte[numOfVertices][numOfVertices];
+
+        for (int i = 1; i < numOfVertices; i++) {
+            String line = lines.get(i);
+            String[] item = line.split(ConstantValue.COMMA);
+            byte[] itemByte=Util.convertStringArrayToByteArray(item);
+            adjacencyMatrix[i]=itemByte;
+        }
+
+    }
+
+    /**
+     * retrieve graph info in edge pair format
+     */
+    void retriveProblemInfoByEdgePair() throws IOException {
+        Path path = Paths.get(this.fileInfo.getInputFile());
+        List<String> lines = Files.readAllLines(path, Charset.defaultCharset());
+        String line0 = lines.get(0);
+        String[] line0Array = line0.split(BLANK);
+        String numOfVerStr = line0Array[0];
+        numOfVertices = Integer.parseInt(numOfVerStr);
+
+        adjacencyMatrix = new byte[numOfVertices][numOfVertices];
+        for (int i = 0; i < numOfVertices; i++) {
+            byte[] row = new byte[numOfVertices];
+            Arrays.fill(row, ConstantValue.UNCONNECTED_BYTE);
+            adjacencyMatrix[i]=row;
+        }
+
+        int linesSize = lines.size();
+        for (int i = 1; i < linesSize; i++) {
+            String line = lines.get(i);
+
+            String[] lineArray = line.split("\\s");
+            int v1 = Integer.parseInt(lineArray[0]) - 1;
+            int v2 = Integer.parseInt(lineArray[1]) - 1;
+
+            adjacencyMatrix[v1][v2] = ConstantValue.CONNECTED_BYTE;
+            adjacencyMatrix[v2][v1] = ConstantValue.CONNECTED_BYTE;
+        }
+
     }
 
 }

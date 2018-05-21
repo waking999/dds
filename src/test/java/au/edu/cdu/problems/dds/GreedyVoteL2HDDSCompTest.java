@@ -41,7 +41,8 @@ public class GreedyVoteL2HDDSCompTest {
         algo.setGlobalVariable(g);
         int k = 3;
         int r = 2;
-        algo.setKR(k, r);
+        int momentRegretThreshold=2;
+        algo.setKRM(k, r,momentRegretThreshold);
         algo.compute();
         Assert.assertTrue(AlgoUtil.isValidSolution(g));
 
@@ -79,19 +80,22 @@ public class GreedyVoteL2HDDSCompTest {
     public void testKONECT_LoopIns() {
         int k = 10;
         int r = 9;
+        int momentRegretThreshold=2;
+
         IAlgorithm algo = new GreedyVoteL2HDDSComp();
 
-        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r, log);
+        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, k, r,momentRegretThreshold, log);
     }
 
     //@Ignore
     @Test
     public void testDIMACSMIS_LoopIns() {
-        int k = 10;
-        int r = 9;
+        int k = 20;
+        int r = k-1;
+        int momentRegretThreshold=2;
         IAlgorithm algo = new GreedyVoteL2HDDSComp();
 
-        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_DIMACS_MIS, algo, k, r, log);
+        TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_DIMACS_MIS, algo, k, r,momentRegretThreshold, log);
     }
 
     @Ignore
@@ -104,6 +108,15 @@ public class GreedyVoteL2HDDSCompTest {
         TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_DIMACS, algo, kLower, kUpper, log);
     }
 
+    //@Ignore
+    @Test
+    public void testDIMACSMIS_LoopKR()   {
+
+        int kLower = 3;
+        int kUpper = 20;
+        IAlgorithm algo = new GreedyVoteL2HDDSComp();
+        TestUtil.basicFuncLoopInsLoopKR(CLASS_NAME, ConstantValue.DATASET_DIMACS_MIS, algo, kLower, kUpper, log);
+    }
 
     @Ignore
     @Test

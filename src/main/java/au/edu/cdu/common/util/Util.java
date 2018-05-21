@@ -205,6 +205,9 @@ public class Util {
      * @return true if set1 intersection s2 not null, false otherwise
      */
     public static boolean setsIntersect(int[] s1, int s1Len, int[] s2, int s2Len) {
+        if((s1==null)||(s2==null)){
+            return false;
+        }
         for (int i = 0; i < s1Len; i++) {
             int s1Val = s1[i];
             for (int j = 0; j < s2Len; j++) {
@@ -472,5 +475,15 @@ public class Util {
         return rtn;
     }
 
+    public static byte[] convertStringArrayToByteArray(String[] stringArray){
 
+        int stringArraySize=stringArray.length;
+
+        byte[] rtn=new byte[stringArraySize];
+
+        for(int i=0;i<stringArraySize;i++){
+            rtn[i]= Byte.parseByte(stringArray[i]);
+        }
+        return rtn;
+    }
 }

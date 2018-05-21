@@ -37,14 +37,16 @@ public class GreedyVoteL2HDDS2 implements IAlgorithm {
 	// parameters for fpt subroutine
 	int k;
 	int r;
+	int momentRegretThreshold;
 
 	GreedyVoteL2HDDS2() {
 	}
 
 	@Override
-	public void setKR(int k, int r) {
+	public void setKRM(int k, int r,int momentRegretThreshold) {
 		this.k = k;
 		this.r = r;
+		this.momentRegretThreshold=momentRegretThreshold;
 	}
 
 	@Override

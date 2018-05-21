@@ -773,7 +773,37 @@ public class AlgoUtil {
         }
         return g;
     }
+    /**
+     * prepare a graph (supporting adding/deleting vertices and edges)
+     *
+     * @param adjacencyMatrix,
+     *            the adjacency matrix
+     * @return
+     */
+    public static Graph<Integer, String> prepareGenericGraphByte(byte[][] adjacencyMatrix) {
 
+        int numOfVertices = adjacencyMatrix.length;
+        Graph<Integer, String> g = new SparseMultigraph<Integer, String>();
+        for (int i = 0; i < numOfVertices; i++) {
+            g.addVertex(i);
+        }
+
+        for (int i = 0; i < numOfVertices; i++) {
+            byte[] rowArr = adjacencyMatrix[i];
+            for (int j = i + 1; j < numOfVertices; j++) {
+                if (ConstantValue.CONNECTED_BYTE==rowArr[j]) {
+                    /*
+                     * the label of edge is decided by the label of the two
+                     * endpoints
+                     */
+                    String edge = getEdgeLabelBy2VerticesLabel(i, j);
+                    g.addEdge(edge, i, j);
+
+                }
+            }
+        }
+        return g;
+    }
     /**
      * decide if the vertices in dominatedMap are all marked as dominated.
      *

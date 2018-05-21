@@ -327,6 +327,7 @@ public class DBOperation {
             sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_INS_ID).append(ConstantValue.BLANK).append("varchar2(10),\n");
             sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_K).append(ConstantValue.BLANK).append("INTEGER,\n");
             sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_R).append(ConstantValue.BLANK).append("INTEGER,\n");
+            sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_M).append(ConstantValue.BLANK).append("INTEGER,\n");
             sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_RESULT_SIZE).append(ConstantValue.BLANK).append("INTEGER,\n");
             sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_RUNNING_TIME).append(ConstantValue.BLANK).append("INTEGER,\n");
             sb.append(ConstantValue.BLANK).append(ConstantValue.DB_COL_BATCH_NUM).append(ConstantValue.BLANK).append("varchar2(30),\n");
