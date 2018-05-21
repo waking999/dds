@@ -894,13 +894,20 @@ public class AlgoUtil {
      * @return the utility (the number of undominated neighbors) of a vertex
      */
     public static int getVertexUtility(GlobalVariable gv, int vIdx) {
+        if(vIdx==ConstantValue.IMPOSSIBLE_VALUE){
+            return ConstantValue.IMPOSSIBLE_VALUE;
+        }
         int[][] idxAL = gv.getIdxAL();
         boolean[] idxDomed = gv.getIdxDomed();
         int[] vNeigs = idxAL[vIdx];
+        int[] idxDegree=gv.getIdxDegree();
+        int vDegree=idxDegree[vIdx];
 
         int unDominatedDegree = 0;
-        for (int u : vNeigs) {
-            if (!idxDomed[u]) {
+        for (int i=0;i<vDegree;i++){
+            int uIdx = vNeigs[i];
+
+            if (uIdx!=ConstantValue.IMPOSSIBLE_VALUE&&!idxDomed[uIdx]) {
                 unDominatedDegree++;
             }
         }
@@ -1305,5 +1312,41 @@ public class AlgoUtil {
 
         return gv;
 
+    }
+
+
+    public static GlobalVariable copyAndAdjustGlobalVariable(GlobalVariable g) {
+        GlobalVariable gCopy = AlgoUtil.copyGraphInGloablVariable(g);
+        int gCopyVerCnt = gCopy.getVerCnt();
+        // the vote of each vertex is 0 initially
+        float[] gCopyIdxVote = new float[gCopyVerCnt];
+        Arrays.fill(gCopyIdxVote, 0);
+        // the weight of each vertex is 0 initially
+        float[] gCopyIdxWeight = new float[gCopyVerCnt];
+        Arrays.fill(gCopyIdxWeight, 0);
+        // the dominated status of each vertex is false initially
+        boolean[] gCopyIdxDomed = new boolean[gCopyVerCnt];
+        Arrays.fill(gCopyIdxDomed, false);
+        // the added status of each vertex is false initially
+        boolean[] gCopyIdxAdded = new boolean[gCopyVerCnt];
+        Arrays.fill(gCopyIdxAdded, false);
+        // the solution
+        int[] gCopyIdxSol = new int[gCopyVerCnt];
+        Arrays.fill(gCopyIdxSol, ConstantValue.IMPOSSIBLE_VALUE);
+        int giSCopyIdxSolSize = 0;
+
+        //adjust status
+        gCopy.setActVerCnt(gCopyVerCnt);
+        gCopy.setIdxSol(gCopyIdxSol);
+        gCopy.setIdxSolSize(giSCopyIdxSolSize);
+        gCopy.setActVerCnt(gCopyVerCnt);
+        gCopy.setIdxDomed(gCopyIdxDomed);
+        gCopy.setIdxAdded(gCopyIdxAdded);
+        gCopy.setIdxVote(gCopyIdxVote);
+        gCopy.setIdxWeight(gCopyIdxWeight);
+
+        // initialize weight
+        AlgoUtil.initWeight(gCopy);
+        return gCopy;
     }
 }

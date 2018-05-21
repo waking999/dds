@@ -4,10 +4,7 @@ package au.edu.cdu.common.order2;
 import au.edu.cdu.common.util.GlobalVariable;
 import au.edu.cdu.common.util.Util;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Queue;
+import java.util.*;
 
 
 public class OrderPackageUtil {
@@ -39,11 +36,13 @@ public class OrderPackageUtil {
      * @param ocb, order call back (decide what order to follow: asc, desc, ...)
      * @return a priority queue of vertices and their priorities
      */
-    private static Queue<VertexPriorityBean> getOrderedVertexPriorityQueue(GlobalVariable gv,
+    private static TreeSet<VertexPriorityBean> getOrderedVertexPriorityQueue(GlobalVariable gv,
                                                                            IPriority pcb, IOrder ocb) {
         List<VertexPriorityBean> vpList = OrderPackageUtil.getVertexPriorityList(gv, pcb);
-        Queue<VertexPriorityBean> q = new PriorityQueue<>(ocb.getComparator());
-        q.addAll(vpList);
+        TreeSet<VertexPriorityBean> q = new TreeSet<>(ocb.getComparator());
+       for(VertexPriorityBean b:vpList){
+           q.add(b);
+       }
         return q;
     }
 
@@ -53,13 +52,13 @@ public class OrderPackageUtil {
      * @param q, a queue of ordered vertex priority
      * @return vertex list
      */
-    private static int[] getOrderedVertexList(Queue<VertexPriorityBean> q) {
+    private static int[] getOrderedVertexList(TreeSet<VertexPriorityBean> q) {
         int qSize = q.size();
         int[] vList = new int[qSize];
 
         int i = 0;
         while (!q.isEmpty()) {
-            vList[i] = q.poll().getVIdx();
+            vList[i] = q.pollFirst().getVIdx();
             i++;
 
         }
@@ -72,10 +71,7 @@ public class OrderPackageUtil {
      */
     public static int[] getVertexListUtilityDesc(GlobalVariable gv) {
         IOrderedList pocb = new OrderedListUtilityDesc();
-        /*
-         * there is no need for a weight map (<vertex(V), weigh(float)>) for
-         * ordering by utility
-         */
+
         return pocb.getOrderedVertexList(gv);
     }
 
@@ -107,7 +103,7 @@ public class OrderPackageUtil {
      */
     static int[] getOrderedVertexList(GlobalVariable gv, IPriority pcb,
                                       IOrder ocb) {
-        Queue<VertexPriorityBean> q = getOrderedVertexPriorityQueue(gv, pcb, ocb);
+        TreeSet<VertexPriorityBean> q = getOrderedVertexPriorityQueue(gv, pcb, ocb);
         return getOrderedVertexList(q);
     }
 

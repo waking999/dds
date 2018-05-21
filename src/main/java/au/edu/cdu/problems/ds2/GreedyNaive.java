@@ -3,13 +3,14 @@ package au.edu.cdu.problems.ds2;
 
 import au.edu.cdu.common.order2.OrderPackageUtil;
 import au.edu.cdu.common.util.AlgoUtil;
+import au.edu.cdu.common.util.ConstantValue;
 import au.edu.cdu.common.util.GlobalVariable;
 import au.edu.cdu.problems.IAlgorithm;
 
 public class GreedyNaive implements IAlgorithm {
     private GlobalVariable g; // representing the graph
 
-    GreedyNaive(){
+    public GreedyNaive(){
 
     }
 
@@ -46,8 +47,15 @@ public class GreedyNaive implements IAlgorithm {
             idxDomed[vIdx]=true;
 
             int[] vNeigs=idxAL[vIdx];
-            for(int uIdx:vNeigs){
-                idxDomed[uIdx]=true;
+            int[] idxDegree=g.getIdxDegree();
+            int vDegree=idxDegree[vIdx];
+
+            for(int i=0;i<vDegree;i++){
+                int uIdx=vNeigs[i];
+
+                if(uIdx!=ConstantValue.IMPOSSIBLE_VALUE) {
+                    idxDomed[uIdx] = true;
+                }
             }
         }
         while (!AlgoUtil.isAllDominated(g));

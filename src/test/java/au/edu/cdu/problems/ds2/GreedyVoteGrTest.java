@@ -47,4 +47,11 @@ public class GreedyVoteGrTest {
         IAlgorithm algo = new GreedyVoteGr();
         TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_DIMACS_MIS, algo, log);
     }
+
+
+    @Test
+    public void testKONECT_verify()  {
+        IAlgorithm algo = new GreedyNaive();
+        TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
+    }
 }

@@ -8,7 +8,7 @@ import au.edu.cdu.problems.IAlgorithm;
 public class GreedyVote implements IAlgorithm {
     private GlobalVariable g; // representing the graph
 
-    GreedyVote(){
+    public GreedyVote(){
 
     }
 
