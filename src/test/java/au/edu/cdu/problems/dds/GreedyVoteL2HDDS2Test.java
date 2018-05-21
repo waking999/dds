@@ -4,6 +4,7 @@ import au.edu.cdu.TestUtil;
 import au.edu.cdu.common.io.DBOperation;
 import au.edu.cdu.common.io.FileOperation;
 import au.edu.cdu.common.util.*;
+import au.edu.cdu.problems.IAlgorithm;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;

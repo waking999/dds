@@ -226,19 +226,19 @@ public class GreedyVoteGr implements ITask, IGreedyDS<Integer> {
 	}
 
 	private Integer chooseVertex() {
-		// List<VertexPriority<Integer>> vertexPriorityList = new
-		// ArrayList<VertexPriority<Integer>>(this.numOfVertices);
+		// List<VertexPriorityBean<Integer>> vertexPriorityList = new
+		// ArrayList<VertexPriorityBean<Integer>>(this.numOfVertices);
 		//
 		// Set<Integer> keySet = this.weightMap.keySet();
 		// for (Integer key : keySet) {
 		// float weight = weightMap.get(key);
 		// AlgorithmUtil.addElementToList(vertexPriorityList, new
-		// VertexPriority<Integer>(key, weight));
+		// VertexPriorityBean<Integer>(key, weight));
 		//
 		// }
 		//
 		// Collections.sort(vertexPriorityList);
-		// VertexPriority vw = vertexPriorityList.get(0);
+		// VertexPriorityBean vw = vertexPriorityList.get(0);
 		//
 		// return vw.getVertex();
 		List<Integer> vList = OrderPackageUtil.getVertexListWeightDesc(this.g, this.weightMap);

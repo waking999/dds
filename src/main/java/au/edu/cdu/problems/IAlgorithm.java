@@ -1,4 +1,4 @@
-package au.edu.cdu.problems.dds;
+package au.edu.cdu.problems;
 
 import au.edu.cdu.common.util.GlobalVariable;
 

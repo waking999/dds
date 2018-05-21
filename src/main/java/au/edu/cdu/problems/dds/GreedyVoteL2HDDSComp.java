@@ -4,6 +4,7 @@ import au.edu.cdu.common.util.AlgoUtil;
 import au.edu.cdu.common.util.ConnectComponents;
 import au.edu.cdu.common.util.ConstantValue;
 import au.edu.cdu.common.util.GlobalVariable;
+import au.edu.cdu.problems.IAlgorithm;
 
 import java.util.Arrays;
 import java.util.Iterator;

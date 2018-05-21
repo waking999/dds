@@ -28,7 +28,7 @@ public class VertexPriority<V> {
 	public String toString(){
 		StringBuilder sb=new StringBuilder();
 		sb.append(this.getVertex()).append("-");
-		
+
 		float priority=this.getPriority();
 		int round=Math.round(priority);
 		float diff=Math.abs(priority-round);
@@ -37,9 +37,9 @@ public class VertexPriority<V> {
 		}else{
 			sb.append(priority);
 		}
-		
-		
+
+
 		return sb.toString();
 	}
-	
+
 }

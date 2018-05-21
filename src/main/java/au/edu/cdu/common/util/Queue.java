@@ -2,6 +2,7 @@ package au.edu.cdu.common.util;
 
 import java.util.Arrays;
 
+
 public class Queue {
     private int[] list;
     private int size;

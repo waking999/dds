@@ -1,6 +1,6 @@
 package au.edu.cdu;
 
-import au.edu.cdu.problems.dds.IAlgorithm;
+import au.edu.cdu.problems.IAlgorithm;
 import au.edu.cdu.common.io.DBOperation;
 import au.edu.cdu.common.io.DBParameter;
 import au.edu.cdu.common.io.FileOperation;

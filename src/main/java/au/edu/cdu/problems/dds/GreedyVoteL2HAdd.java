@@ -7,6 +7,7 @@ import au.edu.cdu.common.util.AlgoUtil;
 import au.edu.cdu.common.util.ConstantValue;
 import au.edu.cdu.common.util.GlobalVariable;
 import au.edu.cdu.common.util.Util;
+import au.edu.cdu.problems.IAlgorithm;
 
 /**
  ** this class implements the greedy vote algorithm for dominating set, where the

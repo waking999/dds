@@ -773,11 +773,11 @@ public class AlgoUtil {
         }
         return g;
     }
+
     /**
      * prepare a graph (supporting adding/deleting vertices and edges)
      *
-     * @param adjacencyMatrix,
-     *            the adjacency matrix
+     * @param adjacencyMatrix, the adjacency matrix
      * @return
      */
     public static Graph<Integer, String> prepareGenericGraphByte(byte[][] adjacencyMatrix) {
@@ -791,7 +791,7 @@ public class AlgoUtil {
         for (int i = 0; i < numOfVertices; i++) {
             byte[] rowArr = adjacencyMatrix[i];
             for (int j = i + 1; j < numOfVertices; j++) {
-                if (ConstantValue.CONNECTED_BYTE==rowArr[j]) {
+                if (ConstantValue.CONNECTED_BYTE == rowArr[j]) {
                     /*
                      * the label of edge is decided by the label of the two
                      * endpoints
@@ -804,6 +804,7 @@ public class AlgoUtil {
         }
         return g;
     }
+
     /**
      * decide if the vertices in dominatedMap are all marked as dominated.
      *
@@ -881,6 +882,23 @@ public class AlgoUtil {
         int unDominatedDegree = 0;
         for (V u : vNeigs) {
             if (!dominatedMap.get(u)) {
+                unDominatedDegree++;
+            }
+        }
+        return unDominatedDegree;
+    }
+
+    /**
+     * @return
+     */
+    public static int getVertexUtility(GlobalVariable gv, int vIdx) {
+        int[][] idxAL = gv.getIdxAL();
+        boolean[] idxDomed = gv.getIdxDomed();
+        int[] vNeigs = idxAL[vIdx];
+
+        int unDominatedDegree = 0;
+        for (int u : vNeigs) {
+            if (!idxDomed[u]) {
                 unDominatedDegree++;
             }
         }

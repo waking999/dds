@@ -8,6 +8,7 @@ import au.edu.cdu.common.util.AlgoUtil;
 import au.edu.cdu.common.util.ConstantValue;
 import au.edu.cdu.common.util.GlobalVariable;
 import au.edu.cdu.common.util.LogUtil;
+import au.edu.cdu.problems.IAlgorithm;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Ignore;
