@@ -50,7 +50,7 @@ public class GreedyVoteTest {
 
     @Test
     public void testKONECT_verify()  {
-        IAlgorithm algo = new GreedyNaive();
+        IAlgorithm algo = new GreedyVote();
         TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
     }
 }

@@ -337,15 +337,15 @@ public class GreedyVoteL2HDDS3 implements IAlgorithm {
 		g.setIdxSol(idxSol);
 		g.setIdxSolSize(idxSolSize);
 		
-		IAlgorithm algo = new GreedyVote();
-        algo.setGlobalVariable(voteG);
-        algo.compute();
-
-        int voteGIdxSolSize = voteG.getIdxSolSize();
-        if (voteGIdxSolSize < g.getIdxSolSize()) {
-            g.setIdxSolSize(voteGIdxSolSize);
-            g.setIdxSol(voteG.getIdxSol());
-        }
+//		IAlgorithm algo = new GreedyVote();
+//        algo.setGlobalVariable(voteG);
+//        algo.compute();
+//
+//        int voteGIdxSolSize = voteG.getIdxSolSize();
+//        if (voteGIdxSolSize < g.getIdxSolSize()) {
+//            g.setIdxSolSize(voteGIdxSolSize);
+//            g.setIdxSol(voteG.getIdxSol());
+//        }
 		
 		//try to get a smaller solution (1 smaller)
 		//int[] tmpIdxSol=AlgoUtil.minimal(g, 1);
