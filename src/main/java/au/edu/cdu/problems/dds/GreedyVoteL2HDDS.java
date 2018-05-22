@@ -84,7 +84,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 		int p = 0;
 		do {
-
+			int rRound=r;
 			int vIdx = AlgoUtil.getUnaddedLowestWeightVertexIdx(g);
 			// add vIdx to gi;
 			if (Util.findPos(giIdxLst, currentVCount, vIdx) == ConstantValue.IMPOSSIBLE_VALUE) {
@@ -140,7 +140,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 							// if (giD2Len <= r) {
 							// continue;
 							// }
-							r = Math.min(r, giD2Len - 1);
+							rRound = Math.min(rRound, giD2Len - 1);
 
 							// 3.d1 = giSol\gi.stepU (d1=d\d2) in gi*
 							int[] giSD1 = Util.set1Minus2(giIdxSol, giIdxSolSize, giSD2, giD2Len);
@@ -186,7 +186,7 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 							DomAVC.getNeighType(giStarIdxAL, c, b, neigTypeDomedMap, neigTypeDomingMap);
 
-							for (int tryR = 1; tryR <= r; tryR++) {
+							for (int tryR = 1; tryR <= rRound; tryR++) {
 								/*
 								 * 11. choose all possible combinations of r out of
 								 * the neighTypeDomedMap to check if there is a

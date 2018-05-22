@@ -27,13 +27,14 @@ public class AlgoUtil {
         int[] idxDegree = g.getIdxDegree();
 
         for (int vIdx : idxSet) {
-            neigs.add(vIdx);
-            int degree = idxDegree[vIdx];
-            int[] vNeigs = idxAL[vIdx];
-            for (int j = 0; j < degree; j++) {
-                neigs.add(vNeigs[j]);
+            if(vIdx!=ConstantValue.IMPOSSIBLE_VALUE) {
+                neigs.add(vIdx);
+                int degree = idxDegree[vIdx];
+                int[] vNeigs = idxAL[vIdx];
+                for (int j = 0; j < degree; j++) {
+                    neigs.add(vNeigs[j]);
+                }
             }
-
         }
 
         return neigs;
@@ -1360,7 +1361,7 @@ public class AlgoUtil {
 
         for (int i = 0; i < actVerCnt; i++) {
             int vIdx = idxLst[i];
-            if (idxDegree[vIdx] == 0) {
+            if (idxDegree[vIdx] == 0  && !idxDomed[vIdx]) {
                 idxSol[idxSolSize] = vIdx;
                 idxSolSize++;
                 idxDomed[vIdx] = true;
@@ -1382,7 +1383,7 @@ public class AlgoUtil {
 
         for (int i = 0; i < actVerCnt; i++) {
             int vIdx = idxLst[i];
-            if (idxDegree[vIdx] == 1) {
+            if (idxDegree[vIdx] == 1 && !idxDomed[vIdx]) {
                 int[] vNeigs = idxAL[vIdx];
                 int uIdx = vNeigs[0];
 
@@ -1410,7 +1411,7 @@ public class AlgoUtil {
         boolean[] idxDomed = g.getIdxDomed();
 
         for (int vIdx : idxLst) {
-            if (idxDegree[vIdx] == 0) {
+            if (idxDegree[vIdx] == 0  && !idxDomed[vIdx]) {
                 idxSol[idxSolSize] = vIdx;
                 idxSolSize++;
                 AlgoUtil.adjustWeight(g, vIdx);
@@ -1429,7 +1430,7 @@ public class AlgoUtil {
         int[][] idxAL = g.getIdxAL();
 
         for (int vIdx : idxLst) {
-            if (idxDegree[vIdx] == 1) {
+            if (idxDegree[vIdx] == 1  && !idxDomed[vIdx]) {
                 int[] vNeigs = idxAL[vIdx];
                 int uIdx = vNeigs[0];
 

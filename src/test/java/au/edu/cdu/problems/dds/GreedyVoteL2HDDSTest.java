@@ -49,7 +49,7 @@ public class GreedyVoteL2HDDSTest {
     @Test
     public void testKONECT_LoopIns() {
         int k = 10;
-        int r = 7;
+        int r = 9;
         int momentRegretThreshold=2;
         IAlgorithm algo = new GreedyVoteL2HDDS();
 

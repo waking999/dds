@@ -17,12 +17,12 @@ import java.util.Set;
 
 import static au.edu.cdu.common.util.LogUtil.getLogger;
 
-public class GreedyVoteL2HDDSComp4Test {
+public class GreedyVoteL2HDDSComp3Test {
 
-    private static final String CLASS_NAME = GreedyVoteL2HDDSComp4Test.class.getSimpleName();
+    private static final String CLASS_NAME = GreedyVoteL2HDDSComp3Test.class.getSimpleName();
     private Logger log = getLogger(CLASS_NAME);
 
-    public GreedyVoteL2HDDSComp4Test() {
+    public GreedyVoteL2HDDSComp3Test() {
     }
 
     @Ignore

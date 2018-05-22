@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class GreedyVoteL2HDDSComp4 implements IAlgorithm {
+public class GreedyVoteL2HDDSComp3 implements IAlgorithm {
     private final ThreadLocal<GlobalVariable> wholeG; // to represent the original graph
     // parameters for fpt subroutine
     private int k;
@@ -20,7 +20,7 @@ public class GreedyVoteL2HDDSComp4 implements IAlgorithm {
 
     private GlobalVariable[] compGs;
 
-    GreedyVoteL2HDDSComp4() {
+    GreedyVoteL2HDDSComp3() {
         wholeG = new ThreadLocal<>();
     }
 
@@ -137,7 +137,7 @@ public class GreedyVoteL2HDDSComp4 implements IAlgorithm {
 
         int wholeSolSize = 0;
 
-        IAlgorithm algo = new GreedyVoteL2HDDS4();
+        IAlgorithm algo = new GreedyVoteL2HDDS3();
         algo.setKRM(k, r,momentRegretThreshold);
         for (int i = 0; i < compGsSize; i++) {
             algo.setGlobalVariable(compGs[i]);

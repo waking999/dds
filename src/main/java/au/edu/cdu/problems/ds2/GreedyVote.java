@@ -36,7 +36,7 @@ public class GreedyVote implements IAlgorithm {
 
         boolean[] idxDomed=g.getIdxDomed();
         int[] idxSol=g.getIdxSol();
-        int idxSolSize=0;
+        int idxSolSize=g.getIdxSolSize();
         int[][] idxAL=g.getIdxAL();
 
         do{
