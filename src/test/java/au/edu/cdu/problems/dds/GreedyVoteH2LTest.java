@@ -28,7 +28,8 @@ public class GreedyVoteH2LTest {
     @Test
     public void test0() throws IOException {
         String filePath = TestUtil.getBasePath() + "/src/test/resources/sample1.txt";
-        int[] expect = new int[]{4, 5, 2};
+        //int[] expect = new int[]{4, 5, 2};
+        int[] expect = new int[]{5, 1};
 
         GlobalVariable gv = FileOperation.readGraphByEdgePair(filePath);
 
@@ -49,12 +50,29 @@ public class GreedyVoteH2LTest {
         TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_KONECT, algo, log);
     }
 
+
+
     //@Ignore
     @Test
     public void testCreateReportView() {
 
         String batchNum = "20171103-0059";
         DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
+    }
+
+    //@Ignore
+    @Test
+    public void testGnutella_verify()  {
+        IAlgorithm algo = new GreedyVoteH2L();
+        TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_GNUTELLA, algo, log);
+    }
+
+    //@Ignore
+    @Test
+    public void testCreateReportGNUTELLAView() {
+
+        String batchNum = "2021-0051";
+        DBOperation.createReportView(ConstantValue.DATASET_GNUTELLA, CLASS_NAME, batchNum);
     }
 
     @Ignore

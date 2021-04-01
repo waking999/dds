@@ -190,8 +190,9 @@ public class GreedyVoteL2HDDS2Test {
     @Test
     public void testKONECT_LoopKR_Powergrid() throws IOException {
 
-        int kLower = 3;
-        int kUpper = 50;
+        //int kLower = 3;
+        int kLower = 10;
+        int kUpper = 20;
         String id = "3_13";
         String instanceCode = "Powergrid";
         String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
@@ -247,5 +248,50 @@ public class GreedyVoteL2HDDS2Test {
         IAlgorithm algo = new GreedyVoteL2HDDS2();
 
         TestUtil.basicFuncLoopIns(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, k, r,momentRegretThreshold,  log);
+    }
+
+    // run
+    @Ignore
+    @Test
+    public void testGnutella_LoopKR_04() throws IOException {
+
+        //int kLower = 3;
+        int kLower = 10;
+        int kUpper = 20;
+        String id = "6_1";
+        String instanceCode = "p2p-Gnuetta04";
+        String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+        String dataSetPath = "/Gnutella";
+        String pathName = "/10876_p2p-04.Gnutella";
+        String inputFile = resourcePath + dataSetPath + pathName;
+        String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+        IAlgorithm algo = new GreedyVoteL2HDDS2();
+        String batchNum = Util.getBatchNum();
+
+        TestUtil.basicFuncLoopKR(algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+                log);
+    }
+
+    @Ignore
+    @Test
+    public void testGnutella_LoopKR_05() throws IOException {
+
+        //int kLower = 3;
+        int kLower = 10;
+        int kUpper = 20;
+        String id = "6_2";
+        String instanceCode = "p2p-Gnuetta05";
+        String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+        String dataSetPath = "/Gnutella";
+        String pathName = "/8846_p2p-05.Gnutella";
+        String inputFile = resourcePath + dataSetPath + pathName;
+        String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+        IAlgorithm algo = new GreedyVoteL2HDDS2();
+        String batchNum = Util.getBatchNum();
+
+        TestUtil.basicFuncLoopKR(algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+                log);
     }
 }

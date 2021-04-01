@@ -66,4 +66,11 @@ public class GreedyVoteL2HTest {
         IAlgorithm algo = new GreedyVoteL2H();
         TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log);
     }
+
+    @Test
+    public void testGNUTELLA_verify() {
+
+        IAlgorithm algo = new GreedyVoteL2H();
+        TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_GNUTELLA, algo, log);
+    }
 }

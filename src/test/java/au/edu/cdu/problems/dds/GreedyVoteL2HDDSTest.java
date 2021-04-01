@@ -227,10 +227,39 @@ public class GreedyVoteL2HDDSTest {
 
     @Ignore
     @Test
+    public void testGNUTELLA_p2p04() throws IOException {
+
+        int kLower = 4;
+        int kUpper = 10;
+        String id = "6_1";
+        String instanceCode = "Gnutella04";
+        String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+        String dataSetPath = "/Gnutella";
+        String pathName = "/10876_p2p-04.Gnutella";
+        String inputFile = resourcePath + dataSetPath + pathName;
+        String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+        IAlgorithm algo = new GreedyVoteL2HDDS();
+        String batchNum = Util.getBatchNum();
+
+        TestUtil.basicFuncLoopKR(algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+                log);
+    }
+
+    @Ignore
+    @Test
     public void testCreateReportView() {
 
         String batchNum = "20171103-0056";
         DBOperation.createReportView(ConstantValue.DATASET_KONECT, CLASS_NAME, batchNum);
+    }
+
+    @Ignore
+    @Test
+    public void testCreateReportViewG() {
+
+        String batchNum = "2021-0000";
+        DBOperation.createReportView(ConstantValue.DATASET_GNUTELLA, CLASS_NAME, batchNum);
     }
 
     @Ignore

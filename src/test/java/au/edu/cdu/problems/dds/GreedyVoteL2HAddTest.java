@@ -60,9 +60,25 @@ public class GreedyVoteL2HAddTest {
 
     @Ignore
     @Test
+    public void testCreateReportGnutellaView() {
+
+        String batchNum = "2021-0001";
+        DBOperation.createReportView(ConstantValue.DATASET_GNUTELLA, CLASS_NAME, batchNum);
+    }
+
+    @Ignore
+    @Test
     public void testBHOSLIB_verify()   {
 
         IAlgorithm algo = new GreedyVoteL2HAdd();
         TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_BHOSLIB, algo, log);
+    }
+
+    @Ignore
+    @Test
+    public void testGnutella_verify()   {
+
+        IAlgorithm algo = new GreedyVoteL2HAdd();
+        TestUtil.basicFunc(CLASS_NAME, ConstantValue.DATASET_GNUTELLA, algo, log);
     }
 }

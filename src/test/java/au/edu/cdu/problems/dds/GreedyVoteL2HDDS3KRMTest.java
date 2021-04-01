@@ -43,4 +43,24 @@ public class GreedyVoteL2HDDS3KRMTest {
         TestUtil.basicFuncLoopKR(algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
                 log);
     }
+
+    @Test
+    public void testGNUTELLA_LoopKR_p2p04() throws IOException {
+
+        int kLower = 3;
+        int kUpper = 10;
+        String id = "6_1";
+        String instanceCode = "10876_p2p-04";
+        String resourcePath = TestUtil.getBasePath() + "/src/test/resources";
+        String dataSetPath = "/Gnutella";
+        String pathName = "/10876_p2p-04.Gnutella";
+        String inputFile = resourcePath + dataSetPath + pathName;
+        String algTableName = DBOperation.getAlgorithmTableName(CLASS_NAME);
+
+        IAlgorithm algo = new GreedyVoteL2HDDS3();
+        String batchNum = Util.getBatchNum();
+
+        TestUtil.basicFuncLoopKR(algo, kLower, kUpper, batchNum, id, instanceCode, algTableName, inputFile,
+                log);
+    }
 }
