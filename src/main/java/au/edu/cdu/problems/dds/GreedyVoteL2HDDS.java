@@ -67,7 +67,9 @@ public class GreedyVoteL2HDDS implements IAlgorithm {
 
 		int[] giIdxSol = gi.getIdxSol();
 		int giIdxSolSize = gi.getIdxSolSize();
-
+		//XXX Can I add this here?
+		AlgoUtil.degree0RRInNaive(g);
+		AlgoUtil.degree1RRInNaive(g);
 		/*
 		 * the array to store dominating vertex and dominated vertices of each
 		 * step in gi

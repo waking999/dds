@@ -35,6 +35,9 @@ class GreedyVoteH2L implements IAlgorithm {
 		int[] idxSol = g.getIdxSol();
 		int idxSolSize = g.getIdxSolSize();
 
+		//Can we put the reduction rules here an improve the results
+		AlgoUtil.degree0RRInNaive(g);
+		AlgoUtil.degree1RRInNaive(g);
 		do {
 			// get a vertex with highest weight
 			int uIdx = AlgoUtil.getHighestWeightVertexIdx(g);
